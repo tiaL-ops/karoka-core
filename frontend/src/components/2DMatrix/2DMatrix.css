@@ -9,3 +9,19 @@ svg {
     stroke: #ccc;
   }
   
+  button {
+    padding: 10px 20px;
+    font-size: 1em;
+    margin-bottom: 20px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
