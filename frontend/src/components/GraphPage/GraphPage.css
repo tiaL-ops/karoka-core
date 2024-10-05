@@ -1,0 +1,18 @@
+/* GraphPage.css */
+svg {
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    margin: 20px;
+  }
+  
+  line {
+    stroke: #333;
+    stroke-width: 2px;
+  }
+  
+  circle {
+    fill: #007bff;
+    stroke: #fff;
+    stroke-width: 1.5px;
+  }
+  

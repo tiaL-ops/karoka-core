@@ -1,0 +1,11 @@
+/* 2DMatrix.css */
+svg {
+    background-color: #f9f9f9;
+    margin: 20px;
+    border: 1px solid #333;
+  }
+  
+  rect {
+    stroke: #ccc;
+  }
+  
