@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './2DMatrix.css';
 import * as d3 from 'd3';
+import { dfsMazeTraversal } from '../../algorithms/dfs'; // Correct relative path for dfs
+import { bfsMazeTraversal } from '../../algorithms/bfs'; // Correct relative path for bfs
 
 function primsMaze(width, height) {
   const maze = Array(height).fill(null).map(() => Array(width).fill(1));  // Initialize grid full of walls (1)
@@ -58,73 +60,43 @@ function primsMaze(width, height) {
   return maze;
 }
 
-function dfsMazeTraversal(maze, startX, startY) {
-  const stack = [{ x: startX, y: startY }];
-  const visited = [];
-  const directions = [
-    { dx: 1, dy: 0 },  // Right
-    { dx: -1, dy: 0 },  // Left
-    { dx: 0, dy: 1 },  // Down
-    { dx: 0, dy: -1 }  // Up
-  ];
-
-  const path = [];
-  const visitedSet = new Set();
-
-  while (stack.length > 0) {
-    const { x, y } = stack.pop();
-    const key = `${x},${y}`;
-
-    if (!visitedSet.has(key)) {
-      visitedSet.add(key);
-      visited.push({ x, y });
-      path.push({ x, y, backtrack: false });
-
-      for (let dir of directions) {
-        const nx = x + dir.dx;
-        const ny = y + dir.dy;
-
-        // Check if next cell is a valid passage and not visited
-        if (nx >= 0 && nx < maze[0].length && ny >= 0 && ny < maze.length && maze[ny][nx] === 0 && !visitedSet.has(`${nx},${ny}`)) {
-          stack.push({ x: nx, y: ny });
-        }
-      }
-
-      // If stack becomes empty, we know we are backtracking
-      if (stack.length > 0 && `${stack[stack.length - 1].x},${stack[stack.length - 1].y}` !== key) {
-        path.push({ x, y, backtrack: true });
-      }
-    }
-  }
-
-  return path;
-}
-
 function MatrixPage() {
   const [maze, setMaze] = useState([]);
-  const [dfsPath, setDfsPath] = useState([]);
-  const [stepIndex, setStepIndex] = useState(0);  // Index for DFS step
+  const [path, setPath] = useState([]);
+  const [stepIndex, setStepIndex] = useState(0);  // Index for DFS/BFS step
+  const [algorithm, setAlgorithm] = useState('dfs');  // Track the chosen algorithm
   const svgRef = useRef();
   const width = 21;  // Maze width
   const height = 15;  // Maze height
-  const cellSize = 20;  // Set the size of each cell
+  const cellSize = 30;  // Increased cell size for better visibility
 
   const generateNewMaze = () => {
     const newMaze = primsMaze(width, height);  // Generate the maze using Prim's algorithm
-    const dfsTraversalPath = dfsMazeTraversal(newMaze, 1, 1);  // Generate DFS path
     setMaze(newMaze);
-    setDfsPath(dfsTraversalPath);
-    setStepIndex(0);  // Reset DFS step
+    setStepIndex(0);  // Reset DFS/BFS step
+    if (algorithm === 'dfs') {
+      const dfsTraversalPath = dfsMazeTraversal(newMaze, 1, 1);  // Generate DFS path
+      setPath(dfsTraversalPath);
+    } else {
+      const bfsTraversalPath = bfsMazeTraversal(newMaze, 1, 1);  // Generate BFS path
+      setPath(bfsTraversalPath);
+    }
   };
 
   useEffect(() => {
-    generateNewMaze();  // Generate initial maze and DFS path
-  }, []);
+    generateNewMaze();  // Generate initial maze and DFS/BFS path
+  }, [algorithm]);  // Re-generate the maze and path when the algorithm changes
 
   const handleNextStep = () => {
-    if (stepIndex < dfsPath.length - 1) {
-      setStepIndex(stepIndex + 1);  // Go to the next step in the DFS
+    // Move to the next step in the DFS/BFS if possible
+    if (stepIndex < path.length - 1) {
+      setStepIndex(stepIndex + 1);  // Increment to the next step
     }
+  };
+
+  const handleAlgorithmChange = (algo) => {
+    setAlgorithm(algo);  // Set the chosen algorithm (DFS or BFS)
+    generateNewMaze();  // Regenerate the maze and traversal path
   };
 
   useEffect(() => {
@@ -132,49 +104,65 @@ function MatrixPage() {
       .attr('width', width * cellSize)
       .attr('height', height * cellSize);
 
-    // Render the maze (only once)
+    // Render the maze with rounded corners and shadow
     svg.selectAll('rect')
       .data(maze.flat())
       .join('rect')
       .attr('x', (d, i) => (i % width) * cellSize)
       .attr('y', (d, i) => Math.floor(i / width) * cellSize)
-      .attr('width', cellSize)
-      .attr('height', cellSize)
-      .attr('fill', d => (d === 1 ? '#000' : '#fff'))
-      .attr('stroke', '#ccc');
+      .attr('width', cellSize - 4)
+      .attr('height', cellSize - 4)
+      .attr('rx', 6)  // Rounded corners
+      .attr('ry', 6)
+      .attr('fill', d => (d === 1 ? '#2E3A59' : '#F7F7F7'))
+      .attr('stroke', '#FFF')
+      .attr('stroke-width', 2)
+      .style('box-shadow', '2px 2px 5px rgba(0, 0, 0, 0.2)');
 
-    // Render the DFS traversal step by step using data binding
+    // Smooth transitions
     svg.selectAll('.dfs-cell')
-      .data(dfsPath.slice(0, stepIndex + 1), d => `${d.x}-${d.y}`)  // Bind data only for the current DFS step
+      .data(path.slice(0, stepIndex + 1), d => `${d.x}-${d.y}`)  // Bind data only for the current step
       .join('rect')
       .attr('class', 'dfs-cell')
-      .attr('x', d => d.x * cellSize)
-      .attr('y', d => d.y * cellSize)
-      .attr('width', cellSize)
-      .attr('height', cellSize)
-      .attr('fill', d => d.backtrack ? '#ff6347' : '#00ff00')  // Red for backtracking, green for normal traversal
-      .attr('stroke', '#ccc');
+      .attr('x', d => d.x * cellSize + 2)
+      .attr('y', d => d.y * cellSize + 2)
+      .attr('width', cellSize - 4)
+      .attr('height', cellSize - 4)
+      .attr('rx', 6)
+      .attr('ry', 6)
+      .attr('fill', d => d.backtrack ? 'rgba(255,99,71,0.8)' : 'rgba(50,205,50,0.8)')  // Smooth colors with transparency
+      .attr('stroke', '#FFF')
+      .attr('stroke-width', 2)
+      .style('transition', 'all 0.3s ease-in-out');
 
-    // Highlight the current node in blue
-    if (dfsPath[stepIndex]) {
+    // Highlight the current node in blue with smooth transition
+    if (path[stepIndex]) {
       svg.selectAll('.current')
-        .data([dfsPath[stepIndex]])
+        .data([path[stepIndex]])
         .join('rect')
         .attr('class', 'current')
-        .attr('x', d => d.x * cellSize)
-        .attr('y', d => d.y * cellSize)
-        .attr('width', cellSize)
-        .attr('height', cellSize)
-        .attr('fill', '#0000ff')  // Blue for the current node
-        .attr('stroke', '#ccc');
+        .attr('x', d => d.x * cellSize + 2)
+        .attr('y', d => d.y * cellSize + 2)
+        .attr('width', cellSize - 4)
+        .attr('height', cellSize - 4)
+        .attr('rx', 6)
+        .attr('ry', 6)
+        .attr('fill', 'rgba(30,144,255,0.8)')  // Blue for the current node
+        .attr('stroke', '#FFF')
+        .attr('stroke-width', 2)
+        .style('transition', 'all 0.3s ease-in-out');
     }
-  }, [stepIndex, dfsPath, maze]);  // Re-render only when the DFS step or maze changes
+  }, [stepIndex, path, maze]);  // Re-render only when the step, path, or maze changes
 
   return (
-    <div>
-      <h1>DFS Maze Traversal - Step by Step</h1>
-      <button onClick={generateNewMaze}>Generate New Maze</button>
-      <button onClick={handleNextStep}>Next Step</button>
+    <div className="container">
+      <h1 className="title">Maze Traversal (DFS / BFS)</h1>
+      <div className="controls">
+        <button className="button" onClick={generateNewMaze}>Generate New Maze</button>
+        <button className="button" onClick={handleNextStep}>Next Step</button>
+        <button className="button" onClick={() => handleAlgorithmChange('dfs')}>Use DFS</button>
+        <button className="button" onClick={() => handleAlgorithmChange('bfs')}>Use BFS</button>
+      </div>
       <svg ref={svgRef}></svg>
     </div>
   );
