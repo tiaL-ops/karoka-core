@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import LinkedList from '../../algorithms/linkedList';
+import LinkedList from '../../algorithms/linkedList'; // The linked list logic
 import './LinkedListPage.css';
+import CodeView from './CodeView'; // Import the CodeView component
 
 function LinkedListPage() {
   const [list] = useState(new LinkedList());
   const [currentStep, setCurrentStep] = useState(0);
   const [steps, setSteps] = useState([]);
-  const [pseudocode, setPseudocode] = useState('');
+  const [codeSnippet, setCodeSnippet] = useState(''); // State to hold the code snippet
 
   // Initialize the linked list with some nodes and set steps
   const initializeList = () => {
@@ -15,10 +16,12 @@ function LinkedListPage() {
     list.insert(3);
     list.traverse();
     setSteps(list.getSteps());
-    setPseudocode(`Insert:
-    1. Create a new node with value.
+
+    // Initial pseudocode for insertion
+    setCodeSnippet(`Insert:
+    1. Create a new node with the value.
     2. If the list is empty, set head to new node.
-    3. Else, traverse to the last node and set its next to new node.`);
+    3. Else, traverse to the last node and set its next to the new node.`);
   };
 
   // Call initializeList when the page loads
@@ -30,7 +33,7 @@ function LinkedListPage() {
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
-      updatePseudocode(currentStep + 1);
+      updateCodeSnippet(currentStep + 1);
     }
   };
 
@@ -38,24 +41,25 @@ function LinkedListPage() {
   const handlePrevious = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
-      updatePseudocode(currentStep - 1);
+      updateCodeSnippet(currentStep - 1);
     }
   };
 
   // Update the pseudocode based on the current step description
-  const updatePseudocode = (stepIndex) => {
+  const updateCodeSnippet = (stepIndex) => {
     const stepDescription = steps[stepIndex]?.description;
+
     if (stepDescription.includes('Inserted')) {
-      setPseudocode(`Insert:
-      1. Create a new node with value.
+      setCodeSnippet(`Insert:
+      1. Create a new node with the value.
       2. If the list is empty, set head to new node.
-      3. Else, traverse to the last node and set its next to new node.`);
+      3. Else, traverse to the last node and set its next to the new node.`);
     } else if (stepDescription.includes('Deleted')) {
-      setPseudocode(`Delete:
+      setCodeSnippet(`Delete:
       1. Find the node with the given value.
       2. If found, update the previous node's next to skip the deleted node.`);
     } else if (stepDescription.includes('Visited')) {
-      setPseudocode(`Traverse:
+      setCodeSnippet(`Traverse:
       1. Start from the head.
       2. Visit each node and move to the next node until the end of the list.`);
     }
@@ -65,11 +69,11 @@ function LinkedListPage() {
   const renderLinkedList = () => {
     const step = steps[currentStep];
     if (!step) return null;
-  
+
     const nodes = [];
     let current = step.list;
     let index = 0;  // Use an index to ensure unique keys
-  
+
     while (current) {
       nodes.push(
         <div className="node" key={`node-${index}`}>
@@ -77,19 +81,14 @@ function LinkedListPage() {
         </div>
       );
       if (current.next) {
-        nodes.push(
-          <div className="arrow" key={`arrow-${index}`}>
-            &rarr;
-          </div>
-        );
+        nodes.push(<div className="arrow" key={`arrow-${index}`}>&rarr;</div>);
       }
       current = current.next;
-      index++;  // Increment the index for unique keys
+      index++;
     }
-  
+
     return <div className="linked-list">{nodes}</div>;
   };
-  
 
   return (
     <div className="linked-list-page">
@@ -99,9 +98,9 @@ function LinkedListPage() {
       {renderLinkedList()}
 
       {/* Display the pseudocode */}
-      <div className="pseudocode">
-        <h2>Pseudocode</h2>
-        <pre>{pseudocode}</pre>
+      <div className="code-section">
+        <h2>Code Snippet</h2>
+        <CodeView codeSnippet={codeSnippet} /> {/* Use the CodeView component */}
       </div>
 
       {/* Display the current step description */}
