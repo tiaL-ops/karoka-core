@@ -1,27 +1,24 @@
-from flask import Flask, jsonify
-from flask_cors import CORS
+from flask import Flask, render_template, send_from_directory
+import os
 
-app = Flask(__name__)
-CORS(app)
-# Main Page Endpoint
-@app.route('/')
-def main_page():
-    return jsonify(message="Welcome to the Main Page")
+app = Flask(__name__, static_folder='static', template_folder='templates')
 
-# Tree Algorithm Page Endpoint
-@app.route('/api/tree')
-def tree_page():
-    return jsonify(message="Tree Algorithm Page")
 
-# 2D Graph Algorithm Page Endpoint
-@app.route('/api/2dgraph')
-def graph_page():
-    return jsonify(message="2D Graph Algorithm Page")
+@app.route('/static/<path:path>')
+def serve_static(path):
+    return send_from_directory(os.path.join(app.root_path, 'static'), path)
 
-# Linked List Algorithm Page Endpoint
-@app.route('/api/linkedlist')
-def linked_list_page():
-    return jsonify(message="Linked List Algorithm Page")
+
+@app.route('/api/data')
+def get_data():
+    return {"message": "Hello from Flask!"}
+
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def catch_all(path):
+    
+    return render_template('index.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
