@@ -1,0 +1,15 @@
+{
+    "name": "my-app",
+    "scripts": {
+      "postdeploy": "cd backend && pip install -r requirements.txt && cd ../frontend && npm install && npm run build"
+    },
+    "buildpacks": [
+      {
+        "url": "heroku/python"
+      },
+      {
+        "url": "heroku/nodejs"
+      }
+    ]
+  }
+  
