@@ -1,0 +1,78 @@
+.linked-list-page {
+    text-align: center;
+    margin: 20px;
+  }
+  
+  .linked-list {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .node {
+    background-color: #3498db;
+    color: white;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    margin: 0 10px;
+  }
+  
+  .arrow {
+    font-size: 24px;
+  }
+  
+  .pseudocode {
+    background-color: #f7f7f7;
+    padding: 20px;
+    margin-top: 20px;
+    text-align: left;
+    display: inline-block;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+  }
+  
+  .pseudocode pre {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 16px;
+    color: #2c3e50;
+    white-space: pre-wrap;
+    text-align: left;
+  }
+  
+  .step-description {
+    margin-bottom: 20px;
+    font-size: 18px;
+    color: #2c3e50;
+  }
+  
+  .controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  button {
+    background-color: #2ecc71;
+    border: none;
+    padding: 10px 20px;
+    color: white;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  button:disabled {
+    background-color: #bdc3c7;
+  }
+  
+  button:not(:disabled):hover {
+    background-color: #27ae60;
+  }
+  

@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomePage from './components/HomePage/HomePage';  // Import HomePage
 import GraphPage from './components/GraphPage/GraphPage';  // Import GraphPage
 import MatrixPage from './components/2DMatrix/2DMatrix';  // Import MatrixPage
+import LinkedListPage from './components/LinkedListPage/LinkedListPage';  // Import LinkedListPage
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
         <Route path="/" element={<HomePage />} />  {/* Home Page */}
         <Route path="/graph" element={<GraphPage />} />  {/* Graph Page */}
         <Route path="/maze" element={<MatrixPage />} />  {/* Maze Page */}
+        <Route path="/linkedlist" element={<LinkedListPage />} />  {/* Linked List Page */}
       </Routes>
     </Router>
   );

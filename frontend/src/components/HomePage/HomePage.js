@@ -9,6 +9,7 @@ function HomePage() {
       <nav>
         <Link to="/graph">Go to Graph Visualization</Link> | 
         <Link to="/maze">Go to Maze Generation</Link>
+        <Link to="/LinkedList">Go to LinkedList</Link>
       </nav>
     </div>
   );
