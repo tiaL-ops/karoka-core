@@ -1,3 +1,9 @@
 node_modules/
 nodes_modules
 /nodes_modules
+
+
+__pycache__/
+backend/static/node_modules/
+
+build
