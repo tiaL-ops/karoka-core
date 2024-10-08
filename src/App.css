@@ -1,3 +1,4 @@
+/* Base styles */
 .App {
   text-align: center;
 }
@@ -28,11 +29,41 @@
   color: #61dafb;
 }
 
+/* Keyframes for the spinning logo */
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* Responsive styles for tablet devices (max-width: 768px) */
+@media (max-width: 768px) {
+  .App-logo {
+    height: 30vmin; /* Reduce logo size for tablets */
+  }
+
+  .App-header {
+    padding: 20px; /* Add padding for better spacing on smaller screens */
+    font-size: calc(8px + 2vmin); /* Slightly smaller font on tablets */
+  }
+}
+
+/* Responsive styles for mobile devices (max-width: 480px) */
+@media (max-width: 480px) {
+  .App-logo {
+    height: 25vmin; /* Further reduce logo size for mobile */
+  }
+
+  .App-header {
+    font-size: calc(8px + 1.5vmin); /* Smaller font size for mobile */
+    padding: 15px; /* Additional padding to fit content well */
+  }
+
+  .App-link {
+    font-size: 14px; /* Adjust link size for mobile */
+    padding: 10px; /* Add padding around links */
   }
 }

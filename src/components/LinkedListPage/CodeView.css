@@ -1,23 +1,58 @@
+/* Base styles for larger screens */
 .code-view {
-    background-color: #f7f7f7;
-    padding: 20px;
-    border-radius: 8px;
-    margin-top: 20px;
-    text-align: left;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .code-section {
-    margin-top: 30px;
-  }
-  
+  background-color: #f7f7f7;
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 20px;
+  text-align: left;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.code-section {
+  margin-top: 30px;
+}
+
+.code-section h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+pre {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 16px;
+  overflow-x: auto;  /* Add horizontal scrolling for long code */
+  white-space: pre-wrap; /* Allow wrapping to fit smaller screens */
+  word-wrap: break-word; /* Ensure long words break */
+}
+
+/* Responsive styles for tablet screens (max-width: 768px) */
+@media (max-width: 768px) {
   .code-section h2 {
-    font-size: 24px;
-    margin-bottom: 10px;
+      font-size: 20px;  /* Slightly reduce heading size */
   }
-  
+
+  .code-view {
+      padding: 15px;  /* Reduce padding for smaller screens */
+  }
+
   pre {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 16px;
+      font-size: 15px;  /* Slightly reduce font size */
   }
-  
+}
+
+/* Responsive styles for mobile devices (max-width: 480px) */
+@media (max-width: 480px) {
+  .code-section h2 {
+      font-size: 18px;  /* Smaller heading size for mobile */
+  }
+
+  .code-view {
+      padding: 10px;  /* Reduce padding further for mobile */
+      margin-top: 15px;  /* Adjust margin for better fit */
+  }
+
+  pre {
+      font-size: 14px;  /* Reduce code font size for mobile */
+      white-space: pre-wrap;  /* Wrap code to fit mobile screen */
+  }
+}
