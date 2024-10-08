@@ -1,16 +1,13 @@
+// CodeView.js
 import React from 'react';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { solarizedlight } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import './CodeView.css';
+import './CodeView.css';  // Ensure this file exists and has the proper styles
 
-function CodeView({ codeSnippet }) {
+const CodeView = ({ codeSnippet }) => {
   return (
     <div className="code-view">
-      <SyntaxHighlighter language="javascript" style={solarizedlight}>
-        {codeSnippet}
-      </SyntaxHighlighter>
+      <pre>{codeSnippet}</pre>
     </div>
   );
-}
+};
 
 export default CodeView;

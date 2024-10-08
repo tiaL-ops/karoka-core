@@ -5,11 +5,12 @@ body {
   font-family: 'Roboto', sans-serif;
   margin: 0;
   padding: 0;
-  height: 100vh;
+  height: 100vh;  /* Ensure the body takes the full height of the viewport */
   display: flex;
   justify-content: center;
   align-items: center;
   background: linear-gradient(135deg, #74ebd5, #acb6e5);  /* Gradient background */
+  flex-direction: column;  /* Stack elements vertically */
 }
 
 h1 {
@@ -18,34 +19,32 @@ h1 {
   text-align: center;
   margin-bottom: 2rem;
   font-weight: bold;
+  line-height: 1.2;
+  padding: 0 15px;  /* Add padding to prevent text from touching the screen edges */
 }
 
 nav {
   text-align: center;
+  width: 100%;
 }
 
 nav a {
+  display: inline-block;
   text-decoration: none;
   font-size: 1.2rem;
   padding: 0.8rem 1.5rem;
-  margin: 0 1rem;
+  margin: 10px 0;  /* Add vertical margin between buttons */
   border-radius: 50px;
   color: white;
   background-color: #3498db;
   transition: background-color 0.3s ease, transform 0.3s ease;
+  width: 100%;  /* Full-width buttons */
+  max-width: 350px;  /* Limit the width of buttons on large screens */
 }
 
 nav a:hover {
   background-color: #2980b9;
-  transform: translateY(-3px);  
-}
-
-nav a:first-of-type {
-  margin-right: 1.5rem;
-}
-
-nav a:last-of-type {
-  margin-left: 1.5rem;
+  transform: translateY(-3px);
 }
 
 /* Responsive Design */
@@ -53,38 +52,37 @@ nav a:last-of-type {
 /* Styles for tablet devices (max-width: 768px) */
 @media screen and (max-width: 768px) {
   h1 {
-      font-size: 2rem;
+    font-size: 2rem;
   }
 
   nav a {
-      font-size: 1rem;
-      padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+    padding: 0.6rem 1.2rem;
+    max-width: 300px;  /* Slightly reduce button width for tablets */
   }
 }
 
 /* Styles for mobile devices (max-width: 480px) */
 @media screen and (max-width: 480px) {
   body {
-      flex-direction: column;  /* Stack elements vertically */
-      height: auto;  /* Adjust height for smaller screens */
-      padding: 20px;  /* Add padding for better spacing */
+    padding: 20px;  /* Add padding to avoid content touching the screen edges */
+    justify-content: center;  /* Center content vertically */
   }
 
   h1 {
-      font-size: 1.8rem;  /* Smaller heading size for mobile */
-      margin-bottom: 1.5rem;  /* Reduce margin */
+    font-size: 1.8rem;  /* Smaller heading size for mobile */
+    margin-bottom: 1.5rem;  /* Reduce margin */
   }
 
   nav a {
-      font-size: 0.9rem;  /* Adjust font size for smaller screens */
-      padding: 0.5rem 1rem;  /* Smaller padding for buttons */
-      margin: 0.5rem 0;  /* Stack buttons vertically with spacing */
-      display: block;  /* Make links full-width on mobile */
-      width: 100%;  /* Full-width buttons */
-      max-width: 300px;  /* Limit button width */
+    font-size: 0.9rem;  /* Adjust font size for smaller screens */
+    padding: 0.5rem 1rem;  /* Smaller padding for buttons */
+    margin: 10px 0;  /* Vertical spacing between buttons */
+    width: 100%;  /* Full-width buttons */
+    max-width: 280px;  /* Limit button width to prevent them from being too wide */
   }
 
   nav {
-      width: 100%;
+    width: 100%; /* Make sure nav takes full width */
   }
 }

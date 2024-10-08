@@ -36,6 +36,7 @@
   display: inline-block;
   border: 1px solid #ddd;
   border-radius: 8px;
+  max-width: 100%; /* Make sure pseudocode doesn't overflow */
 }
 
 .pseudocode pre {
@@ -106,6 +107,7 @@ button:not(:disabled):hover {
   .linked-list {
       flex-direction: column;  /* Stack nodes vertically */
       align-items: flex-start;  /* Align nodes to the left */
+      margin-bottom: 15px;  /* Add some space at the bottom */
   }
 
   .node {
@@ -123,6 +125,7 @@ button:not(:disabled):hover {
       padding: 10px;
       margin-top: 15px;  /* Adjust margin */
       font-size: 14px;  /* Reduce font size for pseudocode */
+      width: 100%;  /* Ensure it takes up full width on mobile */
   }
 
   .step-description {
@@ -138,5 +141,6 @@ button:not(:disabled):hover {
   .controls {
       flex-direction: column;  /* Stack buttons vertically */
       gap: 5px;  /* Add smaller gap between buttons */
+      width: 100%;  /* Make buttons full-width */
   }
 }

@@ -5,8 +5,11 @@ svg {
   margin: 20px;
   width: 80%; /* Make SVG take 80% of the container width */
   height: auto; /* Maintain aspect ratio */
+  max-width: 800px; /* Limit the maximum width */
+  display: block; /* Center SVG if it's within a flex or block container */
 }
 
+/* Styling for lines and nodes */
 line {
   stroke: #333;
   stroke-width: 2px;
@@ -18,18 +21,18 @@ circle {
   stroke-width: 1.5px;
 }
 
-/* Media query for mobile devices (max-width: 600px) */
+/* Responsive styles for mobile devices (max-width: 600px) */
 @media (max-width: 600px) {
   svg {
-      width: 100%; 
-      margin: 10px; 
+    width: 100%; /* Make SVG fill the screen on mobile */
+    margin: 10px; /* Reduce margin for smaller screens */
   }
   
   line {
-      stroke-width: 1.5px; 
+    stroke-width: 1.5px; /* Slightly reduce line thickness */
   }
 
   circle {
-      stroke-width: 1px;
+    stroke-width: 1px; /* Reduce circle stroke width */
   }
 }
