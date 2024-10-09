@@ -7,13 +7,14 @@ function GraphPage() {
   const [sortedNodes, setSortedNodes] = useState([]);  // Store the result of topological sort
   const [step, setStep] = useState(0);  // Current step of the topological sort
 
-  const width = 600;
-  const height = 400;
+  // Define dimensions as a percentage of the container's width for responsiveness
+  const width = 550;  // Original width of SVG
+  const height = 300;  // Original height of SVG
 
   useEffect(() => {
     const svg = d3.select(svgRef.current)
-      .attr('width', width)
-      .attr('height', height)
+      .attr('viewBox', `0 0 ${width} ${height}`)  // Use viewBox to make the SVG responsive
+      .attr('preserveAspectRatio', 'xMidYMid meet')  // Preserve aspect ratio for scaling
       .style('background', '#f9f9f9');  // Light background for visibility
 
     // Define a DAG (Directed Acyclic Graph) with nodes and directed edges
@@ -70,7 +71,7 @@ function GraphPage() {
       .append('circle')
       .attr('cx', d => d.x)
       .attr('cy', d => d.y)
-      .attr('r', 15)
+      .attr('r', 15)  // Node radius
       .attr('fill', '#007bff');
 
     svg.selectAll('text')
