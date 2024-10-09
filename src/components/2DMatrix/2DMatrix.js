@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import './2DMatrix.css';
 import * as d3 from 'd3';
 import { dfsMazeTraversal } from '../../algorithms/dfs'; // Correct relative path for dfs
@@ -68,12 +68,33 @@ function MatrixPage() {
   const svgRef = useRef();
   const width = 21;  // Maze width
   const height = 15;  // Maze height
-  const cellSize = 30;  // Increased cell size for better visibility
 
-  const generateNewMaze = () => {
+  // Dynamically adjust cell size based on screen width
+  const getCellSize = () => {
+    if (window.innerWidth <= 600) {
+      return 15; // Smaller cell size for mobile devices
+    }
+    return 30;  // Default larger cell size for desktop
+  };
+  
+  const [cellSize, setCellSize] = useState(getCellSize());
+
+  // Recalculate the cell size on window resize
+  useEffect(() => {
+    const handleResize = () => {
+      setCellSize(getCellSize());
+    };
+
+    window.addEventListener('resize', handleResize);  // Listen for window resize
+    return () => window.removeEventListener('resize', handleResize);  // Cleanup on unmount
+  }, []);
+
+  // Using useCallback to memoize the generateNewMaze function and avoid infinite loops
+  const generateNewMaze = useCallback(() => {
     const newMaze = primsMaze(width, height);  // Generate the maze using Prim's algorithm
     setMaze(newMaze);
     setStepIndex(0);  // Reset DFS/BFS step
+
     if (algorithm === 'dfs') {
       const dfsTraversalPath = dfsMazeTraversal(newMaze, 1, 1);  // Generate DFS path
       setPath(dfsTraversalPath);
@@ -81,11 +102,12 @@ function MatrixPage() {
       const bfsTraversalPath = bfsMazeTraversal(newMaze, 1, 1);  // Generate BFS path
       setPath(bfsTraversalPath);
     }
-  };
+  }, [algorithm]);  // Depend on 'algorithm' to regenerate maze when it changes
 
+  // Generate a new maze when the component first mounts or when the algorithm changes
   useEffect(() => {
     generateNewMaze();  // Generate initial maze and DFS/BFS path
-  }, [algorithm]);  // Re-generate the maze and path when the algorithm changes
+  }, [generateNewMaze]);
 
   const handleNextStep = () => {
     // Move to the next step in the DFS/BFS if possible
@@ -96,7 +118,6 @@ function MatrixPage() {
 
   const handleAlgorithmChange = (algo) => {
     setAlgorithm(algo);  // Set the chosen algorithm (DFS or BFS)
-    generateNewMaze();  // Regenerate the maze and traversal path
   };
 
   useEffect(() => {
@@ -104,12 +125,12 @@ function MatrixPage() {
       .attr('width', width * cellSize)
       .attr('height', height * cellSize);
 
-    // Render the maze with rounded corners and shadow
+    // Render the maze
     svg.selectAll('rect')
       .data(maze.flat())
       .join('rect')
-      .attr('x', (d, i) => (i % width) * cellSize)
-      .attr('y', (d, i) => Math.floor(i / width) * cellSize)
+      .attr('x', (d, i) => (i % width) * cellSize + 2)  // Offset by 2 for better positioning
+      .attr('y', (d, i) => Math.floor(i / width) * cellSize + 2)
       .attr('width', cellSize - 4)
       .attr('height', cellSize - 4)
       .attr('rx', 6)  // Rounded corners
@@ -117,11 +138,12 @@ function MatrixPage() {
       .attr('fill', d => (d === 1 ? '#2E3A59' : '#F7F7F7'))
       .attr('stroke', '#FFF')
       .attr('stroke-width', 2)
-      .style('box-shadow', '2px 2px 5px rgba(0, 0, 0, 0.2)');
+      .style('box-shadow', '2px 2px 5px rgba(0, 0, 0, 0.2)')
+      .style('transition', 'all 0.3s ease-in-out');
 
-    // Smooth transitions
+    // Traversal path (DFS/BFS)
     svg.selectAll('.dfs-cell')
-      .data(path.slice(0, stepIndex + 1), d => `${d.x}-${d.y}`)  // Bind data only for the current step
+      .data(path.slice(0, stepIndex + 1), d => `${d.x}-${d.y}`)
       .join('rect')
       .attr('class', 'dfs-cell')
       .attr('x', d => d.x * cellSize + 2)
@@ -130,12 +152,12 @@ function MatrixPage() {
       .attr('height', cellSize - 4)
       .attr('rx', 6)
       .attr('ry', 6)
-      .attr('fill', d => d.backtrack ? 'rgba(255,99,71,0.8)' : 'rgba(50,205,50,0.8)')  // Smooth colors with transparency
+      .attr('fill', d => d.backtrack ? 'rgba(255,99,71,0.8)' : 'rgba(50,205,50,0.8)')
       .attr('stroke', '#FFF')
       .attr('stroke-width', 2)
       .style('transition', 'all 0.3s ease-in-out');
 
-    // Highlight the current node in blue with smooth transition
+    // Highlight current node
     if (path[stepIndex]) {
       svg.selectAll('.current')
         .data([path[stepIndex]])
@@ -147,12 +169,12 @@ function MatrixPage() {
         .attr('height', cellSize - 4)
         .attr('rx', 6)
         .attr('ry', 6)
-        .attr('fill', 'rgba(30,144,255,0.8)')  // Blue for the current node
+        .attr('fill', 'rgba(30,144,255,0.8)')
         .attr('stroke', '#FFF')
         .attr('stroke-width', 2)
         .style('transition', 'all 0.3s ease-in-out');
     }
-  }, [stepIndex, path, maze]);  // Re-render only when the step, path, or maze changes
+  }, [stepIndex, path, maze, cellSize]);
 
   return (
     <div className="container">

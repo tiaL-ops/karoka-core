@@ -76,7 +76,7 @@ function LinkedListPage() {
 
     while (current) {
       nodes.push(
-        <div className="node" key={`node-${index}`}>
+        <div className={`node ${currentStep === index ? 'active' : ''}`} key={`node-${index}`}>
           {current.value}
         </div>
       );

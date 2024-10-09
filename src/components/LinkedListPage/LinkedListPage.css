@@ -15,19 +15,21 @@
   background-color: #3498db;
   color: white;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 40px;  /* Default node width */
+  height: 40px; /* Default node height */
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 18px;
+  font-size: 18px;  /* Default font size */
   margin: 0 10px;
 }
 
 .arrow {
-  font-size: 24px;
+  font-size: 24px;  /* Default arrow size */
+  margin: 0 10px;   /* Default arrow margin */
 }
 
+/* Pseudocode styling */
 .pseudocode {
   background-color: #f7f7f7;
   padding: 20px;
@@ -47,12 +49,14 @@
   text-align: left;
 }
 
+/* Step description */
 .step-description {
   margin-bottom: 20px;
   font-size: 18px;
   color: #2c3e50;
 }
 
+/* Controls (buttons) */
 .controls {
   display: flex;
   justify-content: center;
@@ -81,14 +85,15 @@ button:not(:disabled):hover {
 /* Responsive styles for tablet screens (max-width: 768px) */
 @media (max-width: 768px) {
   .node {
-      width: 35px;
+      width: 35px;  /* Slightly reduce node size for tablets */
       height: 35px;
-      font-size: 16px;  /* Slightly reduce font size */
-      margin: 0 8px;
+      font-size: 16px;  /* Adjust font size */
+      margin: 0 8px;  /* Reduce margin */
   }
 
   .arrow {
-      font-size: 22px;  /* Adjust arrow size */
+      font-size: 20px;  /* Adjust arrow size */
+      margin: 0 8px;
   }
 
   .pseudocode {
@@ -97,35 +102,30 @@ button:not(:disabled):hover {
   }
 
   button {
-      padding: 8px 18px;  /* Reduce button padding */
+      padding: 8px 18px;  /* Adjust button padding */
       font-size: 15px;
   }
 }
 
 /* Responsive styles for mobile devices (max-width: 480px) */
 @media (max-width: 480px) {
-  .linked-list {
-      flex-direction: column;  /* Stack nodes vertically */
-      align-items: flex-start;  /* Align nodes to the left */
-      margin-bottom: 15px;  /* Add some space at the bottom */
-  }
-
   .node {
-      width: 30px;
+      width: 30px;  /* Reduce node size for mobile */
       height: 30px;
-      font-size: 14px;  /* Reduce font size further */
-      margin: 10px 0;  /* Space nodes vertically */
+      font-size: 14px;  /* Reduce font size */
+      margin: 0 5px;  /* Reduce margin */
   }
 
   .arrow {
-      display: none;  /* Hide arrows on small screens to save space */
+      font-size: 16px;  /* Reduce arrow size */
+      margin: 0 5px;
   }
 
   .pseudocode {
       padding: 10px;
       margin-top: 15px;  /* Adjust margin */
-      font-size: 14px;  /* Reduce font size for pseudocode */
-      width: 100%;  /* Ensure it takes up full width on mobile */
+      font-size: 14px;  /* Reduce pseudocode font size */
+      width: 100%;  /* Ensure full width */
   }
 
   .step-description {
@@ -139,8 +139,7 @@ button:not(:disabled):hover {
   }
 
   .controls {
-      flex-direction: column;  /* Stack buttons vertically */
-      gap: 5px;  /* Add smaller gap between buttons */
-      width: 100%;  /* Make buttons full-width */
+      flex-direction: row;  /* Keep buttons side by side */
+      gap: 5px;
   }
 }
