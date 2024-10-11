@@ -4,12 +4,13 @@ import './HomePage.css';  // Optional if you want to style the homepage
 
 function HomePage() {
   return (
-    <div>
+    <div className="homepage-container">
       <h1>Tongasoa to the Algorithm Visualizer!</h1>
-      <nav>
-        <Link to="/graph">Go to Graph Visualization</Link> 
-        <Link to="/maze">Go to Maze Generation</Link>
-        <Link to="/LinkedList">Go to LinkedList</Link>
+      <nav className="homepage-nav">
+        <Link to="/graph" className="nav-link">Go to Graph Visualization</Link> 
+        <Link to="/maze" className="nav-link">Go to Maze Generation</Link>
+        <Link to="/LinkedList" className="nav-link">Go to LinkedList</Link>
+        <Link to="/binary-tree" className="nav-link">Go to Binary Tree Visualization</Link>  {/* Added Binary Tree link */}
       </nav>
     </div>
   );
