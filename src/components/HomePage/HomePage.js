@@ -9,8 +9,9 @@ function HomePage() {
       <nav className="homepage-nav">
         <Link to="/graph" className="nav-link">Go to Graph Visualization</Link> 
         <Link to="/maze" className="nav-link">Go to Maze Generation</Link>
-        <Link to="/LinkedList" className="nav-link">Go to LinkedList</Link>
-        <Link to="/binary-tree" className="nav-link">Go to Binary Tree Visualization</Link>  {/* Added Binary Tree link */}
+        <Link to="/linkedlist" className="nav-link">Go to Linked List Visualization</Link>  {/* Corrected LinkedList casing */}
+        <Link to="/binary-tree" className="nav-link">Go to Binary Tree Visualization</Link>  {/* Binary Tree link */}
+        <Link to="/merge-sort" className="nav-link">Go to Merge Sort Visualization</Link>  {/* Merge Sort link */}
       </nav>
     </div>
   );
