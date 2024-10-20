@@ -1,18 +1,27 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import './HomePage.css';  // Optional if you want to style the homepage
+import { useNavigate } from 'react-router-dom';
+import './HomePage.css';
+import graphTopics from '../../data/topics/graphTopics';  // Import graph topics data
 
 function HomePage() {
+  const navigate = useNavigate();
+
+  const handleTopicSelect = (topic, section) => {
+    navigate(`/topic/${topic}/${section}`);
+  };
+
   return (
-    <div className="homepage-container">
-      <h1>Tongasoa to the Algorithm Visualizer!</h1>
-      <nav className="homepage-nav">
-        <Link to="/graph" className="nav-link">Go to Graph Visualization</Link> 
-        <Link to="/maze" className="nav-link">Go to Maze Generation</Link>
-        <Link to="/linkedlist" className="nav-link">Go to Linked List Visualization</Link>  {/* Corrected LinkedList casing */}
-        <Link to="/binary-tree" className="nav-link">Go to Binary Tree Visualization</Link>  {/* Binary Tree link */}
-        <Link to="/merge-sort" className="nav-link">Go to Merge Sort Visualization</Link>  {/* Merge Sort link */}
-      </nav>
+    <div className="home-container">
+      <h1>Welcome to Data Structures & Algorithms</h1>
+      <div className="tree-structure">
+        {graphTopics.map((topic, index) => (
+          <div key={index} className="topic-node">
+            <h2>{topic.name}</h2>
+            <button onClick={() => handleTopicSelect(`${topic.id}`, 'learn')}>Learn</button>
+            <button onClick={() => handleTopicSelect(`${topic.id}`, 'quiz')}>Quiz</button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
