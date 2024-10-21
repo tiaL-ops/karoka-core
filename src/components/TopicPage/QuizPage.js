@@ -1,12 +1,29 @@
 import React, { useState } from 'react';
-import graphQuiz from '../../data/quizzes/graphQuiz';  // Import quiz data
+import graphQuiz from '../../data/quizzes/graphQuiz';
+import linkedListQuiz from '../../data/quizzes/LinkedListQuiz';
+import treeQuiz from '../../data/quizzes/TreeQuiz';  // Import tree quiz data
 
 function QuizPage({ topic }) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [showScore, setShowScore] = useState(false);
-  const questions = graphQuiz[topic];  // Get the quiz questions for the current topic
 
+  // Load the appropriate quiz data based on the topic
+  const quizData = {
+    'dfs-bfs': graphQuiz['dfs-bfs'],
+    'linked-list': linkedListQuiz['linked-list'],
+    'binary-tree': treeQuiz['binary-tree']
+  };
+
+  // Fetch questions based on the topic
+  const questions = quizData[topic];
+
+  // Check if questions is undefined and handle it
+  if (!questions || questions.length === 0) {
+    return <div>No quiz data available for this topic.</div>;
+  }
+
+  // Handle answer click
   const handleAnswerClick = (isCorrect) => {
     if (isCorrect) setScore(score + 1);
     const nextQuestion = currentQuestionIndex + 1;
