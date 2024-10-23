@@ -2,29 +2,31 @@ import React from 'react';
 import ReactFlow, { Handle } from 'reactflow';
 import 'reactflow/dist/style.css';
 import './HomePage.css';
-import { useNavigate } from 'react-router-dom';  // Import useNavigate
-import graphTopics from '../../data/topics/graphTopics';       // Data for Graph-related topics
-import linkedListTopics from '../../data/topics/linkedListTopics'; // Data for Linked List topics
-import treeTopics from '../../data/topics/treeTopics';         // Data for Tree-related topics
+import { useNavigate } from 'react-router-dom';
+import graphTopics from '../../data/topics/graphTopics';
+import linkedListTopics from '../../data/topics/linkedListTopics';
+import treeTopics from '../../data/topics/treeTopics';
 
 const CustomNode = ({ data }) => {
   return (
-    <div className="custom-node" style={{ background: data.color }}>
+    <div className="custom-node">
       <h3>{data.label}</h3>
-      <button onClick={() => data.onLearnSelect(data.id)}>Learn</button>
-      <button onClick={() => data.onQuizSelect(data.id)}>Quiz</button>
-      <Handle type="source" position="right" style={{ background: '#555' }} />
-      <Handle type="target" position="left" style={{ background: '#555' }} />
+      <div className="button-container">
+        <button className="learn-btn" onClick={() => data.onLearnSelect(data.id)}>Learn</button>
+        <button className="quiz-btn" onClick={() => data.onQuizSelect(data.id)}>Quiz</button>
+      </div>
+      <Handle type="source" position="right" style={{ background: '#fff' }} />
+      <Handle type="target" position="left" style={{ background: '#fff' }} />
     </div>
   );
 };
 
 const nodeTypes = {
-  custom: CustomNode
+  custom: CustomNode,
 };
 
 function HomePage() {
-  const navigate = useNavigate();  // Initialize useNavigate
+  const navigate = useNavigate();
 
   const handleLearnSelect = (topic) => {
     switch (topic) {
@@ -46,58 +48,66 @@ function HomePage() {
     navigate(`/topic/${topic}/quiz`);
   };
 
-  // Adjusting the vertical (y) position of the nodes to give them more space
   const nodes = [
-    ...graphTopics.map((topic, index) => ({
-      id: `graph-${index}`,
+    {
+      id: 'dfs-bfs',
       data: { 
-        label: topic.name,
+        label: 'DFS and BFS', 
         color: '#3b82f6', 
         onLearnSelect: handleLearnSelect, 
-        onQuizSelect: handleQuizSelect,
-        id: topic.id 
+        onQuizSelect: handleQuizSelect, 
+        id: 'dfs-bfs' 
       },
-      position: { x: 150 + index * 200, y: 50 },  // X-position remains the same, Y-position gives space
-      type: 'custom'
-    })),
-    ...linkedListTopics.map((topic, index) => ({
-      id: `linked-list-${index}`,
+      position: { x: 200, y: 50 }, 
+      type: 'custom',
+    },
+    {
+      id: 'linked-list',
       data: { 
-        label: topic.name, 
+        label: 'Linked List', 
         color: '#f59e0b', 
         onLearnSelect: handleLearnSelect, 
-        onQuizSelect: handleQuizSelect,
-        id: topic.id 
+        onQuizSelect: handleQuizSelect, 
+        id: 'linked-list' 
       },
-      position: { x: 150 + index * 200, y: 300 },  // Increased Y to 300
-      type: 'custom'
-    })),
-    ...treeTopics.map((topic, index) => ({
-      id: `tree-${index}`,
+      position: { x: 200, y: 300 },
+      type: 'custom',
+    },
+    {
+      id: 'binary-tree',
       data: { 
-        label: topic.name, 
+        label: 'Binary Tree', 
         color: '#10b981', 
         onLearnSelect: handleLearnSelect, 
-        onQuizSelect: handleQuizSelect,
-        id: topic.id 
+        onQuizSelect: handleQuizSelect, 
+        id: 'binary-tree' 
       },
-      position: { x: 150 + index * 200, y: 550 },  // Increased Y to 550 for more space
-      type: 'custom'
-    }))
+      position: { x: 200, y: 550 },
+      type: 'custom',
+    }
   ];
 
-  // Updated edges to connect the adjusted nodes
   const edges = [
-    { id: 'e1-2', source: 'graph-0', target: 'linked-list-0', type: 'smoothstep', animated: true },
-    { id: 'e2-3', source: 'linked-list-0', target: 'tree-0', type: 'smoothstep', animated: true }
+    { id: 'e1-2', source: 'dfs-bfs', target: 'linked-list', type: 'smoothstep', animated: true, style: { stroke: '#bbb', strokeDasharray: '5 5' } },
+    { id: 'e2-3', source: 'linked-list', target: 'binary-tree', type: 'smoothstep', animated: true, style: { stroke: '#bbb', strokeDasharray: '5 5' } }
   ];
 
   return (
     <div className="home-container">
       <h1>Data Structures & Algorithms Pathway</h1>
 
-      <div style={{ height: '800px', width: '100%' }}>
-        <ReactFlow nodes={nodes} edges={edges} nodeTypes={nodeTypes} />
+      <div className="flow-container">
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          nodeTypes={nodeTypes}
+          fitView
+          nodesDraggable={false}
+          panOnScroll={false}
+          zoomOnScroll={false}
+          zoomOnPinch={false}
+          zoomOnDoubleClick={false}
+        />
       </div>
     </div>
   );

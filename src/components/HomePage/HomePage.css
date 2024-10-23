@@ -1,43 +1,66 @@
+/* Main container */
 .home-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  background-color: #f5f5f5;
-  color: #333;
-}
-
-h1 {
-  margin-bottom: 20px;
-  font-size: 2.5rem;
-  color: #333;
-}
-
-/* Custom styling for the nodes */
-.custom-node {
   padding: 20px;
-  border-radius: 10px;
-  text-align: center;
-  color: white;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background: #f9fafb;
+  height: 100vh;
   display: flex;
   flex-direction: column;
+  align-items: center;
+}
+
+.flow-container {
+  height: 80vh;
+  width: 100%;
+  position: relative;
+  display: flex;
   justify-content: center;
   align-items: center;
+}
+
+/* Circular node styling */
+.custom-node {
   width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  padding: 20px;
+  text-align: center;
+  background-color: white;
+  color: #333;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-button {
+.custom-node:hover {
+  transform: scale(1.05);
+}
+
+/* Buttons within each node */
+.button-container {
   margin-top: 10px;
-  padding: 8px 12px;
-  border: none;
-  background-color: #10b981;
-  color: white;
-  cursor: pointer;
-  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-button:hover {
-  background-color: #059669;
+.learn-btn, .quiz-btn {
+  border: none;
+  padding: 8px 12px;
+  background-color: #3b82f6;
+  color: white;
+  border-radius: 12px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.learn-btn:hover, .quiz-btn:hover {
+  background-color: #2563eb;
+}
+
+/* Connection lines between nodes */
+.react-flow__edge-path {
+  stroke: #ccc !important;
+  stroke-dasharray: 5 5;
 }
