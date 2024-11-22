@@ -30,7 +30,7 @@ class Profile(models.Model):
         send_mail(
             subject="Verify Your Email",
             message=f"Please verify your email by clicking this link: {full_url}",
-            from_email="noreply@example.com",
+            from_email="mianatraapp@gmail.com",
             recipient_list=[self.user.email],
             fail_silently=False,
         )
