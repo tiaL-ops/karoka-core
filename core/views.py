@@ -18,15 +18,21 @@ def signup(request):
             user.save()
             login(request, user,backend='django.contrib.auth.backends.ModelBackend')  # Automatically log in after signup
 
-            send_mail(
-                subject="Welcome to Our Platform!",
-                message="Thank you for signing up. We're excited to have you on board!",
-                from_email="noreply@example.com",
-                recipient_list=[user.email],
-                fail_silently=False,
-            )
             return redirect('home')
             
     else:
         form = SignUpForm()
     return render(request, 'core/signup.html', {'form': form})
+
+
+from .models import Profile
+
+def verify_email(request):
+    token = request.GET.get('token')
+    # Here, implement token validation and mark user as verified
+    profile = Profile.objects.filter(verification_token=token).first()
+    if profile:
+        profile.is_verified = True
+        profile.save()
+        return redirect('login')
+    return render(request, 'core/verification_failed.html')

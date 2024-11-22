@@ -5,4 +5,5 @@ urlpatterns = [
     # Example route
     path('', views.home, name='home'),
     path('signup/', views.signup, name='signup'),
+    path('verify-email/', views.verify_email, name='verify_email'),
 ]

@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os 
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -144,12 +145,15 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Email settings
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"  # Require email verification
+ACCOUNT_EMAIL_REQUIRED = True  # Email is required for signup
+
 EMAIL_HOST = 'smtp.gmail.com'  # Gmail SMTP server
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'mianatraapp@gmail.com'  # Your new email
-EMAIL_HOST_PASSWORD = 'mianatraApp@123!'  # App password if 2FA is enabled
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')  # Your new email
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')  # App password if 2FA is enabled
 DEFAULT_FROM_EMAIL = 'mianatraapp@gmail.com'
 
 
