@@ -4,7 +4,11 @@ from django.contrib.auth import login
 from .forms import SignUpForm
 from django.core.mail import send_mail
 from .models import Profile
-
+import requests
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+import logging
 def home(request):
     return render(request, 'core/home.html')
 
@@ -56,3 +60,45 @@ def verify_email(request):
         profile.save()
         return redirect('login')
     return render(request, 'core/verification_failed.html')
+
+
+def coding_view(request):
+    return render(request, 'core/coding.html')
+
+logger = logging.getLogger(__name__)
+
+
+def execute_code(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            code = data.get('code', '')
+            language = data.get('language', 'python')
+
+            API_URL = 'https://emkc.org/api/v2/piston/execute'
+
+            # Use the correct version based on supported runtimes
+            payload = {
+                "language": language,
+                "version": "3.10.0",  # Valid version from runtimes
+                "files": [
+                    {
+                        "name": "main.py",
+                        "content": code
+                    }
+                ]
+            }
+
+            response = requests.post(API_URL, json=payload)
+            result = response.json()
+
+            # Extract output and errors
+            output = result.get('run', {}).get('stdout', '')
+            error = result.get('run', {}).get('stderr', '')
+
+            return JsonResponse({
+                'output': output,
+                'error': error,
+            })
+        except Exception as e:
+            return JsonResponse({'error': str(e)})

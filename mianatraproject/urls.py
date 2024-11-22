@@ -24,6 +24,8 @@ urlpatterns = [
     path("", views.home, name="home"),
     path('accounts/', include('allauth.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('coding/', views.coding_view, name='coding_view'),  # For the coding editor
+    path('execute-code/', views.execute_code, name='execute_code'),
 
 
 ]

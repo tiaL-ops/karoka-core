@@ -34,3 +34,40 @@ class Profile(models.Model):
             recipient_list=[self.user.email],
             fail_silently=False,
         )
+
+
+class Puzzle(models.Model):
+    DIFFICULTY_CHOICES = [
+        ('Easy', 'Easy'),
+        ('Medium', 'Medium'),
+        ('Hard', 'Hard'),
+    ]
+
+    title = models.CharField(max_length=200)  # Puzzle title
+    description = models.TextField()  # Puzzle description
+    difficulty = models.CharField(max_length=10, choices=DIFFICULTY_CHOICES, default='Easy')  # Difficulty level
+    answer = models.CharField(max_length=200)  # Correct answer
+    hint = models.TextField(blank=True, null=True)  # Optional hint
+    points = models.IntegerField(default=0)  # Points for solving
+    created_at = models.DateTimeField(auto_now_add=True)  # Auto set on creation
+    updated_at = models.DateTimeField(auto_now=True)  # Auto update on edit
+
+    def __str__(self):
+        return self.title  # Show the title when debugging or in the admin panel
+
+from django.contrib.auth.models import User  # Import the User model
+
+class UserProgress(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Link to the user
+    puzzle = models.ForeignKey(Puzzle, on_delete=models.CASCADE)  # Link to the puzzle
+    attempted = models.BooleanField(default=False)  # Track if attempted
+    solved = models.BooleanField(default=False)  # Track if solved
+    attempts_count = models.IntegerField(default=0)  # Number of attempts
+    score = models.IntegerField(default=0)  # Points earned for this puzzle
+    last_attempted = models.DateTimeField(auto_now=True)  # Auto update on every attempt
+
+    class Meta:
+        unique_together = ('user', 'puzzle')  # Prevent duplicate entries for the same user and puzzle
+
+    def __str__(self):
+        return f"{self.user.username} - {self.puzzle.title}"
