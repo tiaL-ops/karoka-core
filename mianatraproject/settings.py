@@ -170,6 +170,7 @@ LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/" 
 import logging
 
+"""
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -181,8 +182,8 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': 'DEBUG',
+            'level': 'INFO',
         },
     },
 }
-
+"""

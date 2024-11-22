@@ -19,7 +19,7 @@ def signup(request):
 
             print(f"User created: {user.username}, Email: {user.email}")
             send_mail(
-                subject="Welcometest!",
+                subject="Welcome to Our Platform!",
                 message="Thank you for signing up. We're excited to have you on board!",
                 from_email="noreply@example.com",
                 recipient_list=[user.email],
