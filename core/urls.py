@@ -12,6 +12,7 @@ urlpatterns = [
     path('coding/<int:puzzle_id>/', views.coding_view, name='coding_view'),
     path('execute-code/', views.execute_code, name='execute_code'),
     path('coding/', views.coding_redirect, name='coding_redirect'),
+    path('progress/', views.user_progress, name='user_progress'),
 
 
 ]

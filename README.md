@@ -1,4 +1,4 @@
-### **Day 1: Project Initialization and Setup**
+### **Day 1: Project Initialization and Setup** ✅
 - **Define Objectives**: Clarify the app’s goals, user types, and feature set.
 - **Setup Django Environment**:
   - Install Django and create a new project (`django-admin startproject`).
@@ -8,7 +8,7 @@
 
 ---
 
-### **Day 2: User Authentication System**
+### **Day 2: User Authentication System** ✅
 - **Implement User Login/Signup**:
   - Use Django’s `auth` framework for registration, login, logout.
   - Extend the `User` model with a `Profile` model (one-to-one) to store additional user details like points, progress, etc.

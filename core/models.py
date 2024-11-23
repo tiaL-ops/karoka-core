@@ -59,8 +59,8 @@ class Puzzle(models.Model):
 from django.contrib.auth.models import User  # Import the User model
 
 class UserProgress(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Link to the user
-    puzzle = models.ForeignKey(Puzzle, on_delete=models.CASCADE)  # Link to the puzzle
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='progress')  # Link to the user
+    puzzle = models.ForeignKey(Puzzle, on_delete=models.CASCADE, related_name='progress')  # Link to the puzzle
     attempted = models.BooleanField(default=False)  # Track if attempted
     solved = models.BooleanField(default=False)  # Track if solved
     attempts_count = models.IntegerField(default=0)  # Number of attempts
@@ -71,4 +71,14 @@ class UserProgress(models.Model):
         unique_together = ('user', 'puzzle')  # Prevent duplicate entries for the same user and puzzle
 
     def __str__(self):
-        return f"{self.user.username} - {self.puzzle.title}"
+        return f"{self.user.username} - {self.puzzle.title} | Solved: {self.solved}"
+
+    def update_progress(self, is_correct):
+        """Update the user's progress."""
+        self.attempted = True
+        self.attempts_count += 1
+        if is_correct and not self.solved:
+            self.solved = True
+            self.score = self.puzzle.points  # Assign points only on the first correct attempt
+        self.save()
+

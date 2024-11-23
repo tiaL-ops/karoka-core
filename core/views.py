@@ -12,6 +12,7 @@ import logging
 from .models import Puzzle
 from django.shortcuts import get_object_or_404
 from .models import Puzzle, UserProgress
+from django.contrib.auth.decorators import login_required
 
 
 def home(request):
@@ -128,18 +129,31 @@ def user_progress(request):
         return render(request, 'core/user_progress.html', {'progress': progress})
     return redirect('login')
 
-@csrf_exempt
+@login_required
 def submit_answer(request):
     if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            puzzle_id = data.get('puzzle_id')
-            print(f"Received puzzle_id in submit_answer: {puzzle_id}")  # Debugging
-            user_solution = data.get('user_solution', '').strip()
+        data = json.loads(request.body)
+        puzzle_id = data.get('puzzle_id')
+        user_solution = data.get('user_solution')
 
-            puzzle = get_object_or_404(Puzzle, id=puzzle_id)
-            is_correct = user_solution == puzzle.answer.strip()
+        try:
+            # Fetch the puzzle and the user's progress
+            puzzle = Puzzle.objects.get(id=puzzle_id)
+            user_progress, created = UserProgress.objects.get_or_create(user=request.user, puzzle=puzzle)
+
+            # Check if the solution is correct
+            is_correct = user_solution.strip() == puzzle.answer.strip()
+
+            # Update progress
+            user_progress.update_progress(is_correct)
 
             return JsonResponse({'is_correct': is_correct})
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=400)
+        except Puzzle.DoesNotExist:
+            return JsonResponse({'error': 'Puzzle does not exist'}, status=404)
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+@login_required
+def user_progress(request):
+    user_progress = UserProgress.objects.get(user=request.user)
+    return render(request, 'core/user_progress.html', {'user_progress': user_progress})
