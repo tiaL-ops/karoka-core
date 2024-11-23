@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome</title>
+</head>
+<body>
+    <header>
+        <p>Hello, {{ user.username }}!</p>
+        <form method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
+    </header>
+
+    <h1>Welcome to the Algorithm Riddle Platform!</h1>
+
+    <h3>Current Challenge:</h3>
+    {% if current_challenge %}
+        <a href="{% url 'coding_view' current_challenge.id %}">{{ current_challenge.title }}</a>
+    {% else %}
+        <p>No more unsolved challenges. 🎉</p>
+    {% endif %}
+
+    <h3>Past Challenges:</h3>
+    <ul>
+        {% for progress in solved_puzzles %}
+            <li>{{ progress.puzzle.title }} (Solved!)</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'leaderboard' %}">View Leaderboard</a>
+</body>
+</html>

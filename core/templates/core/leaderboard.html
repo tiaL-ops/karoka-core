@@ -1,0 +1,21 @@
+<body>
+    <h1>Leaderboard</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Username</th>
+                <th>Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rank, user in leaderboard_data.items %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ user.user__username }}</td>
+                <td>{{ user.total_score }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>

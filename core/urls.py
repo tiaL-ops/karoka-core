@@ -13,6 +13,8 @@ urlpatterns = [
     path('execute-code/', views.execute_code, name='execute_code'),
     path('coding/', views.coding_redirect, name='coding_redirect'),
     path('progress/', views.user_progress, name='user_progress'),
-
+    path('', views.welcome_page, name='welcome'),
+    path('leaderboard/', views.leaderboard, name='leaderboard'),
+    path('welcome/',views.welcome_page,name='welcome')
 
 ]
