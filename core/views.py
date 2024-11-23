@@ -86,23 +86,26 @@ def coding_redirect(request):
 
 @login_required
 def coding_view(request, puzzle_id):
-    # Fetch the current puzzle
+    # Fetch puzzle
     puzzle = get_object_or_404(Puzzle, id=puzzle_id)
 
-    # Get user's progress
-    user_progress = UserProgress.objects.filter(user=request.user)
-    solved_puzzles = user_progress.filter(solved=True).count()
+    # Create progress entry if it doesn't exist
+    if request.user.is_authenticated:
+        progress, created = UserProgress.objects.get_or_create(user=request.user, puzzle=puzzle)
+        if created:
+            print(f"Progress created for {request.user.username} on {puzzle.title}")
+
+    # Calculate progress
     total_puzzles = Puzzle.objects.count()
+    solved_puzzles = UserProgress.objects.filter(user=request.user, solved=True).count()
+    progress_percentage = (solved_puzzles / total_puzzles) * 100 if total_puzzles else 0
 
-    # Fetch the next unsolved puzzle
-    next_puzzle = Puzzle.objects.filter(id__gt=puzzle_id).first()
-
-    context = {
+    # Render template
+    return render(request, 'core/coding.html', {
         'puzzle': puzzle,
-        'next_puzzle': next_puzzle,
-        'progress': int((solved_puzzles / total_puzzles) * 100),
-    }
-    return render(request, 'core/coding.html', context)
+        'progress': progress_percentage,
+        'next_puzzle': Puzzle.objects.filter(id__gt=puzzle.id).first(),  # Link to next puzzle
+    })
 
 
 logger = logging.getLogger(__name__)
@@ -148,26 +151,30 @@ def user_progress(request):
 
 @login_required
 def submit_answer(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
+    if request.method == "POST":
+        data = request.POST
         puzzle_id = data.get('puzzle_id')
         user_solution = data.get('user_solution')
 
-        try:
-            # Fetch the puzzle and the user's progress
-            puzzle = Puzzle.objects.get(id=puzzle_id)
-            user_progress, created = UserProgress.objects.get_or_create(user=request.user, puzzle=puzzle)
+        # Fetch puzzle and ensure progress exists
+        puzzle = get_object_or_404(Puzzle, id=puzzle_id)
+        if request.user.is_authenticated:
+            progress, created = UserProgress.objects.get_or_create(user=request.user, puzzle=puzzle)
 
-            # Check if the solution is correct
+            # Check answer
             is_correct = user_solution.strip() == puzzle.answer.strip()
+            if is_correct and not progress.solved:
+                progress.solved = True
+                progress.score = puzzle.points
+                progress.save()
 
-            # Update progress
-            user_progress.update_progress(is_correct)
+            # Update attempt count regardless of correctness
+            progress.attempts_count += 1
+            progress.save()
 
             return JsonResponse({'is_correct': is_correct})
-        except Puzzle.DoesNotExist:
-            return JsonResponse({'error': 'Puzzle does not exist'}, status=404)
-    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+    return JsonResponse({'error': 'Invalid request'})
 
 
 @login_required
