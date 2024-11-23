@@ -9,6 +9,11 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 import logging
+from .models import Puzzle
+from django.shortcuts import get_object_or_404
+from .models import Puzzle, UserProgress
+
+
 def home(request):
     return render(request, 'core/home.html')
 
@@ -61,44 +66,80 @@ def verify_email(request):
         return redirect('login')
     return render(request, 'core/verification_failed.html')
 
+"""
+def coding_redirect(request):
+    # Redirect to the first puzzle if no ID is provided
+    first_puzzle = Puzzle.objects.first()
+    if first_puzzle:
+        return redirect('coding_view', puzzle_id=first_puzzle.id)
+    return render(request, 'core/no_puzzles.html')  # Show a message if no puzzles exist
+"""
 
-def coding_view(request):
-    return render(request, 'core/coding.html')
+
+def coding_redirect(request):
+    # Redirect to the first puzzle or any default coding page
+    return redirect(reverse('coding_view', kwargs={'puzzle_id': 1}))
+
+
+
+def coding_view(request, puzzle_id):
+    puzzle = get_object_or_404(Puzzle, id=puzzle_id)
+    return render(request, 'core/coding.html', {'puzzle': puzzle})
+
 
 logger = logging.getLogger(__name__)
 
-
+@csrf_exempt
 def execute_code(request):
     if request.method == 'POST':
         try:
+            # Parse the JSON data from the request body
             data = json.loads(request.body)
-            code = data.get('code', '')
-            language = data.get('language', 'python')
+            language = data.get('language', 'python')  # Default to Python if not specified
+            code = data.get('code')
 
-            API_URL = 'https://emkc.org/api/v2/piston/execute'
+            # Ensure code is provided
+            if not code:
+                return JsonResponse({'output': None, 'error': 'No code provided'}, status=400)
 
-            # Use the correct version based on supported runtimes
-            payload = {
-                "language": language,
-                "version": "3.10.0",  # Valid version from runtimes
-                "files": [
-                    {
-                        "name": "main.py",
-                        "content": code
-                    }
-                ]
-            }
-
-            response = requests.post(API_URL, json=payload)
+            # Call the Piston API to execute the code
+            response = requests.post(
+                'https://emkc.org/api/v2/piston/execute',
+                json={
+                    "language": language,
+                    "version": "3.10.0",  # Python version (adjust as needed)
+                    "files": [{"name": "main.py", "content": code}]
+                }
+            )
             result = response.json()
 
-            # Extract output and errors
-            output = result.get('run', {}).get('stdout', '')
+            # Extract the output and errors from the response
+            output = result.get('run', {}).get('output', '')
             error = result.get('run', {}).get('stderr', '')
 
-            return JsonResponse({
-                'output': output,
-                'error': error,
-            })
+            return JsonResponse({'output': output, 'error': error})
         except Exception as e:
-            return JsonResponse({'error': str(e)})
+            return JsonResponse({'output': None, 'error': str(e)}, status=500)
+    return JsonResponse({'output': None, 'error': 'Invalid request method'}, status=405)
+
+def user_progress(request):
+    if request.user.is_authenticated:
+        progress = UserProgress.objects.filter(user=request.user)
+        return render(request, 'core/user_progress.html', {'progress': progress})
+    return redirect('login')
+
+@csrf_exempt
+def submit_answer(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            puzzle_id = data.get('puzzle_id')
+            print(f"Received puzzle_id in submit_answer: {puzzle_id}")  # Debugging
+            user_solution = data.get('user_solution', '').strip()
+
+            puzzle = get_object_or_404(Puzzle, id=puzzle_id)
+            is_correct = user_solution == puzzle.answer.strip()
+
+            return JsonResponse({'is_correct': is_correct})
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)

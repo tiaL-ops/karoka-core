@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.utils.http import urlencode
 
 
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     is_verified = models.BooleanField(default=False)
@@ -46,7 +47,7 @@ class Puzzle(models.Model):
     title = models.CharField(max_length=200)  # Puzzle title
     description = models.TextField()  # Puzzle description
     difficulty = models.CharField(max_length=10, choices=DIFFICULTY_CHOICES, default='Easy')  # Difficulty level
-    answer = models.CharField(max_length=200)  # Correct answer
+    answer = models.CharField(max_length=20)  # Correct answer
     hint = models.TextField(blank=True, null=True)  # Optional hint
     points = models.IntegerField(default=0)  # Points for solving
     created_at = models.DateTimeField(auto_now_add=True)  # Auto set on creation
