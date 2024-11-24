@@ -37,16 +37,10 @@ def signup(request):
                 fail_silently=False,
             )
             profile, created = Profile.objects.get_or_create(user=user)
-            if created: 
-                print(f"Profile created for: {user.username}") # If the Profile was newly created, send verification email
-                profile.send_verification_email()
             
-                print("Verification email sent!")
-            else:
-                print(f"Profile already exists for user: {user.username}")
-                if not profile.is_verified:
-                    print("Re-sending verification email...")
-                    profile.send_verification_email()
+            profile.send_verification_email()  # Send verification email only once
+            print("Verification email sent!")
+                    
 
             return render(request, 'core/verify_email_prompt.html')
             
@@ -59,14 +53,23 @@ def signup(request):
 
 def verify_email(request):
     token = request.GET.get('token')
-    # Here, implement token validation and mark user as verified
     profile = Profile.objects.filter(verification_token=token).first()
-    if profile:
+
+    if profile and not profile.is_verified:
+        # Mark user as verified
         profile.is_verified = True
-        profile.verification_token = None 
+        profile.verification_token = None
         profile.save()
-        return redirect('login')
+
+        # Set the authentication backend explicitly
+        user = profile.user
+        user.backend = 'django.contrib.auth.backends.ModelBackend'  # Adjust this if using a custom backend
+        login(request, user)
+
+        return redirect('home')  # Redirect to dashboard or welcome page
+
     return render(request, 'core/verification_failed.html')
+
 
 """
 def coding_redirect(request):
@@ -77,7 +80,7 @@ def coding_redirect(request):
     return render(request, 'core/no_puzzles.html')  # Show a message if no puzzles exist
 """
 
-
+@login_required
 def coding_redirect(request):
     # Redirect to the first puzzle or any default coding page
     return redirect(reverse('coding_view', kwargs={'puzzle_id': 1}))

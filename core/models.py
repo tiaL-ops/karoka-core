@@ -13,6 +13,7 @@ class Profile(models.Model):
     points = models.IntegerField(default=0)
     progress = models.TextField(blank=True, null=True)
     verification_token = models.CharField(max_length=64, blank=True, null=True)  # Add token field
+    
 
     def __str__(self):
         return f"{self.user.username}'s Profile"
@@ -66,6 +67,7 @@ class UserProgress(models.Model):
     attempts_count = models.IntegerField(default=0)  # Number of attempts
     score = models.IntegerField(default=0)  # Points earned for this puzzle
     last_attempted = models.DateTimeField(auto_now=True)  # Auto update on every attempt
+    
 
     class Meta:
         unique_together = ('user', 'puzzle')  # Prevent duplicate entries for the same user and puzzle
