@@ -14,6 +14,8 @@ from django.shortcuts import get_object_or_404
 from .models import Puzzle, UserProgress
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
+from allauth.account.models import EmailAddress
+
 
 
 def home(request):
@@ -21,32 +23,7 @@ def home(request):
 
 
 def signup(request):
-    if request.method == "POST":
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.set_password(form.cleaned_data['password'])
-            user.save()
-
-            print(f"User created: {user.username}, Email: {user.email}")
-            send_mail(
-                subject="Welcome to Our Platform!",
-                message="Thank you for signing up. We're excited to have you on board!",
-                from_email="noreply@example.com",
-                recipient_list=[user.email],
-                fail_silently=False,
-            )
-            profile, created = Profile.objects.get_or_create(user=user)
-            
-            profile.send_verification_email()  # Send verification email only once
-            print("Verification email sent!")
-                    
-
-            return render(request, 'core/verify_email_prompt.html')
-            
-    else:
-        form = SignUpForm()
-    return render(request, 'core/signup.html', {'form': form})
+    pass
 
 
 
@@ -56,21 +33,28 @@ def verify_email(request):
     profile = Profile.objects.filter(verification_token=token).first()
 
     if profile and not profile.is_verified:
-        # Mark user as verified
+        # Update the profile
         profile.is_verified = True
         profile.verification_token = None
         profile.save()
 
-        # Set the authentication backend explicitly
+        # Update the EmailAddress model
+        try:
+            email_address = EmailAddress.objects.get(user=profile.user, email=profile.user.email)
+            email_address.verified = True
+            email_address.save()
+            print(f"Email address {email_address.email} verified.")
+        except EmailAddress.DoesNotExist:
+            print(f"No EmailAddress entry found for user {profile.user.username}.")
+
+        # Log the user in
         user = profile.user
-        user.backend = 'django.contrib.auth.backends.ModelBackend'  # Adjust this if using a custom backend
+        user.backend = 'django.contrib.auth.backends.ModelBackend'
         login(request, user)
 
-        return redirect('home')  # Redirect to dashboard or welcome page
+        return redirect('home')  # Redirect to your desired page
 
     return render(request, 'core/verification_failed.html')
-
-
 """
 def coding_redirect(request):
     # Redirect to the first puzzle if no ID is provided

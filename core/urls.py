@@ -5,7 +5,7 @@ from . import views
 urlpatterns = [
     # Example route
     path('', views.home, name='home'),
-    path('signup/', views.signup, name='signup'),
+    path('signup/', lambda request: redirect('/accounts/signup/'), name='core_signup_redirect'),
     path('verify-email/', views.verify_email, name='verify_email'),
     path('progress/', views.user_progress, name='user_progress'),
     path('submit-answer/', views.submit_answer, name='submit_answer'),

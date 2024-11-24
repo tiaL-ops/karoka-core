@@ -22,12 +22,15 @@ class Profile(models.Model):
         """Generate a new verification token."""
         self.verification_token = secrets.token_urlsafe(32)
         self.save()
+        print(f"Generated token: {self.verification_token}")
 
-    def send_verification_email(self):
-        """Send a verification email to the user's email address."""
+    """
+     def send_verification_email(self):
+        
         self.generate_verification_token()  # Generate and save the token
         verification_url = reverse('verify_email') + '?' + urlencode({'token': self.verification_token})
         full_url = f"http://127.0.0.1:8000{verification_url}"
+        print(f"Verification URL: {full_url}")
 
         send_mail(
             subject="Verify Your Email",
@@ -36,6 +39,8 @@ class Profile(models.Model):
             recipient_list=[self.user.email],
             fail_silently=False,
         )
+    """
+   
 
 
 class Puzzle(models.Model):
