@@ -98,6 +98,34 @@ def coding_view(request, puzzle_id):
 logger = logging.getLogger(__name__)
 
 @csrf_exempt
+@login_required
+def submit_answer(request):
+    if request.method == "POST":
+        data = request.POST
+        puzzle_id = data.get('puzzle_id')
+        user_solution = data.get('user_solution')
+
+        # Fetch puzzle and ensure progress exists
+        puzzle = get_object_or_404(Puzzle, id=puzzle_id)
+        if request.user.is_authenticated:
+            progress, created = UserProgress.objects.get_or_create(user=request.user, puzzle=puzzle)
+
+            # Check answer
+            is_correct = user_solution.strip() == puzzle.answer.strip()
+            if is_correct and not progress.solved:
+                progress.solved = True
+                progress.score = puzzle.points
+                progress.save()
+
+            # Update attempt count regardless of correctness
+            progress.attempts_count += 1
+            progress.save()
+
+            return JsonResponse({'is_correct': is_correct})
+
+    return JsonResponse({'error': 'Invalid request'})
+
+@csrf_exempt
 def execute_code(request):
     if request.method == 'POST':
         try:
@@ -136,32 +164,6 @@ def user_progress(request):
         return render(request, 'core/user_progress.html', {'progress': progress})
     return redirect('login')
 
-@login_required
-def submit_answer(request):
-    if request.method == "POST":
-        data = request.POST
-        puzzle_id = data.get('puzzle_id')
-        user_solution = data.get('user_solution')
-
-        # Fetch puzzle and ensure progress exists
-        puzzle = get_object_or_404(Puzzle, id=puzzle_id)
-        if request.user.is_authenticated:
-            progress, created = UserProgress.objects.get_or_create(user=request.user, puzzle=puzzle)
-
-            # Check answer
-            is_correct = user_solution.strip() == puzzle.answer.strip()
-            if is_correct and not progress.solved:
-                progress.solved = True
-                progress.score = puzzle.points
-                progress.save()
-
-            # Update attempt count regardless of correctness
-            progress.attempts_count += 1
-            progress.save()
-
-            return JsonResponse({'is_correct': is_correct})
-
-    return JsonResponse({'error': 'Invalid request'})
 
 
 @login_required

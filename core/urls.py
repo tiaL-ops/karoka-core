@@ -3,8 +3,7 @@ from . import views
 
 
 urlpatterns = [
-    # Example route
-    path('', views.home, name='home'),
+    path('', views.welcome_page, name='welcome'),  # Core-level root path
     path('signup/', lambda request: redirect('/accounts/signup/'), name='core_signup_redirect'),
     path('verify-email/', views.verify_email, name='verify_email'),
     path('progress/', views.user_progress, name='user_progress'),
@@ -12,9 +11,6 @@ urlpatterns = [
     path('coding/<int:puzzle_id>/', views.coding_view, name='coding_view'),
     path('execute-code/', views.execute_code, name='execute_code'),
     path('coding/', views.coding_redirect, name='coding_redirect'),
-    path('progress/', views.user_progress, name='user_progress'),
-    path('', views.welcome_page, name='welcome'),
     path('leaderboard/', views.leaderboard, name='leaderboard'),
-    path('welcome/',views.welcome_page,name='welcome')
-
+    path('welcome/', views.welcome_page, name='welcome'),
 ]

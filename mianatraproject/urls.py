@@ -21,8 +21,7 @@ from core import views
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('accounts/', include('allauth.urls')),
-    path('core/', include('core.urls')),
-    path("", views.home, name="home"),
+    path('core/', include('core.urls')),# Prefix for core app
+    path("", views.home, name="home"),  # Project-level home
     path('accounts/', include('django.contrib.auth.urls')),
-   
 ]
