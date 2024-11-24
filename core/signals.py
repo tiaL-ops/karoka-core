@@ -1,27 +1,23 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User
-from .models import Profile,UserProgress
+from .models import Profile, UserProgress, Puzzle
 
 @receiver(post_save, sender=User)
-def create_profile(sender, instance, created, **kwargs):
-    if created:
+def initialize_user(sender, instance, created, **kwargs):
+    if created:  # Only when a new user is created
+        # Create user profile
         Profile.objects.create(user=instance)
 
-@receiver(post_save, sender=User)
-def create_user_progress(sender, instance, created, **kwargs):
-    if created:
-        UserProgress.objects.create(user=instance)
-
-
-@receiver(post_save, sender=User)
-def create_user_progress(sender, instance, created, **kwargs):
-    if created:  # Only when a new user is created
-        # Get all puzzles
+        # Create progress for all puzzles
         puzzles = Puzzle.objects.all()
         if puzzles.exists():
-            for puzzle in puzzles:
-                UserProgress.objects.get_or_create(user=instance, puzzle=puzzle)
+            # Bulk create UserProgress for all puzzles
+            user_progress = [
+                UserProgress(user=instance, puzzle=puzzle)
+                for puzzle in puzzles
+            ]
+            UserProgress.objects.bulk_create(user_progress)
         else:
-            print("No puzzles available to create progress entries.")
-
+            # Optional: Log a message if no puzzles exist
+            print(f"No puzzles available for user: {instance.username}")
