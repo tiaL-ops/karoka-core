@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{{ competition.name }}</title>
+</head>
+<body>
+    <header>
+        <h1>{{ competition.name }}</h1>
+        <p>{{ competition.description }}</p>
+        <a href="{% url 'welcome' %}">🏠 Back to Home</a>
+    </header>
+    <div>
+        {{competition.story}}
+    </div>
+
+
+    
+    <h3>All Challenges:</h3>
+    <ul>
+        {% for puzzle in puzzles %}
+            <li>
+                <a href="{% url 'coding_view' puzzle.id %}">{{ puzzle.title }}</a> - 
+                {% if puzzle.id in solved_puzzles_ids %}
+                    <span style="color: green;">Solved</span>
+                {% else %}
+                    <span style="color: red;">Unsolved</span>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+    
+
+    <footer>
+        <a href="{% url 'leaderboard' %}">🏆 View Leaderboard</a>
+    </footer>
+</body>
+</html>

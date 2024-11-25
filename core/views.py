@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login
 from .forms import SignUpForm
 from django.core.mail import send_mail
-from .models import Profile
+from .models import Profile,Competition,UserProgress
 import requests
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -185,6 +185,8 @@ def welcome_page(request):
     all_puzzles = Puzzle.objects.all()
     user_progress = UserProgress.objects.filter(user=request.user)
 
+    active_competition = Competition.objects.filter(is_active=True).first()
+    past_competitions = Competition.objects.filter(is_active=False)
     # Get solved and unsolved puzzles
     solved_puzzles = user_progress.filter(solved=True).select_related('puzzle')
     solved_puzzles_ids = solved_puzzles.values_list('puzzle__id', flat=True)
@@ -195,6 +197,8 @@ def welcome_page(request):
         'current_challenge': unsolved_puzzles.first(),  # Next unsolved puzzle
         'solved_puzzles': solved_puzzles,
         'unsolved_puzzles': unsolved_puzzles,
+        'active_competition': active_competition,
+        'past_competitions': past_competitions,
     }
     return render(request, 'core/welcome.html', context)
 
@@ -209,5 +213,29 @@ def leaderboard(request):
         .order_by('-total_score')
     )
     return render(request, 'core/leaderboard.html', {'leaderboard_data': leaderboard_data})
+
+def competition_view(request, pk):
+    # Fetch the specific competition
+    competition = get_object_or_404(Competition, pk=pk)
+    past_competitions = Competition.objects.filter(is_active=False, participants=request.user)
+
+    # Fetch all puzzles for the competition
+    puzzles = competition.puzzles.all()
+
+    # Fetch user progress for the current user
+    user_progress = UserProgress.objects.filter(user=request.user)
+
+    # Filter to get only solved puzzles
+    solved_puzzles = user_progress.filter(solved=True).select_related('puzzle')
+    solved_puzzles_ids = solved_puzzles.values_list('puzzle__id', flat=True)
+
+    # Pass data to the template
+    return render(request, 'core/competition.html', {
+        'competition': competition,
+        'puzzles': puzzles,
+        'solved_puzzles_ids': solved_puzzles_ids,
+        'past_competitions': past_competitions,
+        'solved_puzzles': solved_puzzles,  # Only pass solved puzzle IDs
+    })
 
 

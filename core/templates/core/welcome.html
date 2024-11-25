@@ -14,17 +14,18 @@
 
     <h1>Welcome to the Algorithm Riddle Platform!</h1>
 
-    <h3>Current Challenge:</h3>
-    {% if current_challenge %}
-        <a href="{% url 'coding_view' current_challenge.id %}">{{ current_challenge.title }}</a>
+    <h3>Active Competition:</h3>
+    {% if active_competition %}
+        <p>Current Competition: <strong>{{ active_competition.name }}</strong></p>
+        <a href="{% url 'competition_view' active_competition.id %}">Go to Competition</a>
     {% else %}
-        <p>No more unsolved challenges. 🎉</p>
+        <p>No active competition at the moment. 🎉</p>
     {% endif %}
 
-    <h3>Past Challenges:</h3>
+    <h3>Past Competitions:</h3>
     <ul>
-        {% for progress in solved_puzzles %}
-            <li>{{ progress.puzzle.title }} (Solved!)</li>
+        {% for competition in past_competitions %}
+            <li>{{ competition.name }} (Completed)</li>
         {% endfor %}
     </ul>
 

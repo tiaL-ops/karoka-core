@@ -42,6 +42,7 @@ class Profile(models.Model):
     """
 class Competition(models.Model):
     name = models.CharField(max_length=100)  # e.g., "Week 1", "Week 2"
+    story = models.TextField(blank=True, null=True)
     start_date = models.DateTimeField()  # When the competition opens
     end_date = models.DateTimeField()  # When the competition closes
     is_active = models.BooleanField(default=True)  # To manually open/close competitions
