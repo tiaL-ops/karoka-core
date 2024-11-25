@@ -98,7 +98,7 @@ def coding_view(request, puzzle_id):
 logger = logging.getLogger(__name__)
 
 
-@csrf_exempt
+
 def submit_answer(request):
     if request.method == 'POST':
         try:
@@ -133,7 +133,7 @@ def submit_answer(request):
             return JsonResponse({'error': str(e)}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
-@csrf_exempt
+
 def execute_code(request):
     if request.method == 'POST':
         try:
