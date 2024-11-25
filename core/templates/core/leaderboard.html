@@ -1,21 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leaderboard</title>
+</head>
 <body>
     <h1>Leaderboard</h1>
-    <table>
+    <table border="1">
         <thead>
             <tr>
                 <th>Rank</th>
                 <th>Username</th>
-                <th>Score</th>
+                <th>Total Score</th>
             </tr>
         </thead>
         <tbody>
-            {% for rank, user in leaderboard_data.items %}
-            <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ user.user__username }}</td>
-                <td>{{ user.total_score }}</td>
-            </tr>
+            {% for user_data in leaderboard_data %}
+                <tr>
+                    <td>{{ forloop.counter }}</td> <!-- Rank -->
+                    <td>{{ user_data.user__username }}</td> <!-- Username -->
+                    <td>{{ user_data.total_score }}</td> <!-- Total Score -->
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3">No data available</td>
+                </tr>
             {% endfor %}
         </tbody>
     </table>
 </body>
+</html>
