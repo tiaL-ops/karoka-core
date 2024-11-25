@@ -14,4 +14,5 @@ urlpatterns = [
     path('leaderboard/', views.leaderboard, name='leaderboard'),
     path('welcome/', views.welcome_page, name='welcome'),
     path('competition/<int:pk>/', views.competition_view, name='competition_view'),
+    
 ]

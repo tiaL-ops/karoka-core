@@ -1,164 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ puzzle.title }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/monaco-editor/min/vs/loader.js"></script>
-    <style>
-        /* Styling for the page */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-
-        #editor-container {
-            height: 400px;
-            border: 1px solid #ccc;
-        }
-
-        #feedback {
-            font-weight: bold;
-            margin-top: 10px;
-        }
-
-        #feedback.success {
-            color: green;
-        }
-
-        #feedback.error {
-            color: red;
-        }
-
-        .progress-bar {
-            margin-top: 20px;
-            border: 1px solid #ccc;
-            width: 100%;
-            height: 20px;
-            position: relative;
-        }
-
-        .progress-bar-inner {
-            background: green;
-            height: 100%;
-            width: {{ progress }}%;
-        }
-
-        .navigation {
-            margin: 10px 0;
-        }
-
-        .navigation a {
-            margin-right: 10px;
-            text-decoration: none;
-            color: blue;
-        }
-    </style>
 </head>
-<body>
-    <header>
-        <div class="navigation">
-            <a href="{% url 'welcome' %}">🏠 Home</a>
-            <a href="{% url 'leaderboard' %}">🏆 Leaderboard</a>
-            <form method="POST" action="{% url 'logout' %}" style="display: inline;">
+<body class="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-black text-white">
+    <!-- Header Navigation -->
+    <header class="p-6 bg-gray-800/80 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="space-x-4">
+                <a href="{% url 'welcome' %}" class="text-indigo-400 hover:underline">🏠 Home</a>
+                <a href="{% url 'leaderboard' %}" class="text-yellow-400 hover:underline">🏆 Leaderboard</a>
+            </div>
+            <form method="POST" action="{% url 'logout' %}" class="inline-block">
                 {% csrf_token %}
-                <button type="submit">Logout</button>
+                <button type="submit" class="px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-semibold rounded-lg">
+                    Logout
+                </button>
             </form>
         </div>
     </header>
 
-    <h1>{{ puzzle.title }}</h1>
-    <p>{{ puzzle.description }}</p>
-    <p><strong>Hint:</strong> {{ puzzle.hint }}</p>
+    <!-- Puzzle Title and Description -->
+    <main class="container mx-auto p-6">
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500 mb-4">
+                {{ puzzle.title }}
+            </h1>
+            <p class="text-lg text-gray-300">{{ puzzle.description }}</p>
+            <p class="text-sm text-gray-500 mt-2"><strong>Hint:</strong> {{ puzzle.hint }}</p>
+        </div>
 
-    <!-- Progress Bar -->
-    <div class="progress-bar">
-        <div class="progress-bar-inner"></div>
-    </div>
-    <p>{{ progress }}% completed</p>
+        <!-- Progress Bar -->
+        <div class="w-full max-w-xl mx-auto bg-gray-700 rounded-lg overflow-hidden mb-6">
+            <div class="bg-green-500 h-6" style="width: {{ progress }}%;"></div>
+        </div>
+        <p class="text-center text-gray-400 mb-8">{{ progress }}% completed</p>
 
-    <!-- Code Editor Section -->
-    <h3>Practice Your Code</h3>
-    <div id="editor-container"></div>
-    <button id="run-code">Run Code</button>
-    <pre id="output"></pre>
+        <!-- Code Editor Section -->
+        <div class="bg-gray-800/70 p-6 rounded-lg shadow-lg mb-8">
+            <h3 class="text-2xl font-semibold text-indigo-400 mb-4">Practice Your Code</h3>
+            <div id="editor-container" class="border border-gray-700 rounded-lg" style="height: 400px;"></div>
+            <button id="run-code" class="mt-4 px-6 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg shadow-md">
+                Run Code
+            </button>
+            <pre id="output" class="bg-gray-900 text-green-400 p-4 mt-4 rounded-lg"></pre>
+        </div>
 
-    <!-- Manual Submission Section -->
-    <h3>Submit Your Solution</h3>
-    <form id="solution-form">
-        <label for="user-solution">Enter Your Final Answer:</label>
-        <input type="text" id="user-solution" name="user_solution" placeholder="Your solution" required>
-        <button type="submit">Submit</button>
-    </form>
+        <!-- Submission Section -->
+        <div class="bg-gray-800/70 p-6 rounded-lg shadow-lg mb-8">
+            <h3 class="text-2xl font-semibold text-purple-400 mb-4">Submit Your Solution</h3>
+            <form id="solution-form" class="flex flex-col space-y-4">
+                <label for="user-solution" class="text-gray-300">Enter Your Final Answer:</label>
+                <input type="text" id="user-solution" name="user_solution" placeholder="Your solution"
+                    class="px-4 py-2 bg-gray-700 text-white rounded-lg focus:ring focus:ring-indigo-500 focus:outline-none">
+                <button type="submit" class="px-6 py-2 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-lg shadow-md">
+                    Submit
+                </button>
+            </form>
+            <p id="feedback" class="text-center mt-4 font-bold"></p>
+        </div>
 
-    <p id="feedback"></p>
+        <!-- Next Puzzle Button -->
+        {% if next_puzzle %}
+            <div class="text-center">
+                <a href="{% url 'coding_view' next_puzzle.id %}" class="px-6 py-3 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-lg shadow-lg transition">
+                    Next Puzzle
+                </a>
+            </div>
+        {% else %}
+            <p class="text-center text-gray-400">No more challenges available. 🎉</p>
+        {% endif %}
+    </main>
 
-
-    <!-- Next Puzzle Button -->
-    {% if next_puzzle %}
-        <a href="{% url 'coding_view' next_puzzle.id %}">Next Puzzle</a>
-    {% else %}
-        <p>No more challenges available. 🎉</p>
-    {% endif %}
-
+    <!-- Monaco Editor Script -->
     <script>
-        // Set up the Monaco editor
         require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.1/min/vs' } });
         require(['vs/editor/editor.main'], function () {
             window.editor = monaco.editor.create(document.getElementById('editor-container'), {
                 value: '# Write your code here\n',
                 language: 'python',
-                theme: 'vs-light',
+                theme: 'vs-dark',
             });
         });
 
         // Run Code Button
         document.getElementById('run-code').addEventListener('click', function () {
             const code = editor.getValue();
-            const language = 'python';
-
             fetch('/core/execute-code/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': '{{ csrf_token|safe }}',
                 },
-                body: JSON.stringify({ code, language }),
+                body: JSON.stringify({ code, language: 'python' }),
             })
             .then(response => response.json())
             .then(data => {
-                console.log("Run Code Response:", data);
                 const output = data.output || data.error;
                 document.getElementById('output').textContent = output;
             })
-            .catch(error => {
-                console.error('Error executing code:', error);
+            .catch(() => {
                 document.getElementById('output').textContent = "Error running code. Please try again.";
             });
         });
 
+        // Submit Solution Form
         document.getElementById('solution-form').addEventListener('submit', function (e) {
             e.preventDefault();
             const userSolution = document.getElementById('user-solution').value;
-            const puzzleId = "{{ puzzle.id }}";
-
             fetch('/core/submit-answer/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': '{{ csrf_token|safe }}',
                 },
-                body: JSON.stringify({ puzzle_id: puzzleId, user_solution: userSolution }),
+                body: JSON.stringify({ puzzle_id: "{{ puzzle.id }}", user_solution: userSolution }),
             })
             .then(response => response.json())
             .then(data => {
-                console.log("Submit Answer Response:", data);
                 const feedback = document.getElementById('feedback');
-                if (data.is_correct) {
-                    feedback.textContent = "🎉 Correct! Well done!";
-                    feedback.className = "success";
-                } else {
-                    feedback.textContent = "❌ Incorrect. Try again!";
-                    feedback.className = "error";
-                }
+                feedback.textContent = data.is_correct ? "🎉 Correct! Well done!" : "❌ Incorrect. Try again!";
+                feedback.className = data.is_correct ? "text-green-500" : "text-red-500";
             });
         });
     </script>
