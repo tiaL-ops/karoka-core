@@ -4,4 +4,4 @@ whitenoise==6.4.0            # Serve static files in production
 django-heroku==0.3.1         # Simplifies Heroku configurations
 psycopg2-binary==2.9.8       # PostgreSQL database adapter for Django
 dj-database-url==1.2.0       # Handle Heroku database URLs
-django-tailwind==1.8.1       # Django + Tailwind CSS integration
+django-tailwind==3.8.0       # Django + Tailwind CSS integration
