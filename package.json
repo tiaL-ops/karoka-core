@@ -1,0 +1,25 @@
+{
+  "name": "mianatra",
+  "version": "1.0.0",
+  "description": "- **Define Objectives**: Clarify the app’s goals, user types, and feature set. - **Setup Django Environment**:   - Install Django and create a new project (`django-admin startproject`).   - Create a core app for the puzzle/riddle functionality (`python manage.py startapp`). - **Set Up Git Repository**: Version control with Git and link to a repository hosting service (GitHub/GitLab). - **Database Setup**: Configure SQLite for local development; plan for a scalable database like PostgreSQL for production.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tiaL-ops/mianatra.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tiaL-ops/mianatra/issues"
+  },
+  "homepage": "https://github.com/tiaL-ops/mianatra#readme",
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.15"
+  }
+}
