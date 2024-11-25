@@ -11,9 +11,41 @@ class PuzzleAdmin(admin.ModelAdmin):
 
 @admin.register(UserProgress)
 class UserProgressAdmin(admin.ModelAdmin):
-    list_display = ('user', 'puzzle', 'solved', 'attempts_count', 'score', 'last_attempted')
-    list_filter = ('solved',)
+    list_display = (
+        'user',
+        'puzzle',
+        'solved',
+        'attempts_count',
+        'score',
+        'last_attempted',
+        'competition_progress',
+    )
+    list_filter = ('solved', 'puzzle__competition')  # Add competition filter
     search_fields = ('user__username', 'puzzle__title')
+
+    def competition_progress(self, obj):
+        """Calculate the user's progress in the competition linked to this puzzle."""
+        if not obj.puzzle.competition:
+            return "No Competition"
+        
+        # Get all puzzles in this competition
+        competition_puzzles = obj.puzzle.competition.puzzles.all()
+        total_puzzles = competition_puzzles.count()
+
+        # Get solved puzzles by this user in the competition
+        solved_puzzles = UserProgress.objects.filter(
+            user=obj.user,
+            puzzle__in=competition_puzzles,
+            solved=True
+        ).count()
+
+        # Calculate progress
+        if total_puzzles > 0:
+            return f"{solved_puzzles}/{total_puzzles} solved ({(solved_puzzles / total_puzzles) * 100:.1f}%)"
+        return "No Puzzles"
+
+    competition_progress.short_description = "Competition Progress"
+
 
 @admin.register(Competition)
 class CompetitionAdmin(admin.ModelAdmin):

@@ -217,7 +217,7 @@ def leaderboard(request):
 def competition_view(request, pk):
     # Fetch the specific competition
     competition = get_object_or_404(Competition, pk=pk)
-    past_competitions = Competition.objects.filter(is_active=False, participants=request.user)
+    past_competitions = Competition.objects.filter(is_active=False)
 
     # Fetch all puzzles for the competition
     puzzles = competition.puzzles.all()

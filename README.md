@@ -10,54 +10,54 @@
 
 ### **Day 2: User Authentication System** ✅
 - **Implement User Login/Signup**:
-  - Use Django’s `auth` framework for registration, login, logout.
-  - Extend the `User` model with a `Profile` model (one-to-one) to store additional user details like points, progress, etc.
+  - Use Django’s `auth` framework for registration, login, logout.✅
+  - Extend the `User` model with a `Profile` model (one-to-one) to store additional user details like points, progress, etc.✅
 - **Password Reset and Email Verification**:
-  - Configure `django.contrib.auth` for password reset.
-  - Add email verification using libraries like `django-allauth` or a custom setup.
+  - Configure `django.contrib.auth` for password reset.✅
+  - Add email verification using libraries like `django-allauth` or a custom setup.✅
 - **Basic UI for Authentication**:
-  - Use Django templates to create simple login and signup pages. ()
+  - Use Django templates to create simple login and signup pages. ✅
 
 ---
 
 ### **Day 3: Puzzle and Riddle Model Design**
 - **Database Models**:
-  - Create a `Puzzle` model with fields like:
-    - `title`, `description`, `difficulty`, `answer`, `hint`, and `points`.
-  - Create a `UserProgress` model to track user attempts, solved puzzles, and total score.
+  - Create a `Puzzle` model with fields like:✅
+    - `title`, `description`, `difficulty`, `answer`, `hint`, and `points`.✅
+  - Create a `UserProgress` model to track user attempts, solved puzzles, and total score.✅
 - **Data Entry**:
-  - Populate the database with a few riddles and puzzles for testing purposes (via admin panel or fixtures).
+  - Populate the database with a few riddles and puzzles for testing purposes (via admin panel or fixtures).✅
 
 ---
 
 ### **Day 4: Puzzle/Riddle Display and Submission**
 - **Display Puzzles**:
-  - Create a view and template to display puzzles to the user.
-  - Randomize puzzle display or categorize by difficulty.
+  - Create a view and template to display puzzles to the user.✅
+  - Randomize puzzle display or categorize by difficulty.✅
 - **Answer Submission**:
-  - Build a form for users to submit their answers.
-  - Validate answers and provide feedback (correct/incorrect, show hints after attempts).
-  - Update the `UserProgress` model upon correct submission.
+  - Build a form for users to submit their answers.✅
+  - Validate answers and provide feedback (correct/incorrect, show hints after attempts).✅
+  - Update the `UserProgress` model upon correct submission.✅
 
 ---
 
 ### **Day 5: Scoring System and Leaderboard**
 - **Scoring Logic**:
-  - Assign points to puzzles based on difficulty.
-  - Update the user’s score after solving a puzzle.
+  - Assign points to puzzles based on difficulty.✅
+  - Update the user’s score after solving a puzzle.✅
 - **Leaderboard**:
-  - Create a view to show top scorers using `UserProgress`.
-  - Paginate the leaderboard for better readability.
+  - Create a view to show top scorers using `UserProgress`.✅
+  - Paginate the leaderboard for better readability.✅
 
 ---
 
 ### **Day 6: Progress Tracking and Profile Management**
 - **User Progress**:
-  - Add a dashboard to show users their solved puzzles, score, and streaks.
+  - Add a dashboard to show users their solved puzzles, score, and streaks.✅
 - **Profile Management**:
-  - Allow users to update their profile information (username, email, avatar, etc.).
+  - Allow users to update their profile information (username, email, avatar, etc.).✅
 - **Save/Resume Functionality**:
-  - Enable users to mark puzzles as "in progress" and revisit them later.
+  - Enable users to mark puzzles as "in progress" and revisit them later.✅
 
 ---
 
