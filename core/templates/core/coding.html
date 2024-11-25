@@ -91,6 +91,7 @@
 
     <p id="feedback"></p>
 
+
     <!-- Next Puzzle Button -->
     {% if next_puzzle %}
         <a href="{% url 'coding_view' next_puzzle.id %}">Next Puzzle</a>
@@ -134,7 +135,6 @@
             });
         });
 
-        // Submit Solution Form
         document.getElementById('solution-form').addEventListener('submit', function (e) {
             e.preventDefault();
             const userSolution = document.getElementById('user-solution').value;
@@ -159,10 +159,6 @@
                     feedback.textContent = "❌ Incorrect. Try again!";
                     feedback.className = "error";
                 }
-            })
-            .catch(error => {
-                console.error('Error submitting answer:', error);
-                document.getElementById('feedback').textContent = "Error submitting answer. Please try again.";
             });
         });
     </script>

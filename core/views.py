@@ -97,33 +97,41 @@ def coding_view(request, puzzle_id):
 
 logger = logging.getLogger(__name__)
 
+
 @csrf_exempt
-@login_required
 def submit_answer(request):
-    if request.method == "POST":
-        data = request.POST
-        puzzle_id = data.get('puzzle_id')
-        user_solution = data.get('user_solution')
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            puzzle_id = data.get('puzzle_id')
+            print(f"Received puzzle_id in submit_answer: {puzzle_id}")  # Debugging
+            user_solution = data.get('user_solution', '').strip()
 
-        # Fetch puzzle and ensure progress exists
-        puzzle = get_object_or_404(Puzzle, id=puzzle_id)
-        if request.user.is_authenticated:
-            progress, created = UserProgress.objects.get_or_create(user=request.user, puzzle=puzzle)
+            # Fetch the puzzle
+            puzzle = get_object_or_404(Puzzle, id=puzzle_id)
 
-            # Check answer
-            is_correct = user_solution.strip() == puzzle.answer.strip()
-            if is_correct and not progress.solved:
-                progress.solved = True
-                progress.score = puzzle.points
+            # Check if the solution is correct
+            is_correct = user_solution == puzzle.answer.strip()
+
+            # Update UserProgress for authenticated users
+            if request.user.is_authenticated:
+                progress, created = UserProgress.objects.get_or_create(
+                    user=request.user,
+                    puzzle=puzzle
+                )
+
+                # Update the progress
+                if not progress.solved and is_correct:
+                    progress.solved = True
+                    progress.score = puzzle.points  # Assuming points are in the Puzzle model
+                progress.attempts_count += 1
                 progress.save()
 
-            # Update attempt count regardless of correctness
-            progress.attempts_count += 1
-            progress.save()
-
             return JsonResponse({'is_correct': is_correct})
-
-    return JsonResponse({'error': 'Invalid request'})
+        except Exception as e:
+            print(f"Error in submit_answer: {e}")  # Debugging
+            return JsonResponse({'error': str(e)}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 @csrf_exempt
 def execute_code(request):
