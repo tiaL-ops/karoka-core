@@ -40,7 +40,20 @@ class Profile(models.Model):
             fail_silently=False,
         )
     """
-   
+class Competition(models.Model):
+    name = models.CharField(max_length=100)  # e.g., "Week 1", "Week 2"
+    start_date = models.DateTimeField()  # When the competition opens
+    end_date = models.DateTimeField()  # When the competition closes
+    is_active = models.BooleanField(default=True)  # To manually open/close competitions
+
+    def __str__(self):
+        return self.name
+
+    def is_open(self):
+        """Check if the competition is open based on the dates."""
+        now = timezone.now()
+        return self.is_active and self.start_date <= now <= self.end_date
+
 
 
 class Puzzle(models.Model):
@@ -56,6 +69,14 @@ class Puzzle(models.Model):
     answer = models.CharField(max_length=20)  # Correct answer
     hint = models.TextField(blank=True, null=True)  # Optional hint
     points = models.IntegerField(default=0)  # Points for solving
+    competition = models.ForeignKey(
+    "Competition",  # Ensure the model is referenced as a string to avoid import issues
+    on_delete=models.CASCADE,
+    related_name="puzzles",
+    blank=True,
+    null=True,  # Allow null to avoid default assignment issues
+)
+
     created_at = models.DateTimeField(auto_now_add=True)  # Auto set on creation
     updated_at = models.DateTimeField(auto_now=True)  # Auto update on edit
 
