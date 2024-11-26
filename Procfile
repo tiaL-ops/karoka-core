@@ -1,1 +1,1 @@
-web: gunicorn mianatra.wsgi
+web: gunicorn mianatraproject.wsgi
