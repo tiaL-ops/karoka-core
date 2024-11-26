@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-@3ja_k9nud#rh$1+rppf7ur#2b6k$sg7!ljp!8-om*&toa*qz7"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['mianatra.herokuapp.com']
 
@@ -142,13 +142,16 @@ USE_TZ = True
 import os
 
 
-#STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = [
-    BASE_DIR / "core/static",  # This must point to your static directory
-]
+# This is the directory where Django will collect all static files during `collectstatic`
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+# Additional directories to search for static files
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'core/static'),
+]
 
 #STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
