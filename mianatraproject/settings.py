@@ -148,10 +148,11 @@ STATIC_URL = '/static/'
 # This is the directory where Django will collect all static files during `collectstatic`
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Additional directories to search for static files
+# Additional global static directories
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'core/static'),
+    os.path.join(BASE_DIR, 'static'),  # Add global static directory if needed
 ]
+
 
 #STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
@@ -205,3 +206,4 @@ LOGGING = {
 """
 import django_heroku
 django_heroku.settings(locals())
+
