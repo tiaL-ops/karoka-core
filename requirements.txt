@@ -6,4 +6,6 @@ psycopg2-binary==2.9.8       # PostgreSQL database adapter for Django
 dj-database-url==1.2.0       # Handle Heroku database URLs
 django-tailwind==3.8.0       # Django + Tailwind CSS integration
 python-decouple==3.8.0
-django-allauth==0.56.0dj-database-url
+django-allauth==0.56.0
+dj-database-url
+
