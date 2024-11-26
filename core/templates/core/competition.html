@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ competition.name }}</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    {% load static %}
+    <!-- Load TailwindCSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+   
 </head>
 <body class="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-black text-white">
     <!-- Header -->
@@ -54,7 +57,7 @@
 
     <!-- Footer -->
     <footer class="bg-gray-800/70 py-6 mt-12 text-center">
-       
+        <p class="text-gray-400 text-sm">© {{ year }} Algorithm Riddle Platform. All rights reserved.</p>
     </footer>
 </body>
 </html>

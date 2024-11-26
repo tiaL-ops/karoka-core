@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ puzzle.title }}</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    {% load static %}
+    <!-- Load TailwindCSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <!-- Monaco Editor -->
     <script src="https://cdn.jsdelivr.net/npm/monaco-editor/min/vs/loader.js"></script>
 </head>
 <body class="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-black text-white">
@@ -42,7 +45,8 @@
 
         <!-- Code Editor Section -->
         <div class="bg-gray-800/70 p-6 rounded-lg shadow-lg mb-8">
-            <h3 class="text-2xl font-semibold text-indigo-400 mb-4">Practice Your Code</h3>
+            <h3 class="text-2xl font-semibold text-indigo-400 mb-4">Practice Your Code </h3>
+            <h1>I only understand python for now :3</h1>
             <div id="editor-container" class="border border-gray-700 rounded-lg" style="height: 400px;"></div>
             <button id="run-code" class="mt-4 px-6 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg shadow-md">
                 Run Code

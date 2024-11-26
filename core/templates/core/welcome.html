@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    {% load static %}
+    <!-- Load TailwindCSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+ 
 </head>
 <body class="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-black text-white flex flex-col items-center py-10 px-6">
     <!-- Header -->
@@ -62,7 +65,5 @@
             <p class="text-gray-400">No past competitions yet. Get ready for future challenges!</p>
         {% endif %}
     </div>
-
-   
 </body>
 </html>

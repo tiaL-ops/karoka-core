@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    {% load static %}
+    <!-- Load TailwindCSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
 </head>
 <body class="min-h-screen bg-gradient-to-b from-blue-100 via-purple-100 to-pink-100 flex items-center justify-center">
     <div class="w-full max-w-md bg-white rounded-lg shadow-lg p-8">
@@ -50,6 +53,7 @@
         </div>
     </div>
 
+    <!-- Material Icons -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </body>
 </html>
