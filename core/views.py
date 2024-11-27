@@ -17,6 +17,7 @@ from django.db.models import Sum
 from allauth.account.models import EmailAddress
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
+from allauth.account.models import EmailConfirmation
 
 
 
@@ -52,6 +53,28 @@ def custom_login_view(request):
 
     return render(request, 'account/login.html', {'form': form})
 
+
+def custom_confirm_email_view(request, key):
+    # Try to get the EmailConfirmation object using the key
+    confirmation = get_object_or_404(EmailConfirmation, key=key)
+    
+    # Confirm the email (this marks the email as verified)
+    confirmation.confirm(request)
+    
+    # Automatically log in the user if the account is active
+    user = confirmation.email_address.user
+    if user and user.is_active:
+        login(request, user)
+        messages.success(request, "Your email has been confirmed, and you are now logged in.")
+    else:
+        messages.info(request, "Your email has been confirmed. Please log in manually.")
+
+    # Redirect to the welcome page
+    return redirect('welcome')
+
+
+
+#i don't think i used this 
 def verify_email(request):
     token = request.GET.get('token')
     profile = Profile.objects.filter(verification_token=token).first()
