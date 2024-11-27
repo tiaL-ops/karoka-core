@@ -13,7 +13,7 @@ urlpatterns = [
     path('coding/', views.coding_redirect, name='coding_redirect'),
     path('leaderboard/', views.leaderboard, name='leaderboard'),
     path('welcome/', views.welcome_page, name='welcome'),
-    path('accounts/confirm-email/<key>/', views.custom_confirm_email_view, name='account_confirm_email'),
+    #path('accounts/confirm-email/<key>/', views.custom_confirm_email_view, name='account_confirm_email'),
     path('competition/<int:pk>/', views.competition_view, name='competition_view'),
     
 ]

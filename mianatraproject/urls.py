@@ -23,6 +23,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path('accounts/confirm-email/<str:key>/', views.CustomConfirmEmailView.as_view(), name="account_confirm_email"),
     path('accounts/login/', views.custom_login_view, name='login'),
     path('accounts/', include('allauth.urls')),
     path('core/', include('core.urls')),# Prefix for core app

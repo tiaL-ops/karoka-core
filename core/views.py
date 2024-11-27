@@ -18,7 +18,32 @@ from allauth.account.models import EmailAddress
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from allauth.account.models import EmailConfirmation
+from django.urls import reverse
 
+from allauth.account.views import ConfirmEmailView
+from allauth.account.models import EmailConfirmationHMAC
+from django.shortcuts import redirect
+
+class CustomConfirmEmailView(ConfirmEmailView):
+    def post(self, *args, **kwargs):
+        # Confirm the email
+        self.object = confirmation = self.get_object()
+        confirmation.confirm(self.request)
+
+        # Automatically log in the user after confirmation
+        user = confirmation.email_address.user
+      
+     
+        backend = "django.contrib.auth.backends.ModelBackend"  # Replace with your primary backend if different
+        user.backend = backend
+        login(self.request, user, backend=backend)
+
+        # Redirect to a success page or home
+        return redirect(self.get_redirect_url())
+
+    def get_redirect_url(self):
+        # Define where to redirect the user after login
+        return reverse('welcome')  # Change to your desired URL
 
 
 def home(request):
@@ -54,23 +79,7 @@ def custom_login_view(request):
     return render(request, 'account/login.html', {'form': form})
 
 
-def custom_confirm_email_view(request, key):
-    # Try to get the EmailConfirmation object using the key
-    confirmation = get_object_or_404(EmailConfirmation, key=key)
-    
-    # Confirm the email (this marks the email as verified)
-    confirmation.confirm(request)
-    
-    # Automatically log in the user if the account is active
-    user = confirmation.email_address.user
-    if user and user.is_active:
-        login(request, user)
-        messages.success(request, "Your email has been confirmed, and you are now logged in.")
-    else:
-        messages.info(request, "Your email has been confirmed. Please log in manually.")
 
-    # Redirect to the welcome page
-    return redirect('welcome')
 
 
 
