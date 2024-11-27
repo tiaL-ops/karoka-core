@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth.models import User
-from django.contrib.auth import login
+from django.contrib.auth import authenticate,login
 from .forms import SignUpForm
 from django.core.mail import send_mail
 from .models import Profile,Competition,UserProgress
@@ -15,6 +15,8 @@ from .models import Puzzle, UserProgress
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from allauth.account.models import EmailAddress
+from django.contrib import messages
+from django.contrib.auth.forms import AuthenticationForm
 
 
 
@@ -25,8 +27,30 @@ def home(request):
 def signup(request):
     pass
 
+def custom_login_view(request):
+    form = AuthenticationForm(data=request.POST or None)  # Bind data to the form
 
+    if request.method == "POST":
+        # Check if the form is valid
+        if form.is_valid():
+            # Authenticate user
+            user = authenticate(
+                request, 
+                username=form.cleaned_data.get('username'), 
+                password=form.cleaned_data.get('password')
+            )
+            if user is not None:
+                login(request, user)
+                return redirect('home')  # Redirect to the desired page
+            else:
+                # Add non-field error for invalid credentials
+                form.add_error(None, "Invalid username or password.")
+        else:
+            # Form is invalid; Django will attach field-specific errors
+            print("Form is invalid. Errors:", form.errors)
+            messages.error(request, "There was an error with your login details.")
 
+    return render(request, 'account/login.html', {'form': form})
 
 def verify_email(request):
     token = request.GET.get('token')

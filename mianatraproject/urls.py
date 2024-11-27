@@ -22,10 +22,12 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path('accounts/login/', views.custom_login_view, name='login'),
     path('accounts/', include('allauth.urls')),
     path('core/', include('core.urls')),# Prefix for core app
     path("", views.home, name="home"),  # Project-level home
-    path('accounts/', include('django.contrib.auth.urls')),
+    path('accounts/', include('django.contrib.auth.urls')), #ik it looks like duplicate but it'll throw errors ifi you delete it 
+    
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
