@@ -103,3 +103,4 @@
   - Add logic to identify and display the winner (e.g., first to solve all puzzles, highest score).
   - Notify the winner via email or in-app notifications.
 
+We got hisss!
