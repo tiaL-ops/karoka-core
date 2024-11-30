@@ -264,14 +264,29 @@ def welcome_page(request):
 
 @login_required
 def leaderboard(request):
-    # Aggregate total scores for all users
+    # Fetch the active competition
+    active_competition = Competition.objects.filter(is_active=True).first()
+    
+    if not active_competition:
+        return render(request, 'core/leaderboard.html', {
+            'leaderboard_data': [],
+            'message': "No active competition at the moment.",
+        })
+
+    # Aggregate total scores for all users, filtering by active competition
     leaderboard_data = (
         UserProgress.objects
+        .filter(puzzle__competition=active_competition)  # Only include puzzles from the active competition
         .values('user__username')
         .annotate(total_score=Sum('score'))
         .order_by('-total_score')
     )
-    return render(request, 'core/leaderboard.html', {'leaderboard_data': leaderboard_data})
+
+    return render(request, 'core/leaderboard.html', {
+        'leaderboard_data': leaderboard_data,
+        'active_competition': active_competition,
+    })
+
 
 def competition_view(request, pk):
     # Fetch the specific competition
