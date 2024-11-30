@@ -132,6 +132,8 @@ def coding_view(request, puzzle_id):
     # Fetch puzzle
     puzzle = get_object_or_404(Puzzle, id=puzzle_id)
 
+    competition_id = puzzle.competition.id 
+
     # Create progress entry if it doesn't exist
     if request.user.is_authenticated:
         progress, created = UserProgress.objects.get_or_create(user=request.user, puzzle=puzzle)
@@ -148,6 +150,7 @@ def coding_view(request, puzzle_id):
         'puzzle': puzzle,
         'progress': progress_percentage,
         'next_puzzle': Puzzle.objects.filter(id__gt=puzzle.id).first(),  # Link to next puzzle
+        'competition_id': competition_id,
     })
 
 

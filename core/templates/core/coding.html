@@ -68,16 +68,25 @@
             <p id="feedback" class="text-center mt-4 font-bold"></p>
         </div>
 
-        <!-- Next Puzzle Button -->
-        {% if next_puzzle %}
-            <div class="text-center">
-                <a href="{% url 'coding_view' next_puzzle.id %}" class="px-6 py-3 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-lg shadow-lg transition">
+        
+        <div class="flex justify-between items-center mt-8 space-x-4">
+            <!-- Back to All Quizzes Button -->
+            <a href="{% url 'competition_view' competition_id %}" 
+               class="px-6 py-3 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-lg shadow-lg transition">
+                🔙 Back to All Quizzes
+            </a>
+        
+            <!-- Next Puzzle Button -->
+            {% if next_puzzle %}
+                <a href="{% url 'coding_view' next_puzzle.id %}" 
+                   class="px-6 py-3 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-lg shadow-lg transition">
                     Next Puzzle
                 </a>
-            </div>
-        {% else %}
-            <p class="text-center text-gray-400">No more challenges available. 🎉</p>
-        {% endif %}
+            {% else %}
+                <p class="text-gray-400 font-semibold">🎉 No more challenges available.</p>
+            {% endif %}
+        </div>
+        
     </main>
 
     <!-- Monaco Editor Script -->
