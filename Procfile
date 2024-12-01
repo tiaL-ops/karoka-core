@@ -1,1 +1,1 @@
-web: gunicorn mianatraproject.wsgi
+web: gunicorn karokaproject.wsgi
