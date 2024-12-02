@@ -29,7 +29,7 @@ SECRET_KEY = "django-insecure-@3ja_k9nud#rh$1+rppf7ur#2b6k$sg7!ljp!8-om*&toa*qz7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['karoka.herokuapp.com','www.karoka.co']
+ALLOWED_HOSTS = ['karoka.co','www.karoka.co','karoka.herokuapp.com']
 SECURE_SSL_REDIRECT = True
 
 
