@@ -67,7 +67,7 @@ class Puzzle(models.Model):
     title = models.CharField(max_length=200)  # Puzzle title
     description = models.TextField()  # Puzzle description
     difficulty = models.CharField(max_length=10, choices=DIFFICULTY_CHOICES, default='Easy')  # Difficulty level
-    answer = models.CharField(max_length=20)  # Correct answer
+    answer = models.CharField(max_length=100)  # Correct answer
     hint = models.TextField(blank=True, null=True)  # Optional hint
     points = models.IntegerField(default=0)  # Points for solving
     competition = models.ForeignKey(

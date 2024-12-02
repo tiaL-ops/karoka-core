@@ -193,37 +193,57 @@ def submit_answer(request):
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 
+import json
+import requests
+from django.http import JsonResponse
+
 def execute_code(request):
-    if request.method == 'POST':
+    if request.method != 'POST':
+        return JsonResponse({'output': None, 'error': 'Invalid request method'}, status=405)
+    
+    try:
+        # Parse the JSON data from the request body
+        data = json.loads(request.body)
+        language = data.get('language', 'python')  # Default to Python
+        code = data.get('code')
+
+        # Ensure code is provided
+        if not code:
+            return JsonResponse({'output': None, 'error': 'No code provided'}, status=400)
+        
+        # Validate code length (optional, to prevent abuse)
+        if len(code) > 5000:  # Example limit: 5000 characters
+            return JsonResponse({'output': None, 'error': 'Code exceeds maximum allowed length'}, status=400)
+
+        # Call the Piston API to execute the code with a timeout
         try:
-            # Parse the JSON data from the request body
-            data = json.loads(request.body)
-            language = data.get('language', 'python')  # Default to Python if not specified
-            code = data.get('code')
-
-            # Ensure code is provided
-            if not code:
-                return JsonResponse({'output': None, 'error': 'No code provided'}, status=400)
-
-            # Call the Piston API to execute the code
             response = requests.post(
                 'https://emkc.org/api/v2/piston/execute',
                 json={
                     "language": language,
-                    "version": "3.10.0",  # Python version (adjust as needed)
+                    "version": "3.10.0",  # Adjust version if needed
                     "files": [{"name": "main.py", "content": code}]
-                }
+                },
+                timeout=10  # Timeout in seconds
             )
-            result = response.json()
+            response.raise_for_status()  # Raise an exception for HTTP errors
+        except requests.exceptions.Timeout:
+            return JsonResponse({'output': None, 'error': 'Execution timed out'}, status=504)
+        except requests.exceptions.RequestException as e:
+            return JsonResponse({'output': None, 'error': f'Error communicating with code execution service: {str(e)}'}, status=500)
 
-            # Extract the output and errors from the response
-            output = result.get('run', {}).get('output', '')
-            error = result.get('run', {}).get('stderr', '')
+        # Parse the response from the Piston API
+        result = response.json()
+        output = result.get('run', {}).get('output', '')
+        error = result.get('run', {}).get('stderr', '')
 
-            return JsonResponse({'output': output, 'error': error})
-        except Exception as e:
-            return JsonResponse({'output': None, 'error': str(e)}, status=500)
-    return JsonResponse({'output': None, 'error': 'Invalid request method'}, status=405)
+        return JsonResponse({'output': output, 'error': error})
+    
+    except json.JSONDecodeError:
+        return JsonResponse({'output': None, 'error': 'Invalid JSON input'}, status=400)
+    except Exception as e:
+        return JsonResponse({'output': None, 'error': f'An unexpected error occurred: {str(e)}'}, status=500)
+
 
 def user_progress(request):
     if request.user.is_authenticated:
