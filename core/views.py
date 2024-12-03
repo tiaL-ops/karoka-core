@@ -23,6 +23,8 @@ from django.urls import reverse
 from allauth.account.views import ConfirmEmailView
 from allauth.account.models import EmailConfirmationHMAC
 from django.shortcuts import redirect
+from django.contrib.auth.views import PasswordResetView
+from django.urls import reverse_lazy
 
 class CustomConfirmEmailView(ConfirmEmailView):
     def post(self, *args, **kwargs):
@@ -45,6 +47,11 @@ class CustomConfirmEmailView(ConfirmEmailView):
         # Define where to redirect the user after login
         return reverse('welcome')  # Change to your desired URL
 
+class CustomPasswordResetView(PasswordResetView):
+    template_name = 'registration/password_reset_form.html'  # Path to your custom template
+    success_url = reverse_lazy('password_reset_done')  # Redirect after successful submission
+    # Uncomment the following line if you created a custom form
+    # form_class = PrettyPasswordResetForm
 
 def home(request):
     return render(request, 'core/home.html')

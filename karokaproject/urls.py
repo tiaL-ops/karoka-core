@@ -23,6 +23,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path('accounts/password/reset/', views.CustomPasswordResetView.as_view(), name='password_reset'),
     path('accounts/confirm-email/<str:key>/', views.CustomConfirmEmailView.as_view(), name="account_confirm_email"),
     path('accounts/login/', views.custom_login_view, name='login'),
     path('accounts/', include('allauth.urls')),

@@ -27,10 +27,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-@3ja_k9nud#rh$1+rppf7ur#2b6k$sg7!ljp!8-om*&toa*qz7"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['karoka.co','www.karoka.co','karoka.herokuapp.com','127.0.0.1:8000']
-SECURE_SSL_REDIRECT = True
+ALLOWED_HOSTS = ['127.0.0.1:8000','karoka.co','www.karoka.co','karoka.herokuapp.com']
+SECURE_SSL_REDIRECT = False
 
 
 
@@ -39,13 +39,14 @@ SECURE_SSL_REDIRECT = True
 # Application definition
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
-    "django.contrib.auth",
+    'core',
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'core',
+    
+     "django.contrib.admin",
+    "django.contrib.auth",
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
