@@ -1,14 +1,10 @@
-
-
 # Frontend Setup – Day 1 Update (30 May 2025)
 
 This document outlines the initial setup and structure of the frontend project using [Vite](https://vitejs.dev/).
 
-## ✅ What's Done Today
 
-### 🔧 Vite Project Initialization
+### Vite Project Initialization
 
-* Initialized the frontend using **Vite** for fast and modern development.
 * Configuration is handled via `vite.config.js`.
 * Environment variables are managed through `.env` files:
 
@@ -40,12 +36,12 @@ Here's the current directory structure:
 └── vite.config.js        # Vite configuration
 ```
 
-### 🚀 Entry Point
+### Entry Point
 
 * `index.html`: Contains the script tag that loads the main entry point.
 * `src/main.jsx`: This is the root script that initializes the React app and renders `<App />` from `App.jsx`.
 
-### ▶️ How to Run
+### How to Run
 
 To start the development server:
 
@@ -54,5 +50,9 @@ npm run dev
 ```
 
 This will start the Vite dev server with hot module reload (HMR) enabled.
+### Connection to backend
+App.jsx is connected to the backend by use of use states and use effect, as it fetch the API it renders by fetching . 
+Api url that again you could change in env.
+
 
 

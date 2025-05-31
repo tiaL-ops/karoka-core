@@ -22,3 +22,5 @@ pnpm-debug.log*
 # Optional: OS-specific
 Thumbs.db
 .env/
+.env.production
+.env.test
