@@ -15,4 +15,5 @@ The `/api` folder uses **Flask** to connect the frontend (React/Vite) to backend
 
 * In development, **CORS** is enabled so the frontend can access the API.
 
-
+CORS ORIGIN: Understand how it works . Cors origin allowed right now is port 3000
+Please note the env production need confirmation of the site where the app gonna be deployed. 

@@ -2,10 +2,15 @@
 from flask import Flask
 from flask_cors import CORS
 from routes.ping import ping_bp
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 def create_app():
     app = Flask(__name__)
-    CORS(app)  # allow all origins for dev
+    cors_origin = os.getenv("CORS_ORIGIN", "*")
+    CORS(app, origins=[cors_origin])
 
     app.register_blueprint(ping_bp, url_prefix="/api/ping")
 
