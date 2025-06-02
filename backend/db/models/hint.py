@@ -13,7 +13,7 @@ from sqlalchemy import (
 )
 from sqlalchemy import Enum as SAEnum
 from sqlalchemy.orm import relationship
-
+from db.models.llm_template import LLMTemplate
 from db.database import Base
 
 ModalityEnum = SAEnum(

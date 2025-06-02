@@ -2,6 +2,7 @@ from sqlalchemy.dialects.postgresql import UUID as PGUUID, JSONB
 import uuid
 from sqlalchemy import Column, String, Text, DateTime, func, ForeignKey, Boolean, Integer
 from sqlalchemy.orm import relationship
+from db.models.hint import Hint
 
 from db.database import Base
 

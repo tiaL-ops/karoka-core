@@ -3,6 +3,7 @@ import uuid
 from sqlalchemy import Column, String, Integer, Text, DateTime, func, Enum as SAEnum
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
+from db.models.game_session import GameSession
 
 from db.database import Base
 

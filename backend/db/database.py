@@ -20,4 +20,7 @@ else:
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+print(f"ENVIRONMENT: {env}")
+print(f"Using DB: {DATABASE_URL}")
+
 Base = declarative_base()
