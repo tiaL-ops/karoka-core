@@ -11,11 +11,17 @@ start:
 stop:
 	docker-compose down
 
-# Run tests using test DB
-test:
-	ENVIRONMENT=testing pytest --cov
+# Run tests using test DB and docker if not starting
+.PHONY: test
 
-# Run Alembic migrations (assuming you use Alembic)
+test:
+
+	cd backend/db && source ../.venv/bin/activate && pytest
+
+
+
+
+# Run Alembic migrations // don't know yet about this need to learn
 migrate:
 	alembic upgrade head
 
