@@ -35,7 +35,7 @@ First, make sure Docker is running on your machine.
      -p 5433:5432 \
      -v karoka_pgdata:/var/lib/postgresql/data \
      -d postgres
-````
+   ````
 
 2. (Optional) Connect to the DB manually if you want to inspect it:
 
