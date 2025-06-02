@@ -1,5 +1,6 @@
 // apps/frontend/src/App.jsx
 import { useEffect, useState } from "react"
+import UserProfile from "./pages/UserProfile"
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
@@ -17,6 +18,9 @@ export default function App() {
     <div>
       <h1>Hello from Karoka!</h1>
       <p>Backend says: {pingMessage}</p>
+       <hr />
+
+      <UserProfile />
     </div>
   )
 }

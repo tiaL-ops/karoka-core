@@ -21,9 +21,13 @@ test:
 
 
 
-# Run Alembic migrations // don't know yet about this need to learn
+# Run Alembic migrations
 migrate:
 	alembic upgrade head
+
+# Create a new Alembic migration (usage: make makemigration msg="my message")
+makemigration:
+	alembic revision --autogenerate -m "$(msg)"
 
 # Run shell into dev DB container
 psql-dev:
