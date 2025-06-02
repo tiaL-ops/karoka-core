@@ -3,7 +3,7 @@ import uuid
 from sqlalchemy import Column, String, Text, Integer, DateTime, func, ForeignKey, cast
 from sqlalchemy.orm import relationship
 
-from database import Base
+from db.database import Base
 
 class DocumentationTopic(Base):
     __tablename__ = 'documentation_topics'

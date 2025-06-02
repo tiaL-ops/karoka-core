@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from typing import List, Dict, Any
 
-from models.challenge import Challenge
+from db.models.challenge import Challenge
 
 
 def create_challenge(db: Session, challenge_data: Dict[str, Any]) -> Challenge:

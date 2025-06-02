@@ -14,7 +14,7 @@ from sqlalchemy import (
 from sqlalchemy import Enum as SAEnum
 from sqlalchemy.orm import relationship
 
-from database import Base
+from db.database import Base
 
 ModalityEnum = SAEnum(
     'visual',

@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from typing import List, Dict, Any
 from uuid import UUID
 
-from models.log_event import LogEvent
+from db.models.log_event import LogEvent
 
 
 def create_log_event(db: Session, event_data: Dict[str, Any]) -> LogEvent:

@@ -3,7 +3,7 @@ import uuid
 from sqlalchemy import Column, String, Integer, DateTime, func, ForeignKey, Text, Enum as SAEnum
 from sqlalchemy.orm import relationship
 
-from database import Base
+from db.database import Base
 
 StatusEnum = SAEnum('completed', 'in_progress', 'abandoned', name='session_status_enum')
 

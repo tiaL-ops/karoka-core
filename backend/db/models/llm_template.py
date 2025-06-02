@@ -4,7 +4,7 @@ from sqlalchemy import Column, String, Text, Integer, Numeric, DateTime, func, F
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
 from sqlalchemy.orm import relationship
 
-from database import Base
+from db.database import Base
 
 class LLMTemplate(Base):
     __tablename__ = 'llm_templates'

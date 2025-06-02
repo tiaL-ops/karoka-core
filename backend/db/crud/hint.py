@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from typing import List, Dict, Any
 from uuid import UUID
 
-from models.hint import Hint
+from db.models.hint import Hint
 
 
 def create_hint(db: Session, hint_data: Dict[str, Any]) -> Hint:

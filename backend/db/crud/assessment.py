@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from typing import List, Dict, Any
 from uuid import UUID
 
-from models.assessment import Assessment
+from db.models.assessment import Assessment
 
 
 def create_assessment(db: Session, assessment_data: Dict[str, Any]) -> Assessment:

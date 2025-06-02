@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from typing import List, Dict, Any
 from uuid import UUID
 
-from models.documentation_topic import DocumentationTopic
+from db.models.documentation_topic import DocumentationTopic
 
 
 def create_documentation_topic(db: Session, topic_data: Dict[str, Any]) -> DocumentationTopic:

@@ -4,7 +4,7 @@ from sqlalchemy import Column, String, Integer, Text, DateTime, func, Enum as SA
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
-from database import Base
+from db.database import Base
 
 # If you want to constrain sex to a fixed set of values, you can define an Enum here:
 SexEnum = SAEnum('male', 'female', 'other', name='sex_enum')

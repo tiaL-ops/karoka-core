@@ -4,7 +4,7 @@ from sqlalchemy import Column, String, Text, Integer, DateTime, func, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
 from sqlalchemy.orm import relationship
 
-from database import Base
+from db.database import Base
 
 ContentTypeEnum = SAEnum('hint', 'documentation', 'dialogue', name='llm_content_type_enum')
 

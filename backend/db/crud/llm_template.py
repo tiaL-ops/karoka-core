@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from typing import List, Dict, Any
 from uuid import UUID
 
-from models.llm_template import LLMTemplate
+from db.models.llm_template import LLMTemplate
 
 
 def create_llm_template(db: Session, template_data: Dict[str, Any]) -> LLMTemplate:

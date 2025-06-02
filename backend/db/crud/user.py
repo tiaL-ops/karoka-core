@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from typing import List, Dict, Any
 
-from models.user import User
+from db.models.user import User
 
 
 def create_user(db: Session, user_data: Dict[str, Any]) -> User:

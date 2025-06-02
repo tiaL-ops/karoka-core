@@ -4,7 +4,7 @@ from sqlalchemy import Column, String, Integer, DateTime, func, ForeignKey, Nume
 from sqlalchemy.dialects.postgresql import UUID as PGUUID, JSONB
 from sqlalchemy.orm import relationship
 
-from database import Base
+from db.database import Base
 
 AssessmentTypeEnum = SAEnum(
     'pre_assessment',

@@ -3,7 +3,7 @@ import uuid
 from sqlalchemy import Column, String, Text, Integer, DateTime, func, Enum as SAEnum, JSON
 from sqlalchemy.orm import relationship
 
-from database import Base
+from db.database import Base
 
 ChallengeTypeEnum = SAEnum(
     'code_puzzle',

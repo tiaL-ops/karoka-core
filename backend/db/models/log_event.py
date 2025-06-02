@@ -3,7 +3,7 @@ import uuid
 from sqlalchemy import Column, String, Text, DateTime, func, ForeignKey, Boolean, Integer
 from sqlalchemy.orm import relationship
 
-from database import Base
+from db.database import Base
 
 class LogEvent(Base):
     __tablename__ = 'log_events'

@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from typing import List, Dict, Any
 from uuid import UUID
 
-from models.game_session import GameSession
+from db.models.game_session import GameSession
 
 
 def create_game_session(db: Session, session_data: Dict[str, Any]) -> GameSession:

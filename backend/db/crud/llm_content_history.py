@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from typing import List, Dict, Any
 from uuid import UUID
 
-from models.llm_content_history import LLMContentHistory
+from db.models.llm_content_history import LLMContentHistory
 
 
 def create_llm_content_history(db: Session, content_data: Dict[str, Any]) -> LLMContentHistory:
