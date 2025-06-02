@@ -1,3 +1,4 @@
+from sqlalchemy.dialects.postgresql import JSONB
 import uuid
 from sqlalchemy import Column, String, Integer, Text, DateTime, func, Enum as SAEnum
 from sqlalchemy.dialects.postgresql import UUID
