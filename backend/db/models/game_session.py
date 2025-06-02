@@ -10,7 +10,7 @@ StatusEnum = SAEnum('completed', 'in_progress', 'abandoned', name='session_statu
 class GameSession(Base):
     __tablename__ = 'game_sessions'
 
-    # If you prefer SERIAL/BIGINT, change to Integer/BigInteger + autoincrement=True
+   
     id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id = Column(String, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
 

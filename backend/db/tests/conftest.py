@@ -1,17 +1,13 @@
-
-# tests/conftest.py
-import sqlalchemy
+# db/tests/conftest.py
 
 import os
 import pytest
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
-
-
 
 from database import Base
 
-# Import all models so that Base.metadata knows about them. 
+# Import all models so that Base.metadata.create_all() sees them
 import models.user
 import models.game_session
 import models.challenge
@@ -22,20 +18,16 @@ import models.log_event
 import models.assessment
 import models.llm_content_history
 
-from crud import user as user_crud
-# (We don’t need to import each crud here, 
-# but the models must be imported so that Base.metadata is aware of all tables.)
-
 
 @pytest.fixture(scope="session")
 def engine():
     """
-    Creates the tables in the test database once per test session,
-    then drops them when all tests complete.
+    Create all tables at the start of the test session, then drop them at the end.
     """
     TEST_DATABASE_URL = os.getenv(
-    "TEST_DATABASE_URL")
-
+        "TEST_DATABASE_URL",
+        "postgresql://karoka:karoka@localhost:5433/karoka_test"
+    )
     engine = create_engine(TEST_DATABASE_URL)
     Base.metadata.create_all(bind=engine)
     yield engine
@@ -45,24 +37,29 @@ def engine():
 @pytest.fixture()
 def db_session(engine):
     """
-    Provides a new transactional session for each test function.
-    Rolls back any changes at the end of the test so tests stay isolated.
+    Provide a new Session for each test, and after each test truncate all tables.
     """
-    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
     session = SessionLocal()
-    # Begin a nested transaction (SAVEPOINT) so that we can roll back after each test.
-    transaction = session.begin_nested()
-
-    @sqlalchemy.event.listens_for(session, "after_transaction_end")
-    def restart_savepoint(sess, trans):
-        """
-        Whenever a nested transaction ends, reopen a new savepoint.
-        This keeps the database clean between tests.
-        """
-        if not sess.is_active:
-            sess.begin_nested()
-
     yield session
 
+    # Roll back any pending transaction
     session.rollback()
+
+    # Truncate ALL tables in the correct order (FK dependencies)
+    # Adjust table names to match your actual __tablename__ values:
+    tables_to_truncate = [
+        'log_events',
+        'llm_content_history',
+        'assessments',
+        'documentation_topics',
+        'hints',
+        'challenges',
+        'game_sessions',
+        'users'
+    ]
+    # Use CASCADE to drop dependent rows as well
+    for tbl in tables_to_truncate:
+        session.execute(text(f'TRUNCATE TABLE {tbl} CASCADE;'))
+    session.commit()
     session.close()
