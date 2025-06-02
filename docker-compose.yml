@@ -9,9 +9,41 @@ services:
       POSTGRES_PASSWORD: karoka
       POSTGRES_DB: karoka_dev
     ports:
-      - "5433:5432"  # dev port
+      - "5433:5432"
     volumes:
       - postgres_dev_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: .
+      dockerfile: infra/docker/backend.Dockerfile
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql://karoka:karoka@db:5432/karoka_dev
+      - FLASK_ENV=development
+    ports:
+      - "5001:5001"
+    working_dir: /app/backend
+    volumes:
+      - ./backend:/app/backend
+    command: python -m api.main
+
+  frontend:
+    build:
+      context: .
+      dockerfile: infra/docker/frontend.Dockerfile
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"       # Vite’s default port is 5173. Change to 3000 if you explicitly configured VITE_PORT=3000.
+    working_dir: /app
+    volumes:
+      - ./apps/frontend:/app         # mounts your source code for hot-reload
+      - /app/node_modules            # anonymous volume to keep the container’s node_modules
+    environment:
+      - VITE_API_BASE_URL=http://localhost:5001
+    command: npm run dev
 
 volumes:
   postgres_dev_data:

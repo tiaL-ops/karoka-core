@@ -5,6 +5,8 @@
   "build": "vite build",
   "build:test": "vite build --mode test",
   "preview": "vite preview"
+ },
+ "devDependencies": {
+  "vite": "^6.3.5"
+ }
 }
-}
-
