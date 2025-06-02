@@ -18,6 +18,13 @@ class Assessment(Base):
     __tablename__ = 'assessments'
 
     id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    
+
+    game_session_id = Column(
+        PGUUID(as_uuid=True),
+        ForeignKey('game_sessions.id', ondelete='SET NULL'),
+        nullable=True
+    )
     user_id = Column(String, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
 
     type = Column(AssessmentTypeEnum, nullable=False)
@@ -31,7 +38,10 @@ class Assessment(Base):
     # Relationships
     user = relationship('User', back_populates='assessments')
     challenge = relationship('Challenge', back_populates='assessments', foreign_keys=[challenge_id])
-    session = relationship('GameSession', back_populates='assessments', viewonly=True, foreign_keys="[GameSession.id]")
-
+    session = relationship(
+        'GameSession',
+        back_populates='assessments',
+        foreign_keys=[game_session_id]
+    )
     def __repr__(self):
         return f"<Assessment(id={self.id}, user_id={self.user_id}, type={self.type})>"
