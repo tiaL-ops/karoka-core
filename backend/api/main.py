@@ -14,7 +14,8 @@ def create_app():
     app = Flask(__name__)
 
     cors_origin = os.getenv("CORS_ORIGIN", "*")
-    CORS(app, origins=[cors_origin])
+    #CORS(app, origins=[cors_origin])
+    CORS(app)
 
     app.register_blueprint(ping_bp, url_prefix="/api/ping")
     app.register_blueprint(user_bp, url_prefix='/api')
