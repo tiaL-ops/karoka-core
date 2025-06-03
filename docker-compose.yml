@@ -36,13 +36,14 @@ services:
     depends_on:
       - backend
     ports:
-      - "3000:3000"       # Vite’s default port is 5173. Change to 3000 if you explicitly configured VITE_PORT=3000.
+      - "3000:3000"
     working_dir: /app
     volumes:
-      - ./apps/frontend:/app         # mounts your source code for hot-reload
-      - /app/node_modules            # anonymous volume to keep the container’s node_modules
-    environment:
-      - VITE_API_BASE_URL=http://localhost:5001
+      - ./apps/frontend:/app 
+      - /app/node_modules 
+
+    env_file:
+    - ./apps/frontend/.env
     command: npm run dev
 
 volumes:

@@ -6,7 +6,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
 export default function App() {
   const [pingMessage, setPingMessage] = useState("")
-
+  console.log("API_BASE_URL in fromnt:", API_BASE_URL)
   useEffect(() => {
     fetch(`${API_BASE_URL}/ping/`)
       .then((res) => res.json())

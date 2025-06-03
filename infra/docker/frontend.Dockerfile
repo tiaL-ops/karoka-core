@@ -17,8 +17,8 @@ RUN npm install
 # 4) Copy the rest of the frontend source code
 COPY apps/frontend .
 
-# 5) Expose Vite’s default dev port (5173).
-EXPOSE 5173
+# 5) Expose Vite’s default dev port (5173). but my port is 300-
+EXPOSE 3000
 
 # 6) Start Vite in dev‐mode
 CMD ["npm", "run", "dev"]
