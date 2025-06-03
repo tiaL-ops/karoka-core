@@ -1,24 +1,34 @@
-# Makefile
-
 # Variables
 ENV_FILE=.env
 
+# Start normally
 start:
-	docker-compose up
-
-# Start clean (resets DB and all volumes)
-clean-start:
-	docker-compose down -v
-	docker-compose up --build -d
 	docker compose up
 
+# Start clean (rebuild images, reset volumes)
+clean-start:
+	docker compose down -v
+	docker compose up --build -d
 
+# Build containers without using cache
+build:
+	docker compose build --no-cache
 
-# Stop all containers
+# Bring containers up (after build)
+up:
+	docker compose up -d
+
+# Stop and remove containers
 stop:
-	docker-compose down
+	docker compose down
 
-# Run tests using test DB and docker if not starting
+# Rebuild everything cleanly
+rebuild:
+	docker compose down -v
+	docker compose build --no-cache
+	docker compose up -d
+
+# Run tests (make sure venv is activated)
 .PHONY: test
 test:
 	cd backend/db && source ../.venv/bin/activate && pytest
@@ -31,9 +41,6 @@ migrate:
 makemigration:
 	alembic revision --autogenerate -m "$(msg)"
 
-# Run shell into dev DB container
+# Shell into dev DB container
 psql-dev:
 	docker exec -it karoka_postgres_dev psql -U karoka -d karoka_dev
-
-# Rebuild all containers (alias of start)
-rebuild: start
