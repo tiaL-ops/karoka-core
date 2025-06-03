@@ -3,9 +3,10 @@
 # Variables
 ENV_FILE=.env
 
-# Start development DB
+# Start (Rebuild and run everything in detached mode)
 start:
-	docker-compose up -d
+	docker-compose down -v
+	docker-compose up --build -d
 
 # Stop all containers
 stop:
@@ -13,13 +14,8 @@ stop:
 
 # Run tests using test DB and docker if not starting
 .PHONY: test
-
 test:
-
 	cd backend/db && source ../.venv/bin/activate && pytest
-
-
-
 
 # Run Alembic migrations
 migrate:
@@ -33,7 +29,5 @@ makemigration:
 psql-dev:
 	docker exec -it karoka_postgres_dev psql -U karoka -d karoka_dev
 
-# Rebuild all containers
-rebuild:
-	docker-compose down -v
-	docker-compose up --build -d
+# Rebuild all containers (alias of start)
+rebuild: start
