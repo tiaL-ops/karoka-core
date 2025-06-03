@@ -3,10 +3,14 @@
 # Variables
 ENV_FILE=.env
 
-# Start (Rebuild and run everything in detached mode)
 start:
+	docker-compose up
+
+# Start clean (resets DB and all volumes)
+clean-start:
 	docker-compose down -v
 	docker-compose up --build -d
+
 
 # Stop all containers
 stop:
