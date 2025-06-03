@@ -10,6 +10,8 @@ start:
 clean-start:
 	docker-compose down -v
 	docker-compose up --build -d
+	docker compose up
+
 
 
 # Stop all containers

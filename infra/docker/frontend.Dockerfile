@@ -8,6 +8,7 @@ WORKDIR /app
 # 1) Copy only package.json (do NOT copy package-lock.json or node_modules)
 COPY apps/frontend/package.json ./
 
+
 # 2) Ensure devDependencies (Vite, Rollup) are installed
 ENV NODE_ENV=development
 
