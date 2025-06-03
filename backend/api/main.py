@@ -18,7 +18,7 @@ def create_app():
     CORS(app)
 
     app.register_blueprint(ping_bp, url_prefix="/api/ping")
-    app.register_blueprint(user_bp, url_prefix='/api')
+    app.register_blueprint(user_bp, url_prefix='/api/user')
 
     return app
 
