@@ -4,6 +4,10 @@ from flask import Flask
 from flask_cors import CORS
 from api.routes.ping import ping_bp
 from api.routes.user import user_bp
+import firebase_admin
+
+from firebase_admin import credentials
+from firebase_admin import auth, firestore 
 
 from dotenv import load_dotenv
 import os
@@ -16,6 +20,15 @@ def create_app():
     cors_origin = os.getenv("CORS_ORIGIN", "*")
     #CORS(app, origins=[cors_origin])
     CORS(app)
+
+    firebase_admin_sdk_path = os.getenv("FIREBASE_ADMIN_SDK_PATH", None)
+    print(f"FIREBASE_ADMIN_SDK_PATH: {firebase_admin_sdk_path}")
+    if firebase_admin_sdk_path and os.path.exists(firebase_admin_sdk_path):
+        cred = credentials.Certificate(firebase_admin_sdk_path)
+        firebase_admin.initialize_app(cred)
+        print("Firebase Admin SDK initialized successfully.")
+    else:
+        print("WARNING: Firebase Admin SDK not initialized. Check FIREBASE_ADMIN_SDK_PATH and file existence.")
 
     app.register_blueprint(ping_bp, url_prefix="/api/ping")
     app.register_blueprint(user_bp, url_prefix='/api/user')
