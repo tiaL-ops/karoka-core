@@ -20,6 +20,8 @@ def create_user(db: Session, user_data: Dict[str, Any]) -> User:
       - name (str)
       - optionally: bio, age, sex, vark_*_score
     """
+    if 'role' not in user_data:
+        user_data['role'] = 'user'
     db_user = User(**user_data)
     db.add(db_user)
     db.commit()

@@ -5,6 +5,8 @@ import PingPage from "./pages/ping"; //
 import SignupPage from "@/pages/signupPage";
 import Homepage from "./pages/homepage"; //
 import LoginPage from "./pages/loginPage"; 
+import DatabasePage from "./pages/databasePage";
+import TableDataPage from "./pages/tableDataPage";
 import { AuthProvider, useAuth } from "@/components/Auth/AuthContext"; //
 
 import GamePage from "./pages/game";
@@ -49,6 +51,22 @@ function App() {
                 <GamePage />
               </PrivateRoute>
             } 
+          />
+           <Route
+            path="/database"
+            element={
+              <PrivateRoute allowedRoles={['user', 'admin']}>
+                <DatabasePage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/database/:tableName"
+            element={
+              <PrivateRoute allowedRoles={['user', 'admin']}>
+                <TableDataPage />
+              </PrivateRoute>
+            }
           />
         </Routes>
       </AuthProvider>

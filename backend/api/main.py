@@ -4,6 +4,7 @@ from flask import Flask
 from flask_cors import CORS
 from api.routes.ping import ping_bp
 from api.routes.user import user_bp
+from api.routes.database import database_bp 
 import firebase_admin
 
 from firebase_admin import credentials
@@ -32,6 +33,7 @@ def create_app():
 
     app.register_blueprint(ping_bp, url_prefix="/api/ping")
     app.register_blueprint(user_bp, url_prefix='/api/user')
+    app.register_blueprint(database_bp, url_prefix='/api/database')
 
     return app
 

@@ -47,6 +47,7 @@ def create_user_route():
         data['name'] = data['email'] # Fallback if displayName not provided
     else:
         data['name'] = "New User" # Default name if neither is available
+    data['role'] = data.get('role', 'user') 
 
 
     db = SessionLocal()
