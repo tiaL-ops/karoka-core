@@ -7,7 +7,7 @@ from db.models.game_session import GameSession
 
 from db.database import Base
 
-# If you want to constrain sex to a fixed set of values, you can define an Enum here:
+
 SexEnum = SAEnum('male', 'female', 'other', name='sex_enum')
 
 class User(Base):
@@ -18,6 +18,7 @@ class User(Base):
     bio = Column(Text, nullable=True)
     age = Column(Integer, nullable=True)
     sex = Column(SexEnum, nullable=True)
+    role = Column(String, nullable=False, default='user')
 
     vark_visual_score = Column(Integer, nullable=True)
     vark_auditory_score = Column(Integer, nullable=True)

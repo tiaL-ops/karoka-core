@@ -10,7 +10,7 @@ user_bp = Blueprint('user', __name__)
 import logging
 logger = logging.getLogger(__name__)
 
-# Inside create_user_route
+
 logger.info("🐼 🍷hello")
 
 def get_current_firebase_user_id():

@@ -16,6 +16,7 @@ class UserBase(BaseModel):
     bio: Optional[str] = None
     age: Optional[int] = None
     sex: Optional[SexEnum] = None
+    role: Optional[str] = 'user'
 
     vark_visual_score: Optional[int] = None
     vark_auditory_score: Optional[int] = None
