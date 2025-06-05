@@ -9,6 +9,8 @@ start:
 clean-start:
 	docker compose down -v
 	docker compose up --build -d
+	cd backend && alembic upgrade head
+
 
 # Build containers without using cache
 build:
@@ -35,7 +37,7 @@ test:
 
 # Run Alembic migrations
 migrate:
-	alembic upgrade head
+	cd backend alembic upgrade head
 
 # Create a new Alembic migration (usage: make makemigration msg="my message")
 makemigration:

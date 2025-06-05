@@ -7,7 +7,16 @@ from db.models.user import User
 def create_user(db: Session, user_data: Dict[str, Any]) -> User:
     """
     user_data must include:
-      - id (Firebase UID, str)
+      - id (Firebase UID, ["role": data.get("role", "user"),
+            "email": data.get("email"),
+            "displayName": data.get("name"), # Use the 'name' used for PostgreSQL as displayName for Firestore
+            "createdAt": firestore.SERVER_TIMESTAMP,
+            "lastActiveAt": firestore.SERVER_TIMESTAMP,
+            "sessionId": None,
+            "currentProgress": {
+              "currentArena": None,
+              "lastPlayedGameId": None,
+            }])
       - name (str)
       - optionally: bio, age, sex, vark_*_score
     """

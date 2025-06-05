@@ -32,6 +32,7 @@ services:
     working_dir: /app/backend
     volumes:
       - ./backend:/app/backend
+      - ./backend/karoka-core-firebase-adminsdk.json:/app/backend/karoka-core-firebase-adminsdk.json
     command: python -m api.main
 
   frontend:
