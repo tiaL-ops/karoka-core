@@ -54,25 +54,6 @@ def create_user_route():
     try:
         user = create_user(db, user_data=data) 
         
-        # This part ensures consistency between PostgreSQL and Firestore
-        firestore_db = firebase_admin.firestore.client()
-        user_doc_ref = firestore_db.collection('users').document(user.id)
-        
-        # Use data from the request, or the created user object for Firestore
-        firestore_data = {
-            "role": data.get("role", "user"),
-            "email": data.get("email"),
-            "displayName": data.get("name"), # Use the 'name' used for PostgreSQL as displayName for Firestore
-            "createdAt": firestore.SERVER_TIMESTAMP,
-            "lastActiveAt": firestore.SERVER_TIMESTAMP,
-            "sessionId": None,
-            "currentProgress": {
-              "currentArena": None,
-              "lastPlayedGameId": None,
-            },
-        }
-        user_doc_ref.set(firestore_data, merge=True) # Use merge=True to avoid overwriting other fields if document exists
-        print(f"User {user.id} created in data  in rirestorwith data: {firestore_data}")
         return jsonify({"id": user.id, "name": user.name}), 201
     except Exception as e:
         db.rollback()
@@ -90,12 +71,43 @@ def get_user_route(user_id):
 
     if verified_uid != user_id:
         return jsonify({"error": "Unauthorized access to user profile"}), 403
-   
+
     db = SessionLocal()
     try:
-        user = get_user(db, user_id)
-        if user:
-            return jsonify({"id": user.id, "name": user.name})
-        return jsonify({"error": "User not found"}), 404
+        user_in_pg = get_user(db, user_id) # Get user from PostgreSQL
+        
+        firestore_db = firebase_admin.firestore.client()
+        user_doc_ref = firestore_db.collection('users').document(user_id)
+        firestore_doc = user_doc_ref.get() # Get user from Firestore
+
+        if firestore_doc.exists:
+            firestore_data = firestore_doc.to_dict()
+            firestore_role = firestore_data.get('role', 'user')
+            
+            # Sync Firestore role to PostgreSQL 
+            if user_in_pg and user_in_pg.role != firestore_role:
+                print(f"Role mismatch for {user_id}: PG='{user_in_pg.role}', FS='{firestore_role}'. Updating PG.")
+                updated_user_pg = update_user(db, user_id, {"role": firestore_role})
+                # Use the updated user object for the response
+                user_in_pg = updated_user_pg
+            elif not user_in_pg:
+                # If user exists in Firestore but not in PostgreSQL, create them in PG
+                # This handles cases where only Firestore entry was created for some reason
+                print(f"User {user_id} found in Firestore but not in PG. Creating PG entry.")
+                pg_user_data = {
+                    "id": user_id,
+                    "name": firestore_data.get('displayName') or firestore_data.get('email') or "New User",
+                    "role": firestore_role # Use Firestore role for new PG user
+                }
+                user_in_pg = create_user(db, user_data=pg_user_data)
+                
+        # Return user data from PostgreSQL (which has now been synced if needed)
+        if user_in_pg:
+            return jsonify({"id": user_in_pg.id, "name": user_in_pg.name, "role": user_in_pg.role}), 200
+        else:
+            return jsonify({"error": "User not found"}), 404
+    except Exception as e:
+        logger.error(f"Error fetching or syncing user data: {e}")
+        return jsonify({"error": f"Failed to retrieve user data: {str(e)}"}), 500
     finally:
         db.close()

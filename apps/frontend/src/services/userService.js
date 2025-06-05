@@ -12,11 +12,12 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
  * - If role === "controlled", it omits email/displayName .
  * - Uses ISO strings for `createdAt` and `lastActiveAt`.
  */
-export async function createUserProfile(user, displayName, role = "user") {
+export async function createUserProfile(user, displayName, role = "admin") {
   if (!user || !user.uid) {
     throw new Error("createUserProfile: invalid user object");
   }
-
+  await user.reload();
+  user = auth.currentUser;
   const uid = user.uid;
   const userRef = doc(db, "users", uid);
   const nowIso = new Date().toISOString();
@@ -24,6 +25,8 @@ export async function createUserProfile(user, displayName, role = "user") {
   // 1. Prepare data for Firestore
   const firestoreData = {
     role,
+    email,
+    displayName,
     createdAt: nowIso,
     lastActiveAt: nowIso,
     sessionId: null,
@@ -34,8 +37,10 @@ export async function createUserProfile(user, displayName, role = "user") {
   };
 
   if (role !== "controlled") {
-    firestoreData.email = user.email || null;
-    firestoreData.displayName = displayName || user.displayName || null;
+    console.log("the email is", user.email, "and the user is", user);
+    firestoreData.email = user.email ;
+    firestoreData.displayName = displayName || user.displayName ;
+    console.log(" 🙃the displayName is", firestoreData.displayName);
   }
 
   // 2. Write to Firestore
