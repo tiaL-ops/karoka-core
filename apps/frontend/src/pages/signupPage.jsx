@@ -1,33 +1,25 @@
-// frontend/src/pages/loginPage.jsx
+// frontend/src/pages/signupPage.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; 
 import { useAuth } from "@/components/Auth/AuthContext";
 
-export default function LoginPage() {
-  const navigate = useNavigate();
-  const { loginEmail, loginGoogle } = useAuth();
+export default function SignupPage() {
+  const navigate = useNavigate(); 
+  const { signup } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [error, setError] = useState("");
 
-  const handleEmailLogin = async (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
     setError("");
 
     try {
-      await loginEmail(email, password);
-      navigate("/userProfile"); 
-    } catch (err) {
-      setError(err.message);
-    }
-  };
+      await signup(email, password, displayName);
 
-  const handleGoogleLogin = async () => {
-    setError("");
-    try {
-      await loginGoogle();
-      navigate("/");
+      navigate("/userProfile"); 
     } catch (err) {
       setError(err.message);
     }
@@ -35,8 +27,19 @@ export default function LoginPage() {
 
   return (
     <div style={{ maxWidth: "400px", margin: "0 auto" }}>
-      <h1>Log In</h1>
-      <form onSubmit={handleEmailLogin}>
+      <h2>Create an Account</h2>
+      <form onSubmit={handleSignup}>
+        <div>
+          <label htmlFor="displayName">Name (optional):</label>
+          <input
+            id="displayName"
+            type="text"
+            placeholder="Alice"
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
+          />
+        </div>
+
         <div>
           <label htmlFor="email">Email:</label>
           <input
@@ -50,7 +53,7 @@ export default function LoginPage() {
         </div>
 
         <div>
-          <label htmlFor="password">Password:</label>
+          <label htmlFor="password">Password (6+ chars):</label>
           <input
             id="password"
             type="password"
@@ -61,12 +64,8 @@ export default function LoginPage() {
           />
         </div>
 
-        <button type="submit">Login with Email</button>
+        <button type="submit">Sign Up</button>
       </form>
-
-      <hr />
-
-      <button onClick={handleGoogleLogin}>Login with Google</button>
 
       {error && <p style={{ color: "red" }}>{error}</p>}
     </div>

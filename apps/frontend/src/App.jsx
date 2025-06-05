@@ -2,9 +2,10 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import UserProfile from "./pages/userProfile"; //
 import PingPage from "./pages/ping"; //
+import SignupPage from "@/pages/signupPage";
 import Homepage from "./pages/homepage"; //
 import LoginPage from "./pages/loginPage"; 
-import { AuthProvider, useAuth } from "./components/Auth/AuthManager"; //
+import { AuthProvider, useAuth } from "@/components/Auth/AuthContext"; //
 
 import GamePage from "./pages/game";
 
@@ -35,9 +36,10 @@ function App() {
       <AuthProvider> 
         <Routes>
           <Route path="/" element={<Homepage />} /> {/* */}
-          <Route path="/login" element={<LoginPage />} /> 
           <Route path="/userProfile" element={<UserProfile />} /> {/* */}
           <Route path="/ping" element={<PingPage />} /> {/* */}
+           <Route path="/signup" element={<SignupPage />} />
+          <Route path="/login" element={<LoginPage />} />
           
           {/* Protected Game Page Route */}
           <Route 

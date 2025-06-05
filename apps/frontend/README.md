@@ -1,58 +1,110 @@
-# Frontend Setup – Day 1 Update (30 May 2025)
 
-This document outlines the initial setup and structure of the frontend project using [Vite](https://vitejs.dev/).
+## Front end setup (Full Summary)
 
+This frontend uses Firebase Auth and Firestore to handle user signup, login, and profile storage. Below is everything you need to know — what files do what, and how to keep the system clean and reusable.
 
-### Vite Project Initialization
+---
 
-* Configuration is handled via `vite.config.js`.
-* Environment variables are managed through `.env` files:
+###  What Happens When a User Signs Up or Logs In?
 
-  * `.env` – for development
-  * `.env.test` – for test environments
-  * `.env.prod` – for production
+* **Firebase Auth** handles the login/signup.
+* We **create or fetch** a matching document in Firestore under:
+  `/users/{uid}`
+  with fields like `email`, `role`, `createdAt`, `lastActiveAt`, etc.
+* This info is stored **once**, and updated when the user signs in again (like `lastActiveAt` or `sessionId`).
 
-You can switch between environments by using the corresponding `.env` file when building or running the project.
+---
 
-### Project Structure
+###  What Files Do What?
 
-Here's the current directory structure:
+#### 1. `src/firebase.js`
 
-```
-├── README.md
-├── index.html
-├── node_modules/
-├── package.json
-├── public/
-├── src/
-│   ├── App.jsx           # Root React component
-│   ├── components/       # Reusable UI components
-│   ├── config/           # Configuration files
-│   ├── contexts/         # React context providers
-│   ├── hooks/            # Custom React hooks
-│   ├── main.jsx          # Entry point, renders <App />
-│   ├── pages/            # Page-level components
-│   └── phaser/           # Game-related logic (e.g., Phaser.js)
-└── vite.config.js        # Vite configuration
-```
+Initializes Firebase Auth + Firestore once.
+All other files import `auth`, `db`, and `googleProvider` from here.
 
-### Entry Point
+#### 2. `src/services/`
 
-* `index.html`: Contains the script tag that loads the main entry point.
-* `src/main.jsx`: This is the root script that initializes the React app and renders `<App />` from `App.jsx`.
+All your Firebase logic lives here. These are **reusable helpers** that handle reading/writing from Firestore and doing Auth actions.
 
-### How to Run
+* `authService.js` → login, signup, logout (talks to Firebase Auth)
+* `userService.js` → reads/writes to `/users/{uid}`
 
-To start the development server:
+  * Example: `setSessionId(uid, sessionId)` sets or clears a user's session
+* `sessionService.js` (optional) → writes to `/sessions/{sessionId}`
+* `controlledUserService.js` (optional) → used for anonymous A/B testing users
 
-```bash
-npm run dev
-```
+You **never call Firebase directly in React components**. Always go through these services.
 
-This will start the Vite dev server with hot module reload (HMR) enabled.
-### Connection to backend
-App.jsx is connected to the backend by use of use states and use effect, as it fetch the API it renders by fetching . 
-Api url that again you could change in env.
+#### 3. `src/components/Auth/AuthContext.jsx`
 
+A global context that:
 
+* Tracks current signed-in user (`currentUser`)
+* Tracks their Firestore profile (`userProfile`)
+* Provides functions: `signup()`, `loginEmail()`, `loginGoogle()`, `logout()`
 
+It uses Firebase’s `onAuthStateChanged()` to auto-update when the user logs in/out.
+
+> 🔁 `unsubscribe()` is used to clean up that Firebase listener when the component is removed.
+
+#### 4. `src/pages/`
+
+UI components that the user interacts with.
+
+* `loginPage.jsx` → handles email or Google login
+* `signupPage.jsx` → handles account creation and saves profile to Firestore
+* `userProfile.jsx` → shows user data from Firestore
+* `homepage.jsx` → protected home screen after login
+
+These just call functions from `AuthContext`, like `loginEmail()` or `signup()`.
+
+#### 5. `src/App.jsx`
+
+Main entry point. Wraps everything in `<AuthProvider>`, and sets up routes.
+
+> Example: `PrivateRoute` makes sure some pages only load if the user is logged in.
+
+---
+
+### 🌱 Example User Flow (How it works together)
+
+1. **User signs up** → calls `signup(email, pass, name)` from `authService`
+2. **Firebase creates user**, then we **write their profile** to `/users/{uid}`
+3. **User logs in** later → we **update `lastActiveAt`** and load their info
+4. **Current user and profile** are available via `useAuth()` in any component
+5. **You can set or clear session info** (like what game they’re in) using helpers like `setSessionId(uid, sessionId)`
+
+---
+
+### ✏️ Simple Terms Explained
+
+* **`setSessionId(uid, sessionId)`** → Writes which session the user is in (e.g. game level). You can pass `null` to clear it.
+* **`unsubscribe()`** → When Firebase tracks login/logout, we “clean up” the listener if the page changes.
+* **Why is `logout()` in `AuthContext` *and* `authService`?**
+  `authService.logout()` just signs out.
+  `AuthContext.logout()` is a wrapper so you can call it from anywhere in React easily, and update local state.
+
+---
+
+### 💡 Aliases
+
+* `import LoginPage from "./pages/loginPage"` → **relative path**
+* `import LoginPage from "@/pages/loginPage"` → **alias** to `src/pages/...` (cleaner and consistent)
+  Make sure `@` is configured in `vite.config.js`.
+
+---
+
+### 🏁 TL;DR – How to Use
+
+* Add Firebase config to `firebase.js`
+* Wrap app in `<AuthProvider>`
+* Use `useAuth()` to access:
+
+  * `currentUser` (from Firebase)
+  * `userProfile` (from Firestore)
+  * Functions: `signup`, `loginEmail`, `loginGoogle`, `logout`
+* Call Firestore helpers (like `setSessionId`) from `userService.js`
+
+---
+
+That’s it. This setup gives you a clean, scalable way to manage users, sessions, and auth — all in one place.
