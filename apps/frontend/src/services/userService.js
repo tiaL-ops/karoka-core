@@ -3,10 +3,9 @@ import { doc, setDoc, getDoc, updateDoc, serverTimestamp } from "firebase/firest
 import { db } from "@/firebase";
 
 // Import auth to get the current user and their ID token
-import { auth } from "@/firebase"; // ADD THIS LINE
+import { auth } from "@/firebase"; 
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; // Assuming VITE_API_BASE_URL is defined in .env and available
-
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; 
 /**
  * Creates a Firestore document at /users/{uid}
  * AND calls the backend API to create a user in PostgreSQL.
@@ -47,9 +46,6 @@ export async function createUserProfile(user, displayName, role = "user") {
     id: uid, // Use Firebase UID as the ID for PostgreSQL
     name: displayName || user.displayName || user.email || "New User", // Name for PostgreSQL
    
-    // You can add other fields here that your backend User model expects, e.g., bio, age, sex
-    // based on what your signupPage.jsx might collect or you want to default.
-    // For now, let's keep it minimal as per your User model's non-nullable fields.
   };
 
   try {
@@ -57,7 +53,7 @@ export async function createUserProfile(user, displayName, role = "user") {
     const token = await user.getIdToken();
     console.log("Starting user in backend PostgreSQL with token:", token);
 
-    const response = await fetch(`${API_BASE_URL}/user`, {
+    const response = await fetch(`${API_BASE_URL}/user/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
