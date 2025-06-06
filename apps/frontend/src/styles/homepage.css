@@ -65,13 +65,21 @@ body {
 .hero-section {
   padding: 100px 20px;
   position: relative;
-  min-height: 80vh; /* Give it more space */
+  min-height: 80vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-}
 
+  /* --- MODIFIED LINES START --- */
+  background-color: #211a21; /* Fallback color */
+  /* This creates a semi-transparent black overlay on top of your image */
+  background-image: linear-gradient(rgba(33, 26, 33, 0.9), rgba(33, 26, 33, 0.9)), url('../assets/k2.png');
+  background-size: cover; /* Ensures the image covers the whole section */
+  background-position: center; /* Centers the image */
+  background-repeat: no-repeat;
+  /* --- MODIFIED LINES END --- */
+}
 .mascot {
   width: 150px;
   position: absolute;
@@ -106,7 +114,7 @@ body {
 
 /* --- Change: Alternating background color --- */
 .alt-bg {
-    background-color: #2a212a; /* A slightly lighter, alternate color */
+    background-color: #1c151c; /* A slightly lighter, alternate color */
 }
 
 /* --- Change: Smaller Divider (Replaced with padding) --- */

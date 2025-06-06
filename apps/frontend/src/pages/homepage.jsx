@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import '../styles/homepage.css'; // Import the stylesheet
 import logo from '../assets/logo.png'; // Make sure you have this logo
 import gameGif from '../assets/game.gif'; // Add the game gif
+import heroBg from '../assets/k2.png';
 import teamIllustration from '../assets/heart.gif'; // The team illustration
 import mascot from '../assets/game.gif'; // The mascot image
 
