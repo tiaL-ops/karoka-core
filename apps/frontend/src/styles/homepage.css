@@ -3,9 +3,9 @@
    ===================================== */
 @import url('https://fonts.googleapis.com/css2?family=Kdam+Thmor+Pro&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
-
 @import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=DotGothic16&display=swap'); /* :contentReference[oaicite:1]{index=1} */
+@import url('https://fonts.googleapis.com/css2?family=DotGothic16&display=swap');
+
 * {
   margin: 0;
   padding: 0;
@@ -21,7 +21,7 @@ body,
 
 /* Base background & text colors for the entire page */
 .page-wrapper {
-  background-color:#241827; /* dark purple */
+  background-color: #241827; /* dark purple */
   color: white;
   font-family: "Poppins", sans-serif;
   min-height: 100vh;
@@ -42,12 +42,12 @@ body,
   top: 0;
   left: 0;
   z-index: 1000;
-  border-bottom: 1px solid #2d1a48; /* subtle bottom border for separation */
+  border-bottom: 1px solid #2d1a48; /* subtle bottom border */
 }
 
 .nav-content {
   width: 100%;
-  max-width: 500px;
+  max-width: 1000px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -83,7 +83,7 @@ body,
 }
 
 /* =====================================
-   MAIN SPLIT SECTION
+   MAIN SPLIT SECTION (NORMAL)
    ===================================== */
 .main-split {
   display: flex;
@@ -93,8 +93,9 @@ body,
   height: calc(100vh - 60px);
 }
 
-/* LEFT PANE (50% width) */
-.left-pane {
+/* LEFT PANE (50% width) – same for both “1” and “2” */
+.left-pane-1,
+.left-pane-2 {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -104,24 +105,24 @@ body,
   padding: 16px;
 }
 
-/* “KAROKA” Title */
+/* “KAROKA” Title – reuse for both panes */
 .title {
-    font-family: 'Pixelify Sans', monospace;
-    font-size: 8rem;
-    color: #ff00aa; /* bright pink like your image */
-    margin-bottom: 16px;
-    
-  }
-
-/* Tagline below title */
-.tagline {
-  font-size: 1rem;
-  font-weight: 300;
-  margin-bottom: 24px;
+  font-family: 'Pixelify Sans', monospace;
+  font-size: 8rem;
+  color: #ff00aa; /* bright pink */
+  margin-bottom: 16px;
 }
 
-/* Pink “Start Learning” button */
-.cta-button {
+/* Tagline below title or copy */
+.tagline {
+  font-size: 1.5rem;
+  font-weight: 300;
+  margin-bottom: 100px;
+}
+
+/* Pink “Call‐To‐Action” buttons (shared) */
+.cta-button,
+.cta-button-2 {
   background-color: #ff0080; /* neon pink */
   color: white;
   border: none;
@@ -133,65 +134,68 @@ body,
   transition: background-color 0.2s;
   margin-bottom: 16px;
 }
-.cta-button:hover {
+.cta-button:hover,
+.cta-button-2:hover {
   background-color: #e60073;
 }
 
-/* Down arrow below the button */
+/* Down arrow below each button (shared) */
 .down-arrow {
   font-size: 1.5rem;
   color: white;
   animation: bounce 2s infinite;
   margin-top: 8px;
 }
-
-/* Simple “bounce” animation for arrow */
 @keyframes bounce {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(8px);
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
 }
 
-/* RIGHT PANE (50% width) */
-.right-pane {
+/* RIGHT PANE (50% width) – reuse for both panes */
+.right-pane-1,
+.right-pane-2 {
   flex: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 16px;
 }
 
-/* Placeholder GIF styling */
+/* Placeholder GIF styling (shared) */
 .animated-gif {
-  max-width: 100%;
+  max-width: 400%;
   height: auto;
-  
+}
+
+/* =====================================
+   MAIN SPLIT SECTION (REVERSED)
+   ===================================== */
+/* Just add a “reverse” class (or .main-split.reverse) that flips left/right */
+.main-split.reverse {
+  display: flex;
+  flex-direction: row-reverse; /* ← invert the order */
+  justify-content: space-between;
+  margin-top: 60px;
+  height: calc(100vh - 60px);
 }
 
 /* =====================================
    RESPONSIVE BREAKPOINTS
    ===================================== */
 @media screen and (max-width: 768px) {
-  .main-split {
+  .main-split,
+  .main-split.reverse {
     flex-direction: column;
     height: auto; /* let content determine height */
   }
 
-  .left-pane,
-  .right-pane {
+  .left-pane-1,
+  .right-pane-1,
+  .left-pane-2,
+  .right-pane-2 {
     width: 100%;
     padding: 32px 16px;
-  }
-
-  .left-pane {
-    margin-top: 24px;
-  }
-
-  .right-pane {
     margin-top: 24px;
   }
 
@@ -203,4 +207,102 @@ body,
   .tagline {
     font-size: 0.9rem;
   }
+}
+
+/* =====================================
+   JOIN US SECTION
+   ===================================== */
+.join-section .join-left,
+.join-section .join-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+/* Text block on the left side of “Join Us” */
+.join-text-block {
+  text-align: left;
+  line-height: 1.4;
+}
+.join-text-block .join-line {
+  font-size: 1.3rem;
+  margin-bottom: 8px;
+}
+.join-text-block .cta-button-2 {
+  margin-top: 16px;
+}
+
+/* The “Work In Progress” diamond */
+.wip-shape {
+  width: 300px;
+  height: 300px;
+  background-color: #fffdf5; /* off‐white */
+  border: 4px solid #ff0080; /* neon pink border */
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(45deg);
+}
+.wip-text {
+  color: #ff0080;
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.2;
+  transform: rotate(-45deg);
+}
+
+/* =====================================
+   CONTACT SECTION
+   ===================================== */
+.contact-section .contact-left,
+.contact-section .contact-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+/* Left side: the form */
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  max-width: 400px;
+}
+.contact-form label {
+  font-size: 1rem;
+  margin-bottom: 4px;
+  margin-top: 12px;
+}
+.contact-form input,
+.contact-form textarea {
+  background-color: #4a4a4a; /* dark grey input backgrounds */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 1rem;
+  margin-bottom: 8px;
+  resize: none; /* no manual resizing on textarea */
+}
+.contact-form textarea {
+  height: 140px;
+}
+.contact-form input:focus,
+.contact-form textarea:focus {
+  outline: none;
+  box-shadow: 0 0 4px rgba(255, 0, 128, 0.5);
+}
+
+/* Right side: the contact text */
+.contact-text {
+  font-size: 1.2rem;
+  line-height: 1.5;
+  text-align: left;
+  max-width: 400px;
 }
