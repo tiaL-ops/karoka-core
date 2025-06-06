@@ -1,110 +1,87 @@
+# Frontend Application (React + Vite)
 
-## Front end setup (Full Summary)
+This directory contains the source code for the Karoka user-facing web application. It is built with **React** and bundled with **Vite** for a fast development experience.
 
-This frontend uses Firebase Auth and Firestore to handle user signup, login, and profile storage. Below is everything you need to know — what files do what, and how to keep the system clean and reusable.
-
----
-
-###  What Happens When a User Signs Up or Logs In?
-
-* **Firebase Auth** handles the login/signup.
-* We **create or fetch** a matching document in Firestore under:
-  `/users/{uid}`
-  with fields like `email`, `role`, `createdAt`, `lastActiveAt`, etc.
-* This info is stored **once**, and updated when the user signs in again (like `lastActiveAt` or `sessionId`).
+## Table of Contents
+1.  [Core Responsibilities](#core-responsibilities)
+2.  [Key Directories & Files](#key-directories-files)
+3.  [Running in Development](#running-in-development)
+4.  [Important Conventions](#important-conventions)
 
 ---
 
-###  What Files Do What?
+### Core Responsibilities
 
-#### 1. `src/firebase.js`
-
-Initializes Firebase Auth + Firestore once.
-All other files import `auth`, `db`, and `googleProvider` from here.
-
-#### 2. `src/services/`
-
-All your Firebase logic lives here. These are **reusable helpers** that handle reading/writing from Firestore and doing Auth actions.
-
-* `authService.js` → login, signup, logout (talks to Firebase Auth)
-* `userService.js` → reads/writes to `/users/{uid}`
-
-  * Example: `setSessionId(uid, sessionId)` sets or clears a user's session
-* `sessionService.js` (optional) → writes to `/sessions/{sessionId}`
-* `controlledUserService.js` (optional) → used for anonymous A/B testing users
-
-You **never call Firebase directly in React components**. Always go through these services.
-
-#### 3. `src/components/Auth/AuthContext.jsx`
-
-A global context that:
-
-* Tracks current signed-in user (`currentUser`)
-* Tracks their Firestore profile (`userProfile`)
-* Provides functions: `signup()`, `loginEmail()`, `loginGoogle()`, `logout()`
-
-It uses Firebase’s `onAuthStateChanged()` to auto-update when the user logs in/out.
-
-> 🔁 `unsubscribe()` is used to clean up that Firebase listener when the component is removed.
-
-#### 4. `src/pages/`
-
-UI components that the user interacts with.
-
-* `loginPage.jsx` → handles email or Google login
-* `signupPage.jsx` → handles account creation and saves profile to Firestore
-* `userProfile.jsx` → shows user data from Firestore
-* `homepage.jsx` → protected home screen after login
-
-These just call functions from `AuthContext`, like `loginEmail()` or `signup()`.
-
-#### 5. `src/App.jsx`
-
-Main entry point. Wraps everything in `<AuthProvider>`, and sets up routes.
-
-> Example: `PrivateRoute` makes sure some pages only load if the user is logged in.
+* Render all user interfaces (UI).
+* Manage user authentication state (login, logout, signup).
+* Communicate with the backend API to fetch and send data.
+* Interact with Firebase services (Auth and Firestore) via the Web SDK.
 
 ---
 
-### 🌱 Example User Flow (How it works together)
+### Key Directories & Files
 
-1. **User signs up** → calls `signup(email, pass, name)` from `authService`
-2. **Firebase creates user**, then we **write their profile** to `/users/{uid}`
-3. **User logs in** later → we **update `lastActiveAt`** and load their info
-4. **Current user and profile** are available via `useAuth()` in any component
-5. **You can set or clear session info** (like what game they’re in) using helpers like `setSessionId(uid, sessionId)`
-
----
-
-### ✏️ Simple Terms Explained
-
-* **`setSessionId(uid, sessionId)`** → Writes which session the user is in (e.g. game level). You can pass `null` to clear it.
-* **`unsubscribe()`** → When Firebase tracks login/logout, we “clean up” the listener if the page changes.
-* **Why is `logout()` in `AuthContext` *and* `authService`?**
-  `authService.logout()` just signs out.
-  `AuthContext.logout()` is a wrapper so you can call it from anywhere in React easily, and update local state.
-
----
-
-### 💡 Aliases
-
-* `import LoginPage from "./pages/loginPage"` → **relative path**
-* `import LoginPage from "@/pages/loginPage"` → **alias** to `src/pages/...` (cleaner and consistent)
-  Make sure `@` is configured in `vite.config.js`.
+* `public/`: Static assets that are copied directly to the build output.
+* `src/`: The main application source code.
+    * `assets/`: Images, logos, and other static files imported by components.
+    * `components/`: **Reusable React components**.
+        * `Auth/AuthContext.jsx`: A critical component that provides authentication state (`currentUser`, `userProfile`) and methods (`login`, `logout`) to the entire app.
+        * `Navbar/Navbar.jsx`: The main navigation bar.
+    * `pages/`: **Page-level components** that correspond to a specific route (e.g., `homepage.jsx`, `loginPage.jsx`).
+    * `services/`: **All external communication logic lives here.** This is a crucial convention.
+        * `authService.js`: Handles all Firebase Authentication logic (signup, login, etc.).
+        * `userService.js`: Handles creating and fetching user profiles from Firestore and the backend.
+    * `styles/`: Global and page-specific CSS files.
+    * `App.jsx`: The root component where all routes are defined.
+    * `firebase.js`: Initializes the Firebase app. **This is the only place Firebase should be configured.**
+    * `main.jsx`: The entry point of the React application.
+* `.env`: **(You must create this)** Contains environment-specific variables like Firebase keys and the backend API URL.
+* `vite.config.js`: Configuration for the Vite development server and build process. Note the use of the `@` alias, which maps to `src/`.
 
 ---
 
-### 🏁 TL;DR – How to Use
+### Running in Development
 
-* Add Firebase config to `firebase.js`
-* Wrap app in `<AuthProvider>`
-* Use `useAuth()` to access:
+While `docker-compose` is the recommended way to run the whole stack, you can run the frontend standalone for UI development.
 
-  * `currentUser` (from Firebase)
-  * `userProfile` (from Firestore)
-  * Functions: `signup`, `loginEmail`, `loginGoogle`, `logout`
-* Call Firestore helpers (like `setSessionId`) from `userService.js`
+1.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
+2.  **Run the dev server:**
+    Make sure your `apps/frontend/.env` file is created and has the correct `VITE_API_BASE_URL`.
+    ```bash
+    npm run dev
+    ```
+    The app will be available at [http://localhost:3000](http://localhost:3000) (or the port defined in your `.env` file).
 
 ---
 
-That’s it. This setup gives you a clean, scalable way to manage users, sessions, and auth — all in one place.
+### Important Conventions
+
+To keep the frontend clean, scalable, and easy to debug, please follow these rules:
+
+1.  **Service Abstraction: The Golden Rule**
+    * **NEVER** call Firebase or `fetch` directly from a React component (`.jsx` file).
+    * All external API calls (to our backend or to Firebase) **MUST** be placed in a function within the `src/services/` directory.
+    * This keeps our components clean and focused on UI, and makes it easy to find and modify data logic.
+
+2.  **Authentication State**
+    * To get the current user's information, use the `useAuth()` hook provided by `AuthContext.jsx`.
+    * **Example**: `const { currentUser, userProfile } = useAuth();`
+    * This gives you both the Firebase Auth user (`currentUser`) and their corresponding Firestore profile (`userProfile`).
+
+3.  **Protected Routes**
+    * The `App.jsx` file uses a `<PrivateRoute>` component to protect routes that require authentication or specific roles.
+    * To protect a new page, wrap it in this component and provide the allowed roles.
+    * **Example**:
+        ```jsx
+        <PrivateRoute allowedRoles={['admin', 'tester']}>
+          <MyProtectedPage />
+        </PrivateRoute>
+        ```
+
+4.  **Path Aliases**
+    * Use the `@/` alias for imports from the `src/` directory to avoid long relative paths (`../../`).
+    * **Do**: `import LoginPage from '@/pages/loginPage';`
+    * **Don't**: `import LoginPage from '../pages/loginPage';`
