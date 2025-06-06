@@ -41,12 +41,11 @@ def create_user_route():
     data['id'] = user_id_from_token
 
     print('🐼 ENtered the create user and got the data id , it is ', data['id'])
-    if 'displayName' in data: 
-        data['name'] = data['displayName']
-    elif 'email' in data:
-        data['name'] = data['email'] # Fallback if displayName not provided
-    else:
-        data['name'] = "New User" # Default name if neither is available
+    print('🙄ALl data is ', data)
+ 
+    if data['name'] == None:
+        data['name'] = "Anonymous" # Default name if neither is available
+
     data['role'] = data.get('role', 'user') 
 
 
@@ -111,3 +110,5 @@ def get_user_route(user_id):
         return jsonify({"error": f"Failed to retrieve user data: {str(e)}"}), 500
     finally:
         db.close()
+
+
