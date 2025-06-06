@@ -84,7 +84,7 @@ export default function Homepage() {
           <blockquote>
             “Make it fun, make it accessible, make it productive. xo.”
           </blockquote>
-          <button className="cta-button">Play</button>
+         
         </section>
       </FadeInSection>
 
