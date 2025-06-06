@@ -1,308 +1,222 @@
-/* =====================================
-   GLOBAL RESET + BASIC SETTINGS
-   ===================================== */
-@import url('https://fonts.googleapis.com/css2?family=Kdam+Thmor+Pro&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=DotGothic16&display=swap');
+/* Import a pixel font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto:wght@400;700&display=swap');
 
-* {
+/* General Body Styles */
+body {
   margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+  /* Using a more standard font for body text for readability */
+  font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+  background-color: #211a21; /* Main dark background */
+  color: #ffffff;
 }
 
-html,
-body,
-#root {
-  height: 100%;
-  width: 100%;
-}
-
-/* Base background & text colors for the entire page */
-.page-wrapper {
-  background-color: #241827; /* dark purple */
-  color: white;
-  font-family: "Poppins", sans-serif;
-  min-height: 100vh;
-}
-
-/* =====================================
-   NAVBAR
-   ===================================== */
-.navbar {
-  background-color: #241827; /* same dark purple */
-  font-family: 'Kdam Thmor Pro', sans-serif;
-  width: 100%;
-  height: 80px; /* fixed nav height */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 1000;
-  border-bottom: 1px solid #2d1a48; /* subtle bottom border */
-}
-
-.nav-content {
-  width: 100%;
-  max-width: 1000px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-/* Logo container */
-.logo-container {
-  display: flex;
-  align-items: center;
-}
-
-.logo-image {
-  height: 100px;
-  width: auto;
-}
-
-/* Placeholder nav links  */
-.nav-links {
-  list-style: none;
-  display: flex;
-}
-.nav-links li {
-  margin-left: 24px;
-}
-.nav-links a {
-  text-decoration: none;
-  color: white;
-  font-weight: 500;
-  font-size: 0.9rem;
-}
-.nav-links a:hover {
-  opacity: 0.8;
-}
-
-/* =====================================
-   MAIN SPLIT SECTION (NORMAL)
-   ===================================== */
-.main-split {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin-top: 60px; /* offset by navbar height */
-  height: calc(100vh - 60px);
-}
-
-/* LEFT PANE (50% width) – same for both “1” and “2” */
-.left-pane-1,
-.left-pane-2 {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+.homepage {
   text-align: center;
-  padding: 16px;
 }
 
-/* “KAROKA” Title – reuse for both panes */
-.title {
-  font-family: 'Pixelify Sans', monospace;
-  font-size: 8rem;
-  color: #ff00aa; /* bright pink */
-  margin-bottom: 16px;
+/* --- Change: Sticky Navigation Bar --- */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 50px;
+  background-color: #ffffff;
+  /* New styles for sticky behavior */
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: calc(100% - 100px); /* Adjust width considering padding */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Tagline below title or copy */
-.tagline {
-  font-size: 1.5rem;
-  font-weight: 300;
-  margin-bottom: 100px;
+.navbar .logo {
+  font-family: 'Press Start 2P', cursive;
+  color: #ff3399;
+  font-size: 24px;
 }
 
-/* Pink “Call‐To‐Action” buttons (shared) */
-.cta-button,
-.cta-button-2 {
-  background-color: #ff0080; /* neon pink */
-  color: white;
+.nav-links a {
+  color: #211a21;
+  text-decoration: none;
+  margin-left: 30px;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* CTA Button Styles */
+.cta-button {
+  background-color: #ff3399;
+  color: #ffffff;
   border: none;
-  border-radius: 24px;
-  padding: 12px 28px;
-  font-size: 1rem;
-  font-weight: 600;
+  border-radius: 25px;
+  padding: 15px 35px;
+  font-size: 18px;
+  font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.2s;
-  margin-bottom: 16px;
+  transition: background-color 0.3s, transform 0.2s;
 }
-.cta-button:hover,
-.cta-button-2:hover {
+
+.cta-button:hover {
   background-color: #e60073;
+  transform: translateY(-2px);
 }
 
-/* Down arrow below each button (shared) */
-.down-arrow {
-  font-size: 1.5rem;
-  color: white;
-  animation: bounce 2s infinite;
-  margin-top: 8px;
-}
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(8px); }
-}
-
-/* RIGHT PANE (50% width) – reuse for both panes */
-.right-pane-1,
-.right-pane-2 {
-  flex: 1;
+/* Hero Section */
+.hero-section {
+  padding: 100px 20px;
+  position: relative;
+  min-height: 80vh; /* Give it more space */
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  padding: 16px;
+  align-items: center;
 }
 
-/* Placeholder GIF styling (shared) */
-.animated-gif {
-  max-width: 400%;
-  height: auto;
+.mascot {
+  width: 150px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -170%); /* Adjusted position */
 }
 
-/* =====================================
-   MAIN SPLIT SECTION (REVERSED)
-   ===================================== */
-/* Just add a “reverse” class (or .main-split.reverse) that flips left/right */
-.main-split.reverse {
-  display: flex;
-  flex-direction: row-reverse; /* ← invert the order */
-  justify-content: space-between;
+.main-title {
+  font-family: 'Press Start 2P', cursive;
+  color: #ff3399;
+  font-size: 68px; /* Slightly bigger */
   margin-top: 60px;
-  height: calc(100vh - 60px);
+  margin-bottom: 10px;
 }
 
-/* =====================================
-   RESPONSIVE BREAKPOINTS
-   ===================================== */
-@media screen and (max-width: 768px) {
-  .main-split,
-  .main-split.reverse {
-    flex-direction: column;
-    height: auto; /* let content determine height */
-  }
-
-  .left-pane-1,
-  .right-pane-1,
-  .left-pane-2,
-  .right-pane-2 {
-    width: 100%;
-    padding: 32px 16px;
-    margin-top: 24px;
-  }
-
-  /* Reduce title size a bit on smaller screens */
-  .title {
-    font-size: 1.5rem;
-  }
-
-  .tagline {
-    font-size: 0.9rem;
-  }
+.subtitle {
+  font-size: 28px; /* Bigger font */
+  margin-bottom: 40px;
 }
 
-/* =====================================
-   JOIN US SECTION
-   ===================================== */
-.join-section .join-left,
-.join-section .join-right {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
+/* --- Change: Common styles for sections --- */
+.content-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 60px;
+    padding: 80px 5%; /* More vertical padding */
+    min-height: 400px;
+    background-color: #211a21; /* Default background */
 }
 
-/* Text block on the left side of “Join Us” */
-.join-text-block {
-  text-align: left;
-  line-height: 1.4;
-}
-.join-text-block .join-line {
-  font-size: 1.3rem;
-  margin-bottom: 8px;
-}
-.join-text-block .cta-button-2 {
-  margin-top: 16px;
+/* --- Change: Alternating background color --- */
+.alt-bg {
+    background-color: #2a212a; /* A slightly lighter, alternate color */
 }
 
-/* The “Work In Progress” diamond */
-.wip-shape {
+/* --- Change: Smaller Divider (Replaced with padding) --- */
+/* We remove the <hr> and now use padding and alternating backgrounds */
+
+
+/* About Section */
+.content-section.alt-bg {
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+.about-section .game-visual img {
   width: 300px;
   height: 300px;
-  background-color: #fffdf5; /* off‐white */
-  border: 4px solid #ff0080; /* neon pink border */
-  border-radius: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transform: rotate(45deg);
-}
-.wip-text {
-  color: #ff0080;
-  font-size: 2rem;
-  font-weight: 700;
-  text-align: center;
-  line-height: 1.2;
-  transform: rotate(-45deg);
+  border-radius: 50%;
+  object-fit: cover;
 }
 
-/* =====================================
-   CONTACT SECTION
-   ===================================== */
-.contact-section .contact-left,
-.contact-section .contact-right {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
+.about-text p {
+  max-width: 500px;
+  text-align: left;
+  font-size: 24px; /* Bigger font */
+  line-height: 1.6;
 }
 
-/* Left side: the form */
-.contact-form {
-  display: flex;
-  flex-direction: column;
-  width: 80%;
-  max-width: 400px;
+.about-text button {
+  margin-top: 20px;
 }
-.contact-form label {
-  font-size: 1rem;
-  margin-bottom: 4px;
-  margin-top: 12px;
+
+/* Mission Section */
+#mission {
+    flex-direction: column;
 }
+
+.section-title {
+    font-family: 'Press Start 2P', cursive;
+    color: #ff3399;
+    font-size: 52px; /* Bigger font */
+    margin-bottom: 25px;
+}
+
+#mission blockquote {
+    font-size: 32px; /* Bigger font */
+    font-style: italic;
+    margin: 20px 0;
+    max-width: 650px;
+    line-height: 1.5;
+}
+
+/* Join Us Section */
+.join-us-text {
+    max-width: 450px;
+    font-size: 24px; /* Bigger font */
+    line-height: 1.7;
+}
+
+.join-us-text button {
+    margin-top: 20px;
+}
+
+.team-illustration img {
+    max-width: 400px;
+}
+
+/* Contact Section */
+#contact {
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.contact-form-container {
+  flex-basis: 45%;
+  min-width: 300px;
+}
+
 .contact-form input,
 .contact-form textarea {
-  background-color: #4a4a4a; /* dark grey input backgrounds */
-  color: white;
+  width: 100%;
+  background-color: #3b323b;
   border: none;
   border-radius: 8px;
-  padding: 8px 12px;
-  font-size: 1rem;
-  margin-bottom: 8px;
-  resize: none; /* no manual resizing on textarea */
-}
-.contact-form textarea {
-  height: 140px;
-}
-.contact-form input:focus,
-.contact-form textarea:focus {
-  outline: none;
-  box-shadow: 0 0 4px rgba(255, 0, 128, 0.5);
+  padding: 15px;
+  margin-bottom: 15px;
+  color: #ffffff;
+  font-size: 16px;
 }
 
-/* Right side: the contact text */
+.contact-form input::placeholder,
+.contact-form textarea::placeholder {
+  color: #a09da0;
+}
+
 .contact-text {
-  font-size: 1.2rem;
-  line-height: 1.5;
+  flex-basis: 45%;
+  min-width: 300px;
   text-align: left;
-  max-width: 400px;
+  font-size: 22px; /* Bigger font */
+  line-height: 1.6;
+}
+
+
+/* --- Change: Scrolling Fade-in Effect --- */
+.fade-in-section {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  will-change: opacity, transform;
+}
+
+.fade-in-section.is-visible {
+  opacity: 1;
+  transform: translateY(0);
 }
