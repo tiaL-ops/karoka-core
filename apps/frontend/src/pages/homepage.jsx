@@ -5,7 +5,7 @@ import '../styles/homepage.css'; // Import the stylesheet
 import logo from '../assets/logo.png'; // Make sure you have this logo
 import gameGif from '../assets/game.gif'; // Add the game gif
 import heroBg from '../assets/k2.png';
-import teamIllustration from '../assets/heart.gif'; // The team illustration
+import teamIllustration from '../assets/star.gif'; // The team illustration
 import mascot from '../assets/game.gif'; // The mascot image
 
 // This component will wrap our sections and apply the fade-in effect
@@ -65,7 +65,9 @@ export default function Homepage() {
           </div>
           <div className="about-text">
             <p>Karoka is a game-based platform that teaches coding, and helps you discover how you learn best.</p>
-            <button className="cta-button">Play</button>
+             <Link to="/game">
+  <button className="cta-button">Play</button>
+</Link>
           </div>
         </section>
       </FadeInSection>
