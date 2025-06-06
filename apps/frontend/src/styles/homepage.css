@@ -1,0 +1,206 @@
+/* =====================================
+   GLOBAL RESET + BASIC SETTINGS
+   ===================================== */
+@import url('https://fonts.googleapis.com/css2?family=Kdam+Thmor+Pro&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DotGothic16&display=swap'); /* :contentReference[oaicite:1]{index=1} */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+}
+
+/* Base background & text colors for the entire page */
+.page-wrapper {
+  background-color:#241827; /* dark purple */
+  color: white;
+  font-family: "Poppins", sans-serif;
+  min-height: 100vh;
+}
+
+/* =====================================
+   NAVBAR
+   ===================================== */
+.navbar {
+  background-color: #241827; /* same dark purple */
+  font-family: 'Kdam Thmor Pro', sans-serif;
+  width: 100%;
+  height: 80px; /* fixed nav height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  border-bottom: 1px solid #2d1a48; /* subtle bottom border for separation */
+}
+
+.nav-content {
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Logo container */
+.logo-container {
+  display: flex;
+  align-items: center;
+}
+
+.logo-image {
+  height: 100px;
+  width: auto;
+}
+
+/* Placeholder nav links  */
+.nav-links {
+  list-style: none;
+  display: flex;
+}
+.nav-links li {
+  margin-left: 24px;
+}
+.nav-links a {
+  text-decoration: none;
+  color: white;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+.nav-links a:hover {
+  opacity: 0.8;
+}
+
+/* =====================================
+   MAIN SPLIT SECTION
+   ===================================== */
+.main-split {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 60px; /* offset by navbar height */
+  height: calc(100vh - 60px);
+}
+
+/* LEFT PANE (50% width) */
+.left-pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 16px;
+}
+
+/* “KAROKA” Title */
+.title {
+    font-family: 'Pixelify Sans', monospace;
+    font-size: 8rem;
+    color: #ff00aa; /* bright pink like your image */
+    margin-bottom: 16px;
+    
+  }
+
+/* Tagline below title */
+.tagline {
+  font-size: 1rem;
+  font-weight: 300;
+  margin-bottom: 24px;
+}
+
+/* Pink “Start Learning” button */
+.cta-button {
+  background-color: #ff0080; /* neon pink */
+  color: white;
+  border: none;
+  border-radius: 24px;
+  padding: 12px 28px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-bottom: 16px;
+}
+.cta-button:hover {
+  background-color: #e60073;
+}
+
+/* Down arrow below the button */
+.down-arrow {
+  font-size: 1.5rem;
+  color: white;
+  animation: bounce 2s infinite;
+  margin-top: 8px;
+}
+
+/* Simple “bounce” animation for arrow */
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+/* RIGHT PANE (50% width) */
+.right-pane {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+/* Placeholder GIF styling */
+.animated-gif {
+  max-width: 100%;
+  height: auto;
+  
+}
+
+/* =====================================
+   RESPONSIVE BREAKPOINTS
+   ===================================== */
+@media screen and (max-width: 768px) {
+  .main-split {
+    flex-direction: column;
+    height: auto; /* let content determine height */
+  }
+
+  .left-pane,
+  .right-pane {
+    width: 100%;
+    padding: 32px 16px;
+  }
+
+  .left-pane {
+    margin-top: 24px;
+  }
+
+  .right-pane {
+    margin-top: 24px;
+  }
+
+  /* Reduce title size a bit on smaller screens */
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .tagline {
+    font-size: 0.9rem;
+  }
+}
