@@ -1,0 +1,133 @@
+/* src/styles/loginPage.css */
+
+.login-page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Aligns content to the top */
+  min-height: 100vh;
+  background-color: #ffffff; /* Full white background */
+  padding-top: 60px; /* Space below the sticky navbar */
+}
+
+.login-form-wrapper {
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+}
+
+.login-form-wrapper h1 {
+  font-family: 'Press Start 2P', cursive;
+  color: #ff3399; /* Pink from homepage */
+  font-size: 36px;
+  margin-bottom: 30px;
+}
+
+.login-form-wrapper .input-group {
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.login-form-wrapper label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.login-form-wrapper input {
+  width: calc(100% - 24px); /* Account for padding */
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.login-form-wrapper input:focus {
+  outline: none;
+  border-color: #ff3399; /* Pink highlight on focus */
+}
+
+/* Re-using the homepage button style */
+.cta-button {
+  background-color: #ff3399;
+  color: #ffffff;
+  border: none;
+  border-radius: 25px;
+  padding: 15px 35px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  width: 100%; /* Make buttons full-width */
+  margin-bottom: 15px;
+}
+
+.cta-button:hover {
+  background-color: #e60073;
+  transform: translateY(-2px);
+}
+
+/* Secondary button style for Google login */
+.secondary-button {
+  background-color: #fff;
+  color: #ff3399;
+  border: 2px solid #ff3399;
+}
+
+.secondary-button:hover {
+  background-color: #fff5f9;
+  color: #e60073;
+}
+
+
+/* Divider style */
+.divider {
+  border: 0;
+  text-align: center;
+  height: 1px;
+  background-color: #e0e0e0;
+  margin: 25px 0;
+  position: relative;
+}
+
+.divider::before {
+  content: 'OR';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #ffffff;
+  padding: 0 15px;
+  color: #888;
+  font-weight: bold;
+}
+
+
+.error-message {
+  color: #d93025;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+
+.signup-prompt {
+  margin-top: 25px;
+  font-size: 16px;
+  color: #555;
+}
+
+.signup-prompt a {
+  color: #ff3399;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.signup-prompt a:hover {
+  text-decoration: underline;
+}

@@ -45,6 +45,9 @@ body {
 
 /* CTA Button Styles */
 .cta-button {
+
+width: auto; /* This forces the button to size to its content */
+  display: inline-block;
   background-color: #ff3399;
   color: #ffffff;
   border: none;
@@ -54,6 +57,7 @@ body {
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s, transform 0.2s;
+  /* Ensure there is NO 'width' property here */
 }
 
 .cta-button:hover {

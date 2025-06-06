@@ -1,0 +1,44 @@
+/* src/components/Navbar/Navbar.css */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 50px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: calc(100% - 100px); /* Adjusts for padding */
+}
+
+.navbar .logo {
+  font-family: 'Press Start 2P', cursive;
+  color: #ff3399; /* Pink color for logo */
+  font-size: 24px;
+  text-decoration: none;
+}
+
+.nav-links a {
+  color: #211a21;
+  text-decoration: none;
+  margin-left: 30px;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.login-link {
+  background-color: #ff3399;
+  color: #ffffff !important; /* Use !important to override default link color if needed */
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+.login-link:hover {
+  background-color: #e60073;
+}

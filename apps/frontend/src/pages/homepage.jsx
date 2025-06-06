@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import Navbar from '../components/Navbar/Navbar';
 import '../styles/homepage.css'; // Import the stylesheet
 import logo from '../assets/logo.png'; // Make sure you have this logo
 import gameGif from '../assets/game.gif'; // Add the game gif
@@ -43,19 +44,8 @@ function FadeInSection(props) {
 export default function Homepage() {
   return (
     <div className="homepage">
-      {/* Navigation Bar */}
-      <nav className="navbar">
-        <div className="logo">KAROKA</div>
-        <div className="nav-links">
-          <a href="#learn">Learn</a>
-          <a href="#about">About</a>
-    
-          <a href="#mission">Mission</a>
-          <a href="#join">Join us</a>
-          <a href="#contact">Contact</a>
-        </div>
-      </nav>
-
+     <Navbar />
+  
       {/* Hero Section */}
       <header id="learn" className="hero-section">
   
