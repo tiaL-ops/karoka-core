@@ -1,7 +1,7 @@
 # api/routes/user.py
 from flask import Blueprint, request, jsonify
 from db.database import SessionLocal
-from db.crud.user import create_user, get_user
+from db.crud.user import create_user, get_user,list_users, update_user,delete_user
 from db.models.user import User
 import firebase_admin
 from firebase_admin import auth, firestore # Import firestore to use firestore.SERVER_TIMESTAMP
@@ -44,7 +44,7 @@ def create_user_route():
     print('🙄ALl data is ', data)
  
     if data['name'] == None:
-        data['name'] = "Anonymous" # Default name if neither is available
+        data['name'] = "Anonymous" 
 
     data['role'] = data.get('role', 'user') 
 
@@ -111,4 +111,63 @@ def get_user_route(user_id):
     finally:
         db.close()
 
+@user_bp.route('/sync', methods=['POST'])
+def sync_from_firestore_to_postgres():
+    print(" 🤨Starting user sync from Firestore to PostgreSQL")
+    """
+    POST /user/sync
+    Sync all users from Firestore → PostgreSQL.
+    Also delete any Postgres user not present in Firestore.
+    """
+    firestore_db = firebase_admin.firestore.client()
+    users_collection = firestore_db.collection('users')
 
+    db = SessionLocal()
+    try:
+        # 1. Fetch all Firestore UIDs into a Python set.
+        firestore_uids = set()
+        for doc in users_collection.stream():
+            firestore_uids.add(doc.id)
+
+        # 2. Sync Firestore → Postgres
+        for uid in firestore_uids:
+            doc = users_collection.document(uid).get()
+            if not doc.exists:
+                continue
+
+            user_data = doc.to_dict()
+            pg_user = get_user(db, uid)
+
+            # If not in PG, create
+            if not pg_user:
+                pg_user_data = {
+                    "id": uid,
+                    "name": user_data.get('displayName')
+                             or user_data.get('email')
+                             or "New User",
+                    "role": user_data.get('role', 'user')
+                }
+                create_user(db, user_data=pg_user_data)
+
+            # If exists in PG, update fields
+            else:
+                updates = {
+                    "name": user_data.get('displayName'),
+                    "role": user_data.get('role', 'user')
+                }
+                update_user(db, uid, updates)
+
+        # 3. Fetch all Postgres users, then delete any not in Firestore
+        pg_users = list_users(db)  # returns a list of User objects
+        for pg_user in pg_users:
+            if pg_user.id not in firestore_uids:
+                delete_user(db, pg_user.id)
+
+        return jsonify({"message": "Sync completed successfully"}), 200
+
+    except Exception as e:
+        logger.error(f"Error syncing users from Firestore to PostgreSQL: {e}")
+        return jsonify({"error": f"Failed to sync users: {str(e)}"}), 500
+
+    finally:
+        db.close()

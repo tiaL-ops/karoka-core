@@ -12,9 +12,7 @@ from datetime import datetime
 database_bp = Blueprint('database', __name__)
 
 def get_model_from_tablename(table_name):
-    # This function maps a table name string to its SQLAlchemy model class
-    # You might need to adjust this if your models are not directly in db.models
-    # and if their __tablename__ doesn't directly match the class name (lowercase)
+
     for mapper in Base.registry.mappers:
         cls = mapper.class_
         if hasattr(cls, '__tablename__') and cls.__tablename__ == table_name:
