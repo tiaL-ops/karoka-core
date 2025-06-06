@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Navbar from '../components/Navbar/Navbar';
+import { Link } from 'react-router-dom'; // Import Link for navigation
 import '../styles/homepage.css'; // Import the stylesheet
 import logo from '../assets/logo.png'; // Make sure you have this logo
 import gameGif from '../assets/game.gif'; // Add the game gif
@@ -51,7 +52,9 @@ export default function Homepage() {
   
         <h1 className="main-title">KAROKA</h1>
         <p className="subtitle">Learning reimagined</p>
-        <button className="cta-button">Start learning</button>
+       <Link to="/game">
+  <button className="cta-button">Start learning</button>
+</Link>
       </header>
 
       {/* About Section */}
@@ -85,7 +88,9 @@ export default function Homepage() {
             <p>Engineer? Designer? Educator?</p>
             <p>Looking forward to build with us?</p>
             <p>See our open roles!</p>
-            <button className="cta-button">Be part of the team!</button>
+            <Link to="/careerPage">
+  <button className="cta-button">Be part of the team!</button>
+</Link>
           </div>
           <div className="team-illustration">
             <img src={teamIllustration} alt="Join our team" />
@@ -94,23 +99,24 @@ export default function Homepage() {
       </FadeInSection>
 
       {/* Contact Section */}
-      <FadeInSection>
-        <section id="contact" className="content-section">
-          <div className="contact-form-container">
-            <form className="contact-form">
-              <input type="email" placeholder="Email" name="Email" />
-              <input type="text" placeholder="Subject" name="Subject" />
-              <textarea placeholder="Message" name="Message" rows="5"></textarea>
-              <button type="submit" className="cta-button">Send</button>
-            </form>
-          </div>
-          <div className="contact-text">
-            <p>Would like to contact us?</p>
-            <p>Please fill out this following form,</p>
-            <p>We will reach to you soon</p>
-          </div>
-        </section>
-      </FadeInSection>
+     <FadeInSection>
+  <section id="contact" className="content-section">
+    <div className="contact-wrapper">
+      <h2 className="section-title">Say hello!</h2>
+      <p className="contact-subtitle">
+        Have a question or want to get in touch? We'd love to hear from you.
+      </p>
+      
+      {/* This is the magic link! */}
+      <a
+        href="mailto:landy@karoka.co?subject=Contact from Karoka Website"
+        className="cta-button"
+      >
+        Send Us An Email
+      </a>
+    </div>
+  </section>
+</FadeInSection>
     </div>
   );
 }

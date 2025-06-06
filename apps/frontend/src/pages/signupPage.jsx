@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/components/Auth/AuthContext";
 import Navbar from '../components/Navbar/Navbar'; // Import the shared Navbar
-import '../styles/loginPage.css'; // <<< We can reuse the login page styles!
+import '../styles/pageStyles.css'; // <<< We can reuse the login page styles!
 import '../styles/homepage.css'; // Import for the .cta-button style
 
 export default function SignupPage() {

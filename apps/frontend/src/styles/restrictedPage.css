@@ -1,0 +1,32 @@
+/* src/styles/restrictedPage.css */
+
+.restricted-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Center vertically */
+  align-items: center; /* Center horizontally */
+  text-align: center;
+  min-height: 100vh; /* Take up the full screen height */
+  background-color: #211a21; /* Dark background from homepage */
+  color: #ffffff;
+  padding: 40px;
+  box-sizing: border-box; /* Ensures padding is included in height calculation */
+}
+
+.restricted-content {
+  max-width: 700px; /* Prevents text from getting too wide on large screens */
+}
+
+.restricted-content h1 {
+  font-family: 'Press Start 2P', cursive;
+  color: #ff3399; /* Pink brand color */
+  font-size: 52px;
+  margin-bottom: 40px;
+}
+
+.restricted-content p {
+  font-family: 'Roboto', sans-serif;
+  font-size: 22px;
+  line-height: 1.7;
+  color: #e0e0e0; /* A slightly softer white */
+}

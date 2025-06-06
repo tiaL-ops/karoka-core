@@ -7,6 +7,8 @@ import Homepage from "./pages/homepage"; //
 import LoginPage from "./pages/loginPage"; 
 import DatabasePage from "./pages/databasePage";
 import TableDataPage from "./pages/tableDataPage";
+import RestrictedPage from "./pages/restrictedPage";
+import CareerPage from "./pages/careersPage";
 import { AuthProvider, useAuth } from "@/components/Auth/AuthContext"; //
 
 import GamePage from "./pages/game";
@@ -26,7 +28,7 @@ function PrivateRoute({ children, allowedRoles }) {
 
   if (allowedRoles && !allowedRoles.includes(userProfile.role)) {
    // should think of access denied page here
-    return <Navigate to="/" replace />;
+    return <Navigate to="/restrictedPage" replace />;
   }
 
   return children; // children are the protected components
@@ -42,6 +44,8 @@ function App() {
           <Route path="/ping" element={<PingPage />} /> {/* */}
            <Route path="/signup" element={<SignupPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/restrictedPage" element={<RestrictedPage />} />
+           <Route path="/careerPage" element={<CareerPage />} />
           
           {/* Protected Game Page Route */}
           <Route 
@@ -55,7 +59,7 @@ function App() {
            <Route
             path="/database"
             element={
-              <PrivateRoute allowedRoles={['user', 'admin']}>
+              <PrivateRoute allowedRoles={['admin']}>
                 <DatabasePage />
               </PrivateRoute>
             }

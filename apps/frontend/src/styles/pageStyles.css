@@ -131,3 +131,12 @@
 .signup-prompt a:hover {
   text-decoration: underline;
 }
+
+.placeholder-text {
+  margin-top: 40px;
+  font-style: italic;
+  color: #888;
+  font-size: 18px;
+  border-top: 1px solid #eee;
+  padding-top: 40px;
+}

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom"; // <<< Import Link
 import { useAuth } from "@/components/Auth/AuthContext";
 import Navbar from '../components/Navbar/Navbar';
-import '../styles/loginPage.css';
+import '../styles/pageStyles.css';
 import '../styles/homepage.css';
 
 export default function LoginPage() {
