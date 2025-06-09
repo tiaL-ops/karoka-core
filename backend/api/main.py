@@ -19,7 +19,6 @@ def create_app():
     app = Flask(__name__)
 
     cors_origin = os.getenv("CORS_ORIGIN", "*")
-    #CORS(app, origins=[cors_origin])
     CORS(app)
 
     firebase_admin_sdk_path = os.getenv("FIREBASE_ADMIN_SDK_PATH", None)
@@ -37,6 +36,10 @@ def create_app():
 
     return app
 
+# Expose module-level WSGI app for Gunicorn
+app = create_app()
+
 if __name__ == "__main__":
-    app = create_app()
-    app.run(debug=True,host='0.0.0.0', port=5001)
+    # Dev-only: run Flask built-in server
+    port = int(os.environ.get("PORT", 5001))
+    app.run(debug=True, host='0.0.0.0', port=port)

@@ -23,17 +23,17 @@ services:
     depends_on:
       - db
     env_file:
-    - ./backend/.env
+      - ./backend/.env   # contains secrets, config; does not need PORT unless you want to override
     environment:
       - DATABASE_URL=postgresql://karoka:karoka@db:5432/karoka_dev
       - FLASK_ENV=development
+      - PORT=5001        # override default if you like; must match ports mapping
     ports:
       - "5001:5001"
     working_dir: /app/backend
     volumes:
       - ./backend:/app/backend
       - ./backend/karoka-core-firebase-adminsdk.json:/app/backend/karoka-core-firebase-adminsdk.json
-    command: python -m api.main
 
   frontend:
     build:
