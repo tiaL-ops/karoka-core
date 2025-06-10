@@ -7,7 +7,7 @@ from flask_cors import CORS
 import firebase_admin
 from firebase_admin import credentials
 from dotenv import load_dotenv
-from backend.api.routes.ping import ping_bp
+
 
 # Load .env only in non-production
 if os.getenv("ENVIRONMENT") != "production":
