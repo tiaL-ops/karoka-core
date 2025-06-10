@@ -17,7 +17,7 @@ def create_app():
 
     # Environment
     env = os.getenv("ENVIRONMENT", "development")
-    print(f"ENVIRONMENT: {env}")
+    print(f"ENVIRONMENT here uuu : {env}")
     app.config["ENV"] = env
     app.config["DEBUG"] = (env != "production")
 
@@ -26,7 +26,8 @@ def create_app():
     if not database_url:
         raise RuntimeError("DATABASE_URL is not set")
     app.config["SQLALCHEMY_DATABASE_URI"] = database_url
-    print(f"Using DB: {database_url}")
+    print(f"ENVIRONMENT here in dbb  uuu 🤨: {env}")
+    print(f"so Using DB : {database_url}")
 
     # Secret key
     secret_key = os.getenv("SECRET_KEY")

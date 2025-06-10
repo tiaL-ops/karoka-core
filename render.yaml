@@ -1,0 +1,81 @@
+# This file tells Render how to build and deploy your entire application.
+# It's the "deploy at once" method for your three Docker containers.
+
+services:
+  # Service 1: The Backend (using its Dockerfile)
+  # This is the recommended way to deploy a custom backend.
+  - type: web
+    name: karoka-backend
+    # We tell Render this service runs in a Docker environment.
+    runtime: docker
+    # Path to the Dockerfile for your backend.
+    dockerfilePath: ./backend/Dockerfile
+    # We need to give Render a hint for building the Docker image context.
+    dockerContext: ./backend
+    envVars:
+      # This environment variable is automatically set by Render.
+      # Gunicorn will use it in the CMD of your Dockerfile.
+      - key: PORT
+        value: 5001 # Your backend is configured to use this port
+      # This tells your app to connect to the 'karoka-db' service we define below.
+      # IMPORTANT: This is much safer than running a DB in a container.
+      - key: DATABASE_URL
+        fromService:
+          type: psql
+          name: karoka-db
+          property: connectionString
+      # This sets the CORS origin to your frontend's deployed URL.
+      - key: CORS_ORIGIN
+        fromService:
+          type: web # It's a 'web' service because we are using Docker for it.
+          name: karoka-frontend
+          property: url
+      # Path to the secret file you will upload in the Render dashboard.
+      - key: FIREBASE_ADMIN_SDK_PATH
+        value: /etc/secrets/karoka-core-firebase-adminsdk.json
+      - key: ENVIRONMENT
+        value: production
+    # This securely mounts the content of your Firebase JSON file.
+    secretFiles:
+      - key: karoka-core-firebase-adminsdk.json
+        mountPath: /etc/secrets/karoka-core-firebase-adminsdk.json
+
+  # Service 2: The Frontend (using its Dockerfile)
+  # WARNING: This is NOT the recommended or cost-effective way.
+  # A Static Site is much better. But this fulfills your request to use Docker.
+  - type: web
+    name: karoka-frontend
+    runtime: docker
+    # Path to the Dockerfile for your frontend.
+    dockerfilePath: ./apps/frontend/Dockerfile
+    dockerContext: ./apps/frontend
+    envVars:
+      - key: PORT
+        value: 80 # Standard HTTP port.
+      # This gets the URL of your live backend service and passes it to your React app.
+      - key: VITE_API_BASE_URL
+        fromService:
+          type: web
+          name: karoka-backend
+          property: url
+      # These Firebase keys must be set in the Render dashboard for security.
+      # 'sync: false' means their values aren't stored in this YAML file.
+      - key: VITE_FIREBASE_API_KEY
+        sync: false
+      - key: VITE_FIREBASE_AUTH_DOMAIN
+        sync: false
+      - key: VITE_FIREBASE_PROJECT_ID
+        sync: false
+      - key: VITE_FIREBASE_STORAGE_BUCKET
+        sync: false
+      - key: VITE_FIREBASE_MESSAGING_SENDER_ID
+        sync: false
+      - key: VITE_FIREBASE_APP_ID
+        sync: false
+
+  # Service 3: The Database (using Render's Managed Service)
+  # This is the STRONGLY RECOMMENDED approach for your database.
+  # It provides auto-backups, security, and prevents data loss.
+  - type: psql
+    name: karoka-db
+    plan: free # Choose a paid plan for better performance in production.

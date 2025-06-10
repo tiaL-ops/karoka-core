@@ -72,6 +72,9 @@ The easiest way to run the entire project is with Docker.
     * `--build` ensures that any changes to your Dockerfiles or dependencies are included.
     * Add `-d` to run the containers in the background.
 
+    * `docker-compose exec backend sh -c "cd /app/backend && alembic upgrade head" ` if you want to upgdare database after cleaning  
+
+
 2.  **Access the Services:**
     * **Frontend**: [http://localhost:3000](http://localhost:3000)
     * **Backend API**: [http://localhost:5001](http://localhost:5001)

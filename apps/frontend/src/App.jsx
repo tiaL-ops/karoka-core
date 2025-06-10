@@ -1,8 +1,8 @@
 
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import UserProfile from "./pages/userProfile"; //
-import PingPage from "./pages/ping"; //
-import SignupPage from "@/pages/signupPage";
+import UserProfile from "./pages/userProfile.jsx"; //
+import PingPage from "./pages/ping.jsx"; //
+import SignupPage from "@/pages/signupPage.jsx";
 import Homepage from "./pages/homepage"; //
 import LoginPage from "./pages/loginPage"; 
 import DatabasePage from "./pages/databasePage";
