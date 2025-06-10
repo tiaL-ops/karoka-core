@@ -91,53 +91,36 @@ def sync_from_firestore_to_postgres():
         db.close()
 
 
-
 @user_bp.route('/', methods=['POST'], strict_slashes=False)
 def create_user_route():
-    """
-    POST /user
-    Creates a new user in Firestore and PostgreSQL using the Firebase-authenticated UID.
-    """
-    data = request.get_json(force=True)
-    uid, error_resp, status = get_current_firebase_user_id()
-    if error_resp:
-        return jsonify(error_resp), status
+    data = request.json
+    user_id_from_token, error_response, status_code = get_current_firebase_user_id()
+    if error_response:
+        return jsonify(error_response), status_code
 
-    # Enforce UID and defaults
-    data['id'] = uid
-    data['name'] = data.get('name') or 'Anonymous'
-    data['role'] = data.get('role', 'user')
+    # Ensure 'id' is set from the verified Firebase UID
+    data['id'] = user_id_from_token
 
-    # Initialize Firestore client
-    firestore_db = firebase_admin.firestore.client()
-    users_col = firestore_db.collection('users')
+    print('🐼 ENtered the create user and got the data id , it is ', data['id'])
+    print('🙄ALl data is ', data)
+ 
+    if data['name'] == None:
+        data['name'] = "Anonymous" 
 
+    data['role'] = data.get('role', 'user') 
+
+
+    db = SessionLocal()
     try:
-        # 1. Write to Firestore
-        users_col.document(uid).set({
-            'displayName': data['name'],
-            'email': data.get('email'),
-            'role': data['role'],
-            'createdAt': firestore.SERVER_TIMESTAMP
-        }, merge=True)
-
-        # 2. Write to PostgreSQL
-        db = SessionLocal()
-        user = create_user(db, user_data=data)
-        db.commit()
-        return jsonify({
-            'id': user.id,
-            'name': user.name,
-            'role': user.role
-        }), 201
-
+        user = create_user(db, user_data=data) 
+        
+        return jsonify({"id": user.id, "name": user.name}), 201
     except Exception as e:
         db.rollback()
-        logger.error(f"Failed creating user {uid}: {e}")
         return jsonify({"error": f"Failed to create user: {str(e)}"}), 500
-
     finally:
         db.close()
+
 
 @user_bp.route('/<user_id>', methods=['GET'])
 def get_user_route(user_id):
