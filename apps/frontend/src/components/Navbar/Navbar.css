@@ -39,6 +39,17 @@
   transition: background-color 0.3s;
 }
 
+
+.logout-link {
+  background-color: #ff3399;
+  color: #ffffff !important; /* Use !important to override default link color if needed */
+  padding: 10px 10px;
+  border-radius: 20px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
 .login-link:hover {
   background-color: #e60073;
 }

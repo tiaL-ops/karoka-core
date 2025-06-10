@@ -29,88 +29,6 @@ def get_current_firebase_user_id():
         logger.error(f"Invalid Firebase ID token: {e}") # Added detailed logging
         return None, {"error": f"Invalid token: {str(e)}"}, 401
 
-
-@user_bp.route('/', methods=['POST'], strict_slashes=False)
-def create_user_route():
-    data = request.json
-    user_id_from_token, error_response, status_code = get_current_firebase_user_id()
-    if error_response:
-        return jsonify(error_response), status_code
-
-    # Ensure 'id' is set from the verified Firebase UID
-    data['id'] = user_id_from_token
-
-    print('🐼 ENtered the create user and got the data id , it is ', data['id'])
-    print('🙄ALl data is ', data)
- 
-    if data['name'] == None:
-        data['name'] = "Anonymous" 
-
-    data['role'] = data.get('role', 'user') 
-
-
-    db = SessionLocal()
-    try:
-        user = create_user(db, user_data=data) 
-        
-        return jsonify({"id": user.id, "name": user.name}), 201
-    except Exception as e:
-        db.rollback()
-        return jsonify({"error": f"Failed to create user: {str(e)}"}), 500
-    finally:
-        db.close()
-
-
-@user_bp.route('/<user_id>', methods=['GET'])
-def get_user_route(user_id):
-    print('🐼GETTTTTTTT')
-    verified_uid, error_response, status_code = get_current_firebase_user_id()
-    if error_response:
-        return jsonify(error_response), status_code
-
-    if verified_uid != user_id:
-        return jsonify({"error": "Unauthorized access to user profile"}), 403
-
-    db = SessionLocal()
-    try:
-        user_in_pg = get_user(db, user_id) # Get user from PostgreSQL
-        
-        firestore_db = firebase_admin.firestore.client()
-        user_doc_ref = firestore_db.collection('users').document(user_id)
-        firestore_doc = user_doc_ref.get() # Get user from Firestore
-
-        if firestore_doc.exists:
-            firestore_data = firestore_doc.to_dict()
-            firestore_role = firestore_data.get('role', 'user')
-            
-            # Sync Firestore role to PostgreSQL 
-            if user_in_pg and user_in_pg.role != firestore_role:
-                print(f"Role mismatch for {user_id}: PG='{user_in_pg.role}', FS='{firestore_role}'. Updating PG.")
-                updated_user_pg = update_user(db, user_id, {"role": firestore_role})
-                # Use the updated user object for the response
-                user_in_pg = updated_user_pg
-            elif not user_in_pg:
-                # If user exists in Firestore but not in PostgreSQL, create them in PG
-                # This handles cases where only Firestore entry was created for some reason
-                print(f"User {user_id} found in Firestore but not in PG. Creating PG entry.")
-                pg_user_data = {
-                    "id": user_id,
-                    "name": firestore_data.get('displayName') or firestore_data.get('email') or "New User",
-                    "role": firestore_role # Use Firestore role for new PG user
-                }
-                user_in_pg = create_user(db, user_data=pg_user_data)
-                
-        # Return user data from PostgreSQL (which has now been synced if needed)
-        if user_in_pg:
-            return jsonify({"id": user_in_pg.id, "name": user_in_pg.name, "role": user_in_pg.role}), 200
-        else:
-            return jsonify({"error": "User not found"}), 404
-    except Exception as e:
-        logger.error(f"Error fetching or syncing user data: {e}")
-        return jsonify({"error": f"Failed to retrieve user data: {str(e)}"}), 500
-    finally:
-        db.close()
-
 @user_bp.route('/sync', methods=['POST'])
 def sync_from_firestore_to_postgres():
     print(" 🤨Starting user sync from Firestore to PostgreSQL")
@@ -171,3 +89,103 @@ def sync_from_firestore_to_postgres():
 
     finally:
         db.close()
+
+
+
+@user_bp.route('/', methods=['POST'], strict_slashes=False)
+def create_user_route():
+    """
+    POST /user
+    Creates a new user in Firestore and PostgreSQL using the Firebase-authenticated UID.
+    """
+    data = request.get_json(force=True)
+    uid, error_resp, status = get_current_firebase_user_id()
+    if error_resp:
+        return jsonify(error_resp), status
+
+    # Enforce UID and defaults
+    data['id'] = uid
+    data['name'] = data.get('name') or 'Anonymous'
+    data['role'] = data.get('role', 'user')
+
+    # Initialize Firestore client
+    firestore_db = firebase_admin.firestore.client()
+    users_col = firestore_db.collection('users')
+
+    try:
+        # 1. Write to Firestore
+        users_col.document(uid).set({
+            'displayName': data['name'],
+            'email': data.get('email'),
+            'role': data['role'],
+            'createdAt': firestore.SERVER_TIMESTAMP
+        }, merge=True)
+
+        # 2. Write to PostgreSQL
+        db = SessionLocal()
+        user = create_user(db, user_data=data)
+        db.commit()
+        return jsonify({
+            'id': user.id,
+            'name': user.name,
+            'role': user.role
+        }), 201
+
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Failed creating user {uid}: {e}")
+        return jsonify({"error": f"Failed to create user: {str(e)}"}), 500
+
+    finally:
+        db.close()
+
+@user_bp.route('/<user_id>', methods=['GET'])
+def get_user_route(user_id):
+    print('🐼GETTTTTTTT')
+    verified_uid, error_response, status_code = get_current_firebase_user_id()
+    if error_response:
+        return jsonify(error_response), status_code
+
+    if verified_uid != user_id:
+        return jsonify({"error": "Unauthorized access to user profile"}), 403
+
+    db = SessionLocal()
+    try:
+        user_in_pg = get_user(db, user_id) # Get user from PostgreSQL
+        
+        firestore_db = firebase_admin.firestore.client()
+        user_doc_ref = firestore_db.collection('users').document(user_id)
+        firestore_doc = user_doc_ref.get() # Get user from Firestore
+
+        if firestore_doc.exists:
+            firestore_data = firestore_doc.to_dict()
+            firestore_role = firestore_data.get('role', 'user')
+            
+            # Sync Firestore role to PostgreSQL 
+            if user_in_pg and user_in_pg.role != firestore_role:
+                print(f"Role mismatch for {user_id}: PG='{user_in_pg.role}', FS='{firestore_role}'. Updating PG.")
+                updated_user_pg = update_user(db, user_id, {"role": firestore_role})
+                # Use the updated user object for the response
+                user_in_pg = updated_user_pg
+            elif not user_in_pg:
+                # If user exists in Firestore but not in PostgreSQL, create them in PG
+                # This handles cases where only Firestore entry was created for some reason
+                print(f"User {user_id} found in Firestore but not in PG. Creating PG entry.")
+                pg_user_data = {
+                    "id": user_id,
+                    "name": firestore_data.get('displayName') or firestore_data.get('email') or "New User",
+                    "role": firestore_role # Use Firestore role for new PG user
+                }
+                user_in_pg = create_user(db, user_data=pg_user_data)
+                
+        # Return user data from PostgreSQL (which has now been synced if needed)
+        if user_in_pg:
+            return jsonify({"id": user_in_pg.id, "name": user_in_pg.name, "role": user_in_pg.role}), 200
+        else:
+            return jsonify({"error": "User not found"}), 404
+    except Exception as e:
+        logger.error(f"Error fetching or syncing user data: {e}")
+        return jsonify({"error": f"Failed to retrieve user data: {str(e)}"}), 500
+    finally:
+        db.close()
+
