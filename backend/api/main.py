@@ -8,8 +8,8 @@ import firebase_admin
 from firebase_admin import credentials
 from dotenv import load_dotenv
 
+# Load .env only in non-production
 if os.getenv("ENVIRONMENT") != "production":
-    # This will load a local .env during development, but skip on Render
     load_dotenv()
 
 def create_app():
@@ -17,6 +17,7 @@ def create_app():
 
     # Environment
     env = os.getenv("ENVIRONMENT", "development")
+    print(f"ENVIRONMENT: {env}")
     app.config["ENV"] = env
     app.config["DEBUG"] = (env != "production")
 
@@ -25,10 +26,11 @@ def create_app():
     if not database_url:
         raise RuntimeError("DATABASE_URL is not set")
     app.config["SQLALCHEMY_DATABASE_URI"] = database_url
+    print(f"Using DB: {database_url}")
 
     # Secret key
     secret_key = os.getenv("SECRET_KEY")
-    if not secret_key and env == "production":
+    if env == "production" and not secret_key:
         raise RuntimeError("SECRET_KEY must be set in production")
     app.config["SECRET_KEY"] = secret_key or "dev-secret"
 
@@ -37,8 +39,10 @@ def create_app():
     if cors_origin:
         origins = [o.strip() for o in cors_origin.split(",") if o.strip()]
         CORS(app, origins=origins)
+        print(f"CORS origins set to: {origins}")
     else:
         CORS(app)
+        print("CORS: allowing all origins (no CORS_ORIGIN set)")
 
     # Firebase Admin initialization from JSON env var
     firebase_json = os.getenv("FIREBASE_SERVICE_ACCOUNT_JSON")
@@ -67,7 +71,8 @@ def create_app():
 app = create_app()
 
 if __name__ == "__main__":
+    # Local dev: run Flask built-in server
     port = int(os.getenv("PORT", 5001))
     env = os.getenv("ENVIRONMENT", "development")
-    print(f"Starting app in ENVIRONMENT={env}")
+    print(f"Starting Flask dev server in ENVIRONMENT={env} on port {port}")
     app.run(host="0.0.0.0", port=port, debug=app.config["DEBUG"])
