@@ -8,7 +8,7 @@ export default function PingPage() {
   const [pingMessage, setPingMessage] = useState("")
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/ping/`)
+    fetch(`${API_BASE_URL}/ping`)
       .then((res) => res.json())
       .then((data) => setPingMessage(data.message))
       .catch((err) => setPingMessage("Error: " + err.message))
