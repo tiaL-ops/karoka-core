@@ -74,7 +74,7 @@ app = create_app()
 
 if __name__ == "__main__":
 
-    app.register_blueprint(ping_bp, url_prefix="/ping")
+   
     # Local dev: run Flask built-in server
 
 
