@@ -7,6 +7,7 @@ from flask_cors import CORS
 import firebase_admin
 from firebase_admin import credentials
 from dotenv import load_dotenv
+from backend.api.routes.ping import ping_bp
 
 # Load .env only in non-production
 if os.getenv("ENVIRONMENT") != "production":
@@ -72,7 +73,12 @@ def create_app():
 app = create_app()
 
 if __name__ == "__main__":
+
+    app.register_blueprint(ping_bp, url_prefix="/ping")
     # Local dev: run Flask built-in server
+
+
+
     port = int(os.getenv("PORT", 5001))
     env = os.getenv("ENVIRONMENT", "development")
     print(f"Starting Flask dev server in ENVIRONMENT={env} on port {port}")
