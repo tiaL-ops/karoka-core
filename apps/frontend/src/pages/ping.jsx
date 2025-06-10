@@ -1,6 +1,8 @@
 // apps/frontend/src/pages/PingPage.jsx
 import { useEffect, useState } from "react"
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
+console.log("i the mport.meta.env 🤨:", import.meta.env)
 
 export default function PingPage() {
   const [pingMessage, setPingMessage] = useState("")
