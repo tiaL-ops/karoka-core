@@ -8,7 +8,6 @@ import firebase_admin
 from firebase_admin import credentials
 from dotenv import load_dotenv
 
-
 # Load .env only in non-production
 if os.getenv("ENVIRONMENT") != "production":
     load_dotenv()
@@ -46,18 +45,27 @@ def create_app():
         CORS(app)
         print("CORS: allowing all origins (no CORS_ORIGIN set)")
 
-    # Firebase Admin initialization from JSON env var
-    firebase_json = os.getenv("FIREBASE_SERVICE_ACCOUNT_JSON")
-    if firebase_json:
-        try:
-            sa_info = json.loads(firebase_json)
-            cred = credentials.Certificate(sa_info)
-            firebase_admin.initialize_app(cred)
-            print("Firebase Admin initialized from env var")
-        except Exception as e:
-            print("Error initializing Firebase Admin:", e)
+    # Firebase Admin initialization
+    cred = None
+    if env == "production":
+        firebase_json = os.getenv("FIREBASE_SERVICE_ACCOUNT_JSON")
+        if firebase_json:
+            try:
+                sa_info = json.loads(firebase_json)
+                cred = credentials.Certificate(sa_info)
+            except Exception as e:
+                print("Failed to parse Firebase JSON:", e)
     else:
-        print("No Firebase credentials provided (FIREBASE_SERVICE_ACCOUNT_JSON missing)")
+        firebase_path = os.getenv("FIREBASE_ADMIN_SDK_PATH")
+        if firebase_path and os.path.exists(firebase_path):
+            cred = credentials.Certificate(firebase_path)
+
+    if cred:
+        if not firebase_admin._apps:
+            firebase_admin.initialize_app(cred)
+        print("Firebase Admin initialized")
+    else:
+        print("Firebase credentials not provided or invalid")
 
     # Register blueprints
     from api.routes.ping import ping_bp
@@ -73,12 +81,7 @@ def create_app():
 app = create_app()
 
 if __name__ == "__main__":
-
-   
     # Local dev: run Flask built-in server
-
-
-
     port = int(os.getenv("PORT", 5001))
     env = os.getenv("ENVIRONMENT", "development")
     print(f"Starting Flask dev server in ENVIRONMENT={env} on port {port}")
