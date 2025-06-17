@@ -11,7 +11,7 @@ import RestrictedPage from "./pages/restrictedPage";
 import CareerPage from "./pages/careersPage";
 import { AuthProvider, useAuth } from "@/components/Auth/AuthContext"; //
 
-import GamePage from "./pages/game";
+import GamePage from "./pages/gamePage";
 
 // A simple PrivateRoute component
 function PrivateRoute({ children, allowedRoles }) {
