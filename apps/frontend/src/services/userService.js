@@ -73,7 +73,7 @@ export async function createUserProfile(user, displayName, role = "admin") {
     }
 
     const backendUser = await response.json();
-    console.log("User successfully created in backend PostgreSQL:", backendUser);
+    //console.log("User successfully created in backend PostgreSQL:", backendUser);
 
   } catch (error) {
     console.error("Error creating user in backend PostgreSQL:", error);
