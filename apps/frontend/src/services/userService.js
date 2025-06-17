@@ -37,10 +37,10 @@ export async function createUserProfile(user, displayName, role = "admin") {
   };
 
   if (role !== "controlled") {
-    console.log("the email is", user.email, "and the user is", user);
+    
     firestoreData.email = user.email ;
     firestoreData.displayName = displayName || user.displayName ;
-    console.log(" 🙃the displayName is", firestoreData.displayName);
+   // console.log(" 🙃the displayName is", firestoreData.displayName);
   }
 
   // 2. Write to Firestore
@@ -56,7 +56,7 @@ export async function createUserProfile(user, displayName, role = "admin") {
   try {
     // Get the Firebase ID token for authentication with your backend
     const token = await user.getIdToken();
-    console.log("Starting user in backend PostgreSQL with token:", token);
+   
 
     const response = await fetch(`${API_BASE_URL}/user/`, {
       method: 'POST',
