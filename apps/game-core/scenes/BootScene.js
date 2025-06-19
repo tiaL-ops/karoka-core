@@ -18,6 +18,7 @@ export default class BootScene extends Phaser.Scene {
 
     // Iterate through all rooms defined in the config
     for (const [roomKey, room] of Object.entries(rooms)) {
+        console.log(`BootScene: Preloading room "${roomKey}"`);
       // Load the Tiled JSON for the map
       this.load.tilemapTiledJSON(roomKey, room.mapJsonUrl);
 
@@ -26,6 +27,8 @@ export default class BootScene extends Phaser.Scene {
         this.load.image(ts.key, ts.url);
       });
     }
+
+    
 
     // Preload other global assets here (e.g., player sprite, UI elements)
     // this.load.spritesheet('player', 'path/to/player.png', { frameWidth: 32, frameHeight: 32 });

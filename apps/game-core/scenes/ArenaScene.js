@@ -38,6 +38,8 @@ export default class ArenaScene extends Phaser.Scene {
     // Add collision to the walls layer if needed
     // wallsLayer.setCollisionByProperty({ collides: true });
 
+    map.createLayer('Furniture', tilesets, 0, 0);
+
     // 4. Initialize systems
     this.puzzleManager = new PuzzleManager(this, map, room.puzzleGoal);
     // this.dragManager = new DragManager(this);
