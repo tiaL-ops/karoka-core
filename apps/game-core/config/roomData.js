@@ -1,10 +1,11 @@
-// config/roomData.js
-
 export const rooms = {
   FirstArena: {
     // Tiled JSON exported from the Tiled map editor (Firebase Storage URL)
     mapJsonUrl: 
       'https://firebasestorage.googleapis.com/v0/b/karoka-core-4f251.firebasestorage.app/o/PythonGame%2FFirstArena%2FFirstArenaVariable.json?alt=media',
+    
+    playJsonUrl:
+      'https://firebasestorage.googleapis.com/v0/b/karoka-core-4f251.firebasestorage.app/o/PythonGame%2FFirstArena%2Fkinesthetic.json?alt=media',
 
     // An array of all tilesets the Tiled map uses
     tilesets: [
@@ -17,17 +18,38 @@ export const rooms = {
         key: 'RoomBuilder',                 // Phaser cache key
         name: 'Room_Builder_free_32x32',    // tileset name as defined in Tiled
         url: 'https://firebasestorage.googleapis.com/v0/b/karoka-core-4f251.firebasestorage.app/o/PythonGame%2FFirstArena%2FRoom_Builder_free_32x32.png?alt=media'
+      },
+      {
+        key: 'Interiors2',
+        name: 'Interiors_32x32',
+        url: 'https://firebasestorage.googleapis.com/v0/b/karoka-core-4f251.firebasestorage.app/o/PythonGame%2FFirstArena%2FInteriors_32x32.png?alt=media'
+      },
+      {
+        key: 'UserInterface',               // Phaser cache key
+        name: 'Modern_UI_Style_1_32x32',     // tileset name as defined in kinesthetic.json fileciteturn0file0
+        url: 'https://firebasestorage.googleapis.com/v0/b/karoka-core-4f251.firebasestorage.app/o/PythonGame%2FFirstArena%2FModern_UI_Style_1_32x32.png?alt=media'
+      },
+      // Newly added assets for the play scene
+      {
+        key: 'Fishing',
+        name: '9_Fishing_Black_Shadow_32x32', // tileset name as defined in kinesthetic.json fileciteturn0file0
+        url: 'https://firebasestorage.googleapis.com/v0/b/karoka-core-4f251.firebasestorage.app/o/PythonGame%2FFirstArena%2F9_Fishing_Black_Shadow_32x32.png?alt=media'
+      },
+      {
+        key: 'Gym',
+        name: '8_Gym_Black_Shadow_32x32',    // tileset name as defined in kinesthetic.json fileciteturn0file0
+        url: 'https://firebasestorage.googleapis.com/v0/b/karoka-core-4f251.firebasestorage.app/o/PythonGame%2FFirstArena%2F8_Gym_Black_Shadow_32x32.png?alt=media'
       }
     ],
 
     // The Python code snippet that will be displayed in the UI
     codeSnippet: `
-x = 2
-y = 1
-z = 2 * 2
-years = z + y / x
-name = "Rasoa"
-print(name + " is actually " + years + " years old")
+ x = 2
+ y = 1
+ z = 2 * 2
+ years = z + y / x
+ name = "Rasoa"
+ print(name + " is actually " + years + " years old")
     `,
 
     // The solution to the puzzle. puzzleManager will validate against these counts.

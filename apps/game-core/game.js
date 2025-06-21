@@ -7,6 +7,7 @@
 import BootScene from './scenes/BootScene.js';
 import ArenaScene from './scenes/ArenaScene.js';
 import UIScene from './scenes/UIScene.js';
+import PlayScene from './scenes/PlayScene.js';
 
 const config = {
   type: Phaser.AUTO,
@@ -21,6 +22,7 @@ const config = {
   scene: [
     BootScene,
     ArenaScene,
+    PlayScene,
     UIScene
   ]
 };

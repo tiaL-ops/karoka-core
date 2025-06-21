@@ -1,6 +1,7 @@
 // scenes/ArenaScene.js
 
 import { rooms } from '../config/roomData.js';
+import PlayScene from './PlayScene.js';
 import PuzzleManager from '../systems/puzzleManager.js';
 
 /**
@@ -54,7 +55,35 @@ export default class ArenaScene extends Phaser.Scene {
       snippet: room.codeSnippet,
       karoEnabled: room.karoEnabled
     });
+
+    if (!this.scene.get('PlayScene')) {
+  this.scene.add('PlayScene', PlayScene, false);
+}
+
+
+     this.input.keyboard.on('keydown-P', () => {
+        if (!this.scene.isActive('PlayScene')) {
+            console.log("P pressed, launching PlayScene");
+            if (room.playJsonUrl) {
+                console.log("startinnngggg");
+                // Pass the URL and the necessary tileset data to the PlayScene
+                this.scene.start('PlayScene', { 
+                    playJsonUrl: room.playJsonUrl, 
+                    tilesets: room.tilesets 
+                });
+            }
+        }
+    });
+
+    this.input.keyboard.on('keydown-Q', () => {
+        if (this.scene.isActive('PlayScene')) {
+            console.log("Q pressed, stopping PlayScene");
+            this.scene.stop('PlayScene');
+        }
+    });
   }
+
+  
 
   update(time, delta) {
     // Main game loop for the arena
