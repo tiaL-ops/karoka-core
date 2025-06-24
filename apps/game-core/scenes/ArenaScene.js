@@ -3,7 +3,7 @@
 import { rooms } from '../config/roomData.js';
 import PlayScene from './PlayScene.js';
 import PuzzleManager from '../systems/puzzleManager.js';
-
+import CodeEditorScene from './CodeEditorScene.js';
 /**
  * ArenaScene is the main gameplay scene. It is data-driven,
  * using the `roomKey` passed via init() to fetch the correct
@@ -65,7 +65,7 @@ export default class ArenaScene extends Phaser.Scene {
         if (!this.scene.isActive('PlayScene')) {
             console.log("P pressed, launching PlayScene");
             if (room.playJsonUrl) {
-                console.log("startinnngggg");
+               
                 // Pass the URL and the necessary tileset data to the PlayScene
                 this.scene.start('PlayScene', { 
                     playJsonUrl: room.playJsonUrl, 
@@ -73,6 +73,16 @@ export default class ArenaScene extends Phaser.Scene {
                     tilesets: room.tilesets 
                 });
             }
+        }
+    });
+
+    if (!this.scene.get('CodeEditorScene')) {
+  this.scene.add('CodeEditorScene', CodeEditorScene, false);
+}
+
+    this.input.keyboard.on('keydown-C', () => {
+        if (!this.scene.isActive('CodeEditorScene')) {
+            this.scene.launch('CodeEditorScene');
         }
     });
 

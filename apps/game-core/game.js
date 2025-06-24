@@ -8,6 +8,8 @@ import BootScene from './scenes/BootScene.js';
 import ArenaScene from './scenes/ArenaScene.js';
 import UIScene from './scenes/UIScene.js';
 import PlayScene from './scenes/PlayScene.js';
+import CodeLessonScene from './scenes/CodeLessonScene.js'; 
+import CodeEditorScene from './scenes/CodeEditorScene.js';
 
 const config = {
   type: Phaser.AUTO,
@@ -19,11 +21,17 @@ const config = {
       gravity: { y: 0 }
     }
   },
+  dom: { 
+    createContainer: true
+  },
   scene: [
     BootScene,
     ArenaScene,
     PlayScene,
-    UIScene
+    UIScene,
+    CodeEditorScene,
+    CodeLessonScene
+   
   ]
 };
 

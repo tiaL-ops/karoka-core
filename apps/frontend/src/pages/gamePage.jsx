@@ -5,6 +5,10 @@ import Phaser from 'phaser';
 import BootScene from '@game-core/scenes/BootScene';
 import ArenaScene from '@game-core/scenes/ArenaScene';
 import UIScene from '@game-core/scenes/UIScene';
+// It's good practice to import all scenes that will be used.
+import CodeEditorScene from '@game-core/scenes/CodeEditorScene.js';
+import PlayScene from '@game-core/scenes/PlayScene.js';
+import CodeLessonScene from '@game-core/scenes/CodeLessonScene.js';
 
 
 function GamePage() {
@@ -21,8 +25,15 @@ function GamePage() {
       width: 800,
       height: 600,
       backgroundColor: '#211a21',
+      // --- FIX STARTS HERE ---
+      // Add the dom property to allow phaser to render HTML elements
+      dom: {
+        createContainer: true
+      },
+      // --- FIX ENDS HERE ---
       // 2. Register all scenes with Phaser and start with BootScene
-      scene: [BootScene, ArenaScene, UIScene]
+      // I've also included the other scenes from your game.js file
+      scene: [BootScene, ArenaScene, UIScene, PlayScene, CodeEditorScene, CodeLessonScene]
     };
 
     gameRef.current = new Phaser.Game(config);

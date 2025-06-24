@@ -1,6 +1,7 @@
 // scenes/BootScene.js
 
 import { rooms } from '../config/roomData.js';
+import CodeEditorScene from './CodeEditorScene.js';
 
 /**
  * BootScene is the first scene to load. Its purpose is to
