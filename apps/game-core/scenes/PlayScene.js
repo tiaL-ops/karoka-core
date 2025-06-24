@@ -12,6 +12,7 @@ export default class PlayScene extends Phaser.Scene {
     this.playJsonUrl   = data.playJsonUrl;
     this.tilesetsData  = data.tilesets;
     this.mapKey        = 'playMap_' + Date.now();
+    this.roomKey       = data.roomKey; 
   }
 
   preload() {
@@ -22,6 +23,7 @@ export default class PlayScene extends Phaser.Scene {
 
   create() {
     console.log("PlayScene: Creating scene.");
+    const room = rooms[this.roomKey];
 
     // 1) Build the tilemap + layers
     const map = this.make.tilemap({ key: this.mapKey });
@@ -96,6 +98,7 @@ export default class PlayScene extends Phaser.Scene {
       if (this.scene.isActive('PlayScene')) {
         console.log("Q pressed, stopping PlayScene");
         this.scene.stop('PlayScene');
+        this.scene.start('ArenaScene', { roomKey: this.roomKey });
       }
     });
   }

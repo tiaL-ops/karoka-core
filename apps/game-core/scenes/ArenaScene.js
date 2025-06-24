@@ -69,6 +69,7 @@ export default class ArenaScene extends Phaser.Scene {
                 // Pass the URL and the necessary tileset data to the PlayScene
                 this.scene.start('PlayScene', { 
                     playJsonUrl: room.playJsonUrl, 
+                    roomKey: this.roomKey ,
                     tilesets: room.tilesets 
                 });
             }
