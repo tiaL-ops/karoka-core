@@ -1,4 +1,4 @@
-// game-core/scenes/CodeEditorScene.js
+import CodeMirror from 'codemirror';
 
 export default class CodeEditorScene extends Phaser.Scene {
   constructor() {
@@ -6,56 +6,132 @@ export default class CodeEditorScene extends Phaser.Scene {
   }
 
   create() {
-    console.log("hi");
+    const { width, height } = this.sys.game.canvas;
 
-   
-    this.cameras.main.setBackgroundColor('rgba(0, 0, 0, 0.8)');
-    
-    const promptText = "Fill in the blanks so the output is: 'Galaxia has 4 town and 2 Tera'";
-    this.add.text(100, 50, promptText, { font: '18px Monospace', fill: '#ffffff', wordWrap: { width: 600 } });
+    // --- 1) Header ---
+    this.add.text(width / 2, 24, 'LeetCode‑Lite', {
+      font: '36px Consolas, Monaco, monospace',
+      fill: '#0ff',
+      stroke: '#00f',
+      strokeThickness: 4
+    }).setOrigin(0.5);
 
-    const formHtml = `
-      <div style="position: absolute; top: 120px; left: 100px; color: white; font-family: monospace; font-size: 16px;">
-        <pre>
-a, b, c = 1, 2, []
-town = "Galaxia"
-city = "Tera"
+    // --- 2) Dark background panel ---
+    this.add.rectangle(width / 2, height / 2 + 30, 760, 500, 0x1e1e1e, 0.95);
 
-# Re-assign 'c' to be a number and 'town' to hold the string
-c = <input type="text" id="blank1" size="5" style="background:#333; color:white; border: 1px solid #777;">
-town = <input type="text" id="blank2" size="10" style="background:#333; color:white; border: 1px solid #777;">
-
-print(f"'{town} has {c} town and {b} {city}'")
-        </pre>
-      </div>
+    // --- 3) CodeMirror editor container ---
+    const edX = 20, edY = 80, edW = 760, edH = 400;
+    const wrapper = document.createElement('div');
+    wrapper.id = 'cm-wrapper';
+    wrapper.style.cssText = `
+      position: absolute;
+      top: ${edY}px;
+      left: ${edX}px;
+      width: ${edW}px;
+      height: ${edH}px;
+      border: 2px solid #444;
+      border-radius: 6px;
+      overflow: hidden;
     `;
-    this.formElement = this.add.dom(0, 0).createFromHTML(formHtml);
+    this.editorDOM = this.add.dom(0, 0, wrapper).setOrigin(0);
 
-    const submitButtonHtml = `<button id="submit-btn" style="position: absolute; top: 320px; left: 100px; font-size: 18px;">Submit</button>`;
-    this.submitButton = this.add.dom(0, 0).createFromHTML(submitButtonHtml);
-    this.submitButton.addListener('click');
+    // initialize CodeMirror after the element is in the DOM
+    this.time.delayedCall(0, () => {
+      const template =
+`# Fill in the blanks to make this code work
+# It should print: “Galaxia has 4 town and 2 Tera”
 
-    this.submitButton.on('click', () => {
-        const answer1 = this.formElement.getChildByID('blank1').value;
-        const answer2 = this.formElement.getChildByID('blank2').value;
+# --- Write your code below--- 
 
-        if (answer1.trim() === '4' && (answer2.trim() === '"Galaxia"' || answer2.trim() === 'Galaxia')) {
-             console.log("Answer is: Correct!");
-             this.feedbackText.setText("Correct! You solved the puzzle.").setColor('#00ff00');
-        } else {
-             console.log(`Answer is: Incorrect. You submitted c=${answer1}, town=${answer2}`);
-             this.feedbackText.setText("Almost! Check your values and try again.").setColor('#ff0000');
-        }
+
+# ── Do not change this line ──
+print(city + " has " + str(c) + " town and " + str(b) + " " + town)`;
+
+      this.editor = CodeMirror(wrapper, {
+        value: template,
+        mode: 'python',
+        theme: 'monokai',
+        lineNumbers: true,
+        indentUnit: 4,
+        autofocus: true
+      });
+
+      const doc = this.editor.getDoc();
+      // make the template read-only up to the write region
+      doc.markText({ line: 0, ch: 0 }, { line: 3, ch: Infinity }, { readOnly: true });
+      // lock the print statement line
+      doc.markText({ line: 7, ch: 0 }, { line: 7, ch: Infinity }, { readOnly: true });
+      // highlight the editable region
+      doc.markText({ line: 3, ch: 0 }, { line: 3, ch: Infinity }, { className: 'cm-blank' });
     });
 
-    this.feedbackText = this.add.text(100, 370, 'Fill the blanks and click "Submit".', { font: '16px Monospace', fill: '#ffffff' });
+    // --- 4) Run button ---
+    const btn = document.createElement('button');
+    btn.id = 'run-btn';
+    btn.textContent = 'Run';
+    btn.style.cssText = `
+      position: absolute;
+      top: ${edY + edH + 10}px;
+      left: ${edX}px;
+      padding: 8px 20px;
+      font-size: 18px;
+      background: #0a74da;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    `;
+    this.runButton = this.add.dom(0, 0, btn).setOrigin(0);
+    this.runButton.addListener('click').on('click', () => this.checkAnswer());
 
-    this.add.text(100, 550, "Press 'Q' to exit.", { font: '14px Monospace', fill: '#888888' });
+    // --- 5) Feedback text ---
+    this.feedback = this.add.text(
+      edX + 100,
+      edY + edH + 14,
+      'Edit the blanks and click Run.',
+      {
+        font: '18px Consolas, Monaco, monospace',
+        fill: '#aaa'
+      }
+    );
+
+    // --- 6) Exit hint ---
+    this.add.text(
+      width - 24,
+      height - 16,
+      "Press 'Q' to exit",
+      {
+        font: '14px Consolas, Monaco, monospace',
+        fill: '#666'
+      }
+    ).setOrigin(1);
+
     this.input.keyboard.on('keydown-Q', () => {
-        this.formElement.destroy();
-        this.submitButton.destroy();
-        this.scene.stop('CodeEditorScene');
+      this.editorDOM.destroy();
+      this.runButton.destroy();
+      this.scene.stop();
     });
-    
+  }
+
+  checkAnswer() {
+    const code = this.editor.getValue();
+
+    // Extract numeric values for b and c
+    const bMatch = code.match(/b\s*=\s*(\d+)/);
+    const cMatch = code.match(/c\s*=\s*(\d+)/);
+    const bVal = bMatch ? parseInt(bMatch[1], 10) : null;
+    const cVal = cMatch ? parseInt(cMatch[1], 10) : null;
+
+    // Extract city and town strings
+    const cityMatch = code.match(/city\s*=\s*["']([^"']+)["']/);
+    const townMatch = code.match(/town\s*=\s*["']([^"']+)["']/);
+    const cityVal = cityMatch ? cityMatch[1] : null;
+    const townVal = townMatch ? townMatch[1] : null;
+
+    // Display extracted values
+    this.feedback
+      .setText(`b=${bVal}, c=${cVal}, city=${cityVal}, town=${townVal}`)
+      .setStyle({ fill: '#0ff' });
+    console.log('Extracted values:', { b: bVal, c: cVal, city: cityVal, town: townVal });
   }
 }

@@ -1,23 +1,25 @@
 import React, { useEffect, useRef } from 'react';
 import Phaser from 'phaser';
 
-// 1. Import all the necessary scenes for the game
+// --- Scenes ---
 import BootScene from '@game-core/scenes/BootScene';
 import ArenaScene from '@game-core/scenes/ArenaScene';
 import UIScene from '@game-core/scenes/UIScene';
-// It's good practice to import all scenes that will be used.
-import CodeEditorScene from '@game-core/scenes/CodeEditorScene.js';
-import PlayScene from '@game-core/scenes/PlayScene.js';
-import CodeLessonScene from '@game-core/scenes/CodeLessonScene.js';
+import PlayScene from '@game-core/scenes/PlayScene';
+import CodeLessonScene from '@game-core/scenes/CodeLessonScene';
+import CodeEditorScene from '@game-core/scenes/CodeEditorScene';
 
+// --- CodeMirror imports ---
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/theme/monokai.css';
+import CodeMirror from 'codemirror';
+import 'codemirror/mode/python/python.js';
 
 function GamePage() {
   const gameRef = useRef(null);
 
   useEffect(() => {
-    if (gameRef.current) {
-      return;
-    }
+    if (gameRef.current) return; // already initialized
 
     const config = {
       type: Phaser.AUTO,
@@ -25,15 +27,15 @@ function GamePage() {
       width: 800,
       height: 600,
       backgroundColor: '#211a21',
-      // --- FIX STARTS HERE ---
-      // Add the dom property to allow phaser to render HTML elements
-      dom: {
-        createContainer: true
-      },
-      // --- FIX ENDS HERE ---
-      // 2. Register all scenes with Phaser and start with BootScene
-      // I've also included the other scenes from your game.js file
-      scene: [BootScene, ArenaScene, UIScene, PlayScene, CodeEditorScene, CodeLessonScene]
+      dom: { createContainer: true },
+      scene: [
+        BootScene,
+        ArenaScene,
+        UIScene,
+        PlayScene,
+        CodeEditorScene,
+        CodeLessonScene
+      ]
     };
 
     gameRef.current = new Phaser.Game(config);
@@ -45,10 +47,22 @@ function GamePage() {
   }, []);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px' }}>
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      padding: '20px'
+    }}>
       <h1>Welcome to the Game!</h1>
-      <p>Your game is loading below. It is built using a data-driven Phaser 3 architecture.</p>
-      <div id="game-container" style={{ width: '800px', height: '600px', border: '2px solid #ff3399' }} />
+      <p>Your game is loading below. It’s powered by Phaser 3 and a data‑driven scene architecture.</p>
+      <div
+        id="game-container"
+        style={{
+          width: '800px',
+          height: '600px',
+          border: '2px solid #ff3399'
+        }}
+      />
     </div>
   );
 }
