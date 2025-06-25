@@ -68,11 +68,10 @@ export default class CodeEditorScene extends Phaser.Scene {
     this.feedback = this.add.text(edX + 100, edY + edH + 14, description, { font: '18px Consolas, Monaco, monospace', fill: '#aaa' });
 
     // --- Exit hint ---
-    this.add.text(width - 24, height - 16, "Press 'Q' to exit", { font: '14px Consolas, Monaco, monospace', fill: '#666' }).setOrigin(1);
+    
     this.input.keyboard.on('keydown-Q', () => {
-      if (this.editor) this.editor.toTextArea();
-      this.editorDOM.destroy();
-      this.runButton.destroy();
+     
+  
       this.scene.stop();
     });
   }
