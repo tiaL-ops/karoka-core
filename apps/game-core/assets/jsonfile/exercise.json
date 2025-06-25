@@ -1,0 +1,49 @@
+{
+  "exercises": [
+    {
+      "id": "swap_town_city",
+      "title": "Swap Variables",
+      "description": "Fill in the blanks so it prints 'Galaxia has 4 town and 2 Tera'",
+      "template": [
+        "# Fill in the blanks to make this code work",
+        "# It should print: 'Galaxia has 4 town and 2 Tera'",
+        "",
+        "# --- Write your code below--- ",
+        "",
+        "",
+        "# ── Do not change this line ──",
+        "print(city + \" has \" + str(c) + \" town and \" + str(b) + \" \" + town)"
+      ],
+      "readOnlyRegions": [
+        { "from": { "line": 0, "ch": 0 }, "to": { "line": 3, "ch": 0 } },
+        { "from": { "line": 6, "ch": 0 }, "to": { "line": 6, "ch": "Infinity" } }
+      ],
+      "validation": {
+        "b": 2,
+        "c": 4,
+        "city": "Galaxia",
+        "town": "Tera"
+      }
+    },
+    {
+      "id": "hello_world",
+      "title": "Hello, World!",
+      "description": "Create a variable called 'greeting' with the value 'Hello, World!'",
+      "template": [
+        "# Create a variable called 'greeting'",
+        "",
+        "# --- Write your code below---",
+        "",
+        "# ── Do not change this line ──",
+        "print(greeting)"
+      ],
+      "readOnlyRegions": [
+        { "from": { "line": 0, "ch": 0 }, "to": { "line": 2, "ch": 0 } },
+        { "from": { "line": 4, "ch": 0 }, "to": { "line": 5, "ch": "Infinity" } }
+      ],
+      "validation": {
+        "greeting": "Hello, World!"
+      }
+    }
+  ]
+}

@@ -1,5 +1,4 @@
-// scenes/BootScene.js
-
+// game-core/scenes/BootScene.js
 import { rooms } from '../config/roomData.js';
 import CodeEditorScene from './CodeEditorScene.js';
 
@@ -22,17 +21,17 @@ export default class BootScene extends Phaser.Scene {
         console.log(`BootScene: Preloading room "${roomKey}"`);
       // Load the Tiled JSON for the map
       this.load.tilemapTiledJSON(roomKey, room.mapJsonUrl);
+      
+      // Load the kinesthetic JSON if it exists
+      if (room.playJsonUrl) {
+        this.load.json(`${roomKey}_play_data`, room.playJsonUrl);
+      }
 
       // Load each tileset image for the map
       room.tilesets.forEach(ts => {
         this.load.image(ts.key, ts.url);
       });
     }
-
-    
-
-    // Preload other global assets here (e.g., player sprite, UI elements)
-    // this.load.spritesheet('player', 'path/to/player.png', { frameWidth: 32, frameHeight: 32 });
   }
 
   create() {

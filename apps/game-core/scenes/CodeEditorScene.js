@@ -1,54 +1,46 @@
+// game-core/scenes/CodeEditorScene.js
 import CodeMirror from 'codemirror';
+import { rooms } from '../config/roomData.js';
 
 export default class CodeEditorScene extends Phaser.Scene {
   constructor() {
     super({ key: 'CodeEditorScene' });
+    this.currentExercise = null;
+    this.editor = null;
+  }
+
+  init(data) {
+    const roomKey = data.roomKey || 'FirstArena'; 
+    if (rooms[roomKey] && rooms[roomKey].exercise) {
+      this.currentExercise = rooms[roomKey].exercise;
+    } else {
+      console.error(`CodeEditorScene: Exercise data not found for roomKey: "${roomKey}"`);
+    }
   }
 
   create() {
+    if (!this.currentExercise) {
+      this.add.text(this.sys.game.canvas.width / 2, this.sys.game.canvas.height / 2, 'ERROR: Could not load exercise data.', { fill: '#ff0000' }).setOrigin(0.5);
+      return;
+    }
+
     const { width, height } = this.sys.game.canvas;
+    const { title, template, description, readOnlyRegions } = this.currentExercise;
 
-    // --- 1) Header ---
-    this.add.text(width / 2, 24, 'LeetCode‑Lite', {
-      font: '36px Consolas, Monaco, monospace',
-      fill: '#0ff',
-      stroke: '#00f',
-      strokeThickness: 4
-    }).setOrigin(0.5);
-
-    // --- 2) Dark background panel ---
+    // --- Header ---
+    this.add.text(width / 2, 24, title, { font: '36px Consolas, Monaco, monospace', fill: '#0ff', stroke: '#00f', strokeThickness: 4 }).setOrigin(0.5);
+    
+    // --- Dark background panel ---
     this.add.rectangle(width / 2, height / 2 + 30, 760, 500, 0x1e1e1e, 0.95);
 
-    // --- 3) CodeMirror editor container ---
-    const edX = 20, edY = 80, edW = 760, edH = 400;
+    // --- CodeMirror editor ---
+    const edX = (width - 760) / 2, edY = 80, edW = 760, edH = 400;
     const wrapper = document.createElement('div');
-    wrapper.id = 'cm-wrapper';
-    wrapper.style.cssText = `
-      position: absolute;
-      top: ${edY}px;
-      left: ${edX}px;
-      width: ${edW}px;
-      height: ${edH}px;
-      border: 2px solid #444;
-      border-radius: 6px;
-      overflow: hidden;
-    `;
-    this.editorDOM = this.add.dom(0, 0, wrapper).setOrigin(0);
+    this.editorDOM = this.add.dom(edX, edY, wrapper).setOrigin(0);
 
-    // initialize CodeMirror after the element is in the DOM
     this.time.delayedCall(0, () => {
-      const template =
-`# Fill in the blanks to make this code work
-# It should print: “Galaxia has 4 town and 2 Tera”
-
-# --- Write your code below--- 
-
-
-# ── Do not change this line ──
-print(city + " has " + str(c) + " town and " + str(b) + " " + town)`;
-
       this.editor = CodeMirror(wrapper, {
-        value: template,
+        value: template.join('\n'),
         mode: 'python',
         theme: 'monokai',
         lineNumbers: true,
@@ -57,56 +49,28 @@ print(city + " has " + str(c) + " town and " + str(b) + " " + town)`;
       });
 
       const doc = this.editor.getDoc();
-      // make the template read-only up to the write region
-      doc.markText({ line: 0, ch: 0 }, { line: 3, ch: Infinity }, { readOnly: true });
-      // lock the print statement line
-      doc.markText({ line: 7, ch: 0 }, { line: 7, ch: Infinity }, { readOnly: true });
-      // highlight the editable region
-      doc.markText({ line: 3, ch: 0 }, { line: 3, ch: Infinity }, { className: 'cm-blank' });
+      if (readOnlyRegions) {
+        readOnlyRegions.forEach(region => {
+          const from = { line: region.from.line, ch: region.from.ch };
+          const to = { line: region.to.line, ch: region.to.ch === 'Infinity' ? null : region.to.ch };
+          doc.markText(from, to, { readOnly: true });
+        });
+      }
     });
 
-    // --- 4) Run button ---
+    // --- Run button ---
     const btn = document.createElement('button');
-    btn.id = 'run-btn';
     btn.textContent = 'Run';
-    btn.style.cssText = `
-      position: absolute;
-      top: ${edY + edH + 10}px;
-      left: ${edX}px;
-      padding: 8px 20px;
-      font-size: 18px;
-      background: #0a74da;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    `;
-    this.runButton = this.add.dom(0, 0, btn).setOrigin(0);
+    this.runButton = this.add.dom(edX, edY + edH + 10, btn).setOrigin(0);
     this.runButton.addListener('click').on('click', () => this.checkAnswer());
 
-    // --- 5) Feedback text ---
-    this.feedback = this.add.text(
-      edX + 100,
-      edY + edH + 14,
-      'Edit the blanks and click Run.',
-      {
-        font: '18px Consolas, Monaco, monospace',
-        fill: '#aaa'
-      }
-    );
+    // --- Feedback text ---
+    this.feedback = this.add.text(edX + 100, edY + edH + 14, description, { font: '18px Consolas, Monaco, monospace', fill: '#aaa' });
 
-    // --- 6) Exit hint ---
-    this.add.text(
-      width - 24,
-      height - 16,
-      "Press 'Q' to exit",
-      {
-        font: '14px Consolas, Monaco, monospace',
-        fill: '#666'
-      }
-    ).setOrigin(1);
-
+    // --- Exit hint ---
+    this.add.text(width - 24, height - 16, "Press 'Q' to exit", { font: '14px Consolas, Monaco, monospace', fill: '#666' }).setOrigin(1);
     this.input.keyboard.on('keydown-Q', () => {
+      if (this.editor) this.editor.toTextArea();
       this.editorDOM.destroy();
       this.runButton.destroy();
       this.scene.stop();
@@ -114,24 +78,36 @@ print(city + " has " + str(c) + " town and " + str(b) + " " + town)`;
   }
 
   checkAnswer() {
+    if (!this.editor) return;
+
     const code = this.editor.getValue();
+    const validationRules = this.currentExercise.validation;
+    let allCorrect = true;
 
-    // Extract numeric values for b and c
-    const bMatch = code.match(/b\s*=\s*(\d+)/);
-    const cMatch = code.match(/c\s*=\s*(\d+)/);
-    const bVal = bMatch ? parseInt(bMatch[1], 10) : null;
-    const cVal = cMatch ? parseInt(cMatch[1], 10) : null;
+    for (const key in validationRules) {
+      const expectedValue = validationRules[key];
+      let actualValue = null;
 
-    // Extract city and town strings
-    const cityMatch = code.match(/city\s*=\s*["']([^"']+)["']/);
-    const townMatch = code.match(/town\s*=\s*["']([^"']+)["']/);
-    const cityVal = cityMatch ? cityMatch[1] : null;
-    const townVal = townMatch ? townMatch[1] : null;
+      if (typeof expectedValue === 'number') {
+        const match = code.match(new RegExp(`${key}\\s*=\\s*(\\d+)`));
+        actualValue = match ? parseInt(match[1], 10) : null;
+      } else if (typeof expectedValue === 'string') {
+        const match = code.match(new RegExp(`${key}\\s*=\\s*["']([^"']+)["']`));
+        actualValue = match ? match[1] : null;
+      }
 
-    // Display extracted values
-    this.feedback
-      .setText(`b=${bVal}, c=${cVal}, city=${cityVal}, town=${townVal}`)
-      .setStyle({ fill: '#0ff' });
-    console.log('Extracted values:', { b: bVal, c: cVal, city: cityVal, town: townVal });
+      if (actualValue !== expectedValue) {
+        allCorrect = false;
+        break;
+      }
+    }
+
+    if (allCorrect) {
+      this.feedback.setText('✅ Correct! Well done!').setStyle({ fill: '#0f0' });
+      console.log('✅ Player solved it.');
+    } else {
+      this.feedback.setText('❌ Incorrect. Try again!').setStyle({ fill: '#f00' });
+      console.log('❌ Wrong values submitted.');
+    }
   }
 }
