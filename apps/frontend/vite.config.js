@@ -12,6 +12,7 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),
+        '@game-core': path.resolve(__dirname, '../game-core'),
       },
     },
     server: {

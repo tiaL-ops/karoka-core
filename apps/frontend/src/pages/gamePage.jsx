@@ -1,16 +1,68 @@
+import React, { useEffect, useRef } from 'react';
+import Phaser from 'phaser';
 
-import React from 'react';
+// --- Scenes ---
+import BootScene from '@game-core/scenes/BootScene';
+import ArenaScene from '@game-core/scenes/ArenaScene';
+import UIScene from '@game-core/scenes/UIScene';
+import PlayScene from '@game-core/scenes/PlayScene';
+import CodeLessonScene from '@game-core/scenes/CodeLessonScene';
+import CodeEditorScene from '@game-core/scenes/CodeEditorScene';
+
+// --- CodeMirror imports ---
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/theme/monokai.css';
+import CodeMirror from 'codemirror';
+import 'codemirror/mode/python/python.js';
 
 function GamePage() {
+  const gameRef = useRef(null);
+
+  useEffect(() => {
+    if (gameRef.current) return; // already initialized
+
+    const config = {
+      type: Phaser.AUTO,
+      parent: 'game-container',
+      width: 800,
+      height: 600,
+      backgroundColor: '#211a21',
+      dom: { createContainer: true },
+      scene: [
+        BootScene,
+        ArenaScene,
+        UIScene,
+        PlayScene,
+        CodeEditorScene,
+        CodeLessonScene
+      ]
+    };
+
+    gameRef.current = new Phaser.Game(config);
+
+    return () => {
+      gameRef.current.destroy(true);
+      gameRef.current = null;
+    };
+  }, []);
+
   return (
-    <div>
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      padding: '20px'
+    }}>
       <h1>Welcome to the Game!</h1>
-      <p>This is where your game content will be displayed.</p>
-      {/* Integrate your Phaser.js game or other game logic here */}
-      <div id="game-container" style={{ width: '800px', height: '600px', border: '1px solid black' }}>
-        {/* Your game canvas/container */}
-        <p>Placeholder for your game content.</p>
-      </div>
+      <p>Your game is loading below. It’s powered by Phaser 3 and a data‑driven scene architecture.</p>
+      <div
+        id="game-container"
+        style={{
+          width: '800px',
+          height: '600px',
+          border: '2px solid #ff3399'
+        }}
+      />
     </div>
   );
 }
