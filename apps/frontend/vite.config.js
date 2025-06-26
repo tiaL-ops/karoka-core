@@ -12,6 +12,10 @@ export default defineConfig(({ mode }) => {
         '@': path.resolve(__dirname, './src'),
         '@game-core': path.resolve(__dirname, '../game-core'),
       },
+      // --- ADD THIS DEDUPE SECTION ---
+      // This helps Vite resolve dependencies consistently in a monorepo-like setup
+      dedupe: ['codemirror', 'react', 'react-dom'] 
+      // It's good practice to also dedupe other shared dependencies like react
     },
     server: {
       host: true,
@@ -33,11 +37,10 @@ export default defineConfig(({ mode }) => {
           path.resolve(__dirname, '../game-core/**')
         ]
       },
-      // --- ADD THIS SECTION ---
-      rollupOptions: {
-        external: ['codemirror']
-      }
-      // ------------------------
+      // --- REMOVE THE ROLLUPOPTIONS SECTION ---
+      // rollupOptions: {
+      //   external: ['codemirror'] // This was causing the browser error
+      // }
     },
     define: {
       __APP_ENV__: JSON.stringify(env.VITE_ENV_NAME),
