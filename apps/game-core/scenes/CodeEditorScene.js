@@ -76,28 +76,38 @@ export default class CodeEditorScene extends Phaser.Scene {
     });
   }
 
-  checkAnswer() {
+  async checkAnswer() {
     if (!this.editor) return;
 
     const code = this.editor.getValue();
     const validationRules = this.currentExercise.validation;
     let allCorrect = true;
+    const errors = [];
 
     for (const key in validationRules) {
       const expectedValue = validationRules[key];
       let actualValue = null;
 
-      if (typeof expectedValue === 'number') {
-        const match = code.match(new RegExp(`${key}\\s*=\\s*(\\d+)`));
-        actualValue = match ? parseInt(match[1], 10) : null;
-      } else if (typeof expectedValue === 'string') {
-        const match = code.match(new RegExp(`${key}\\s*=\\s*["']([^"']+)["']`));
-        actualValue = match ? match[1] : null;
-      }
+      try {
+        if (typeof expectedValue === 'number') {
+          const match = code.match(new RegExp(`${key}\\s*=\\s*(\\d+)`));
+          actualValue = match ? parseInt(match[1], 10) : null;
+        } else if (typeof expectedValue === 'string') {
+          const match = code.match(new RegExp(`${key}\\s*=\\s*["']([^"']+)["']`));
+          actualValue = match ? match[1] : null;
+        }
 
-      if (actualValue !== expectedValue) {
+        if (actualValue !== expectedValue) {
+          allCorrect = false;
+          errors.push({
+            variable: key,
+            expected: expectedValue,
+            actual: actualValue
+          });
+        }
+      } catch (e) {
         allCorrect = false;
-        break;
+        errors.push({ error: `Error validating ${key}: ${e.message}` });
       }
     }
 
@@ -108,5 +118,21 @@ export default class CodeEditorScene extends Phaser.Scene {
       this.feedback.setText('❌ Incorrect. Try again!').setStyle({ fill: '#f00' });
       console.log('❌ Wrong values submitted.');
     }
+
+    // Log the attempt to the backend
+    try {
+      await logGameAttempt({
+        sessionId: this.userProfile.sessionId,
+        challengeId: this.currentExercise.id,
+        submittedCode: code,
+        isCorrect: allCorrect,
+        errors: errors,
+      });
+      console.log('Game attempt logged successfully.');
+    } catch (error) {
+      console.error('Failed to log game attempt:', error);
+      // You could show an error to the user here if desired
+    }
   }
+
 }

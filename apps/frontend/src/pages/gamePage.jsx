@@ -15,12 +15,17 @@ import 'codemirror/theme/monokai.css';
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/python/python.js';
 
+// --- Auth context ---
+import { useAuth } from '@/components/Auth/AuthContext';
 function GamePage() {
   const gameRef = useRef(null);
+  const { userProfile } = useAuth();
 
   useEffect(() => {
-    if (gameRef.current) return; // already initialized
-
+    if (!userProfile) {
+    return <div>Loading User Profile...</div>;
+  }
+    if (gameRef.current) return; 
     const config = {
       type: Phaser.AUTO,
       parent: 'game-container',
@@ -38,13 +43,16 @@ function GamePage() {
       ]
     };
 
-    gameRef.current = new Phaser.Game(config);
+    const game = new Phaser.Game(config);
+    gameRef.current = game;
+
+    game.scene.start('BootScene', { userProfile });
 
     return () => {
       gameRef.current.destroy(true);
       gameRef.current = null;
     };
-  }, []);
+  }, [userProfile]);
 
   return (
     <div style={{
