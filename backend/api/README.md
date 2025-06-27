@@ -58,3 +58,6 @@ The backend uses a token-based authentication scheme integrated with Firebase.
     1.  Install the package: `pip install <package-name>`
     2.  Update the requirements file: `pip freeze > requirements.txt`
     3.  Rebuild the Docker container (`docker-compose up --build`) to include the new package.
+
+#if you need user.py to sync
+curl -X POST http://localhost:5001/api/user/sync 
