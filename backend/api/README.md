@@ -61,3 +61,4 @@ The backend uses a token-based authentication scheme integrated with Firebase.
 
 #if you need user.py to sync
 curl -X POST http://localhost:5001/api/user/sync 
+curl -X GET http://localhost:5001/api/database/log_events

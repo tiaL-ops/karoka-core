@@ -16,7 +16,7 @@ export default class CodeEditorScene extends Phaser.Scene {
   }
 
   init(data) {
-    // Get userProfile from the registry (set by BootScene) so we can log attempts
+    // Get userProfile from the registryso we can log attempts
     this.userProfile = this.registry.get('userProfile');
     console.log('CodeEditorScene: User Profile:', this.userProfile);
 
