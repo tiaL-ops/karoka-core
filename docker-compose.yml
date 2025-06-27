@@ -1,4 +1,4 @@
-version: '3.8'
+
 
 services:
   db:
@@ -14,6 +14,7 @@ services:
       - postgres_dev_data:/var/lib/postgresql/data
     env_file:
     - ./backend/.env
+  
 
   backend:
     build:
@@ -22,11 +23,11 @@ services:
     depends_on:
       - db
     env_file:
-      - ./backend/.env
+      - ./backend/.env   # contains secrets, config; does not need PORT unless you want to override
     environment:
       - DATABASE_URL=postgresql://karoka:karoka@db:5432/karoka_dev
       - FLASK_ENV=development
-      - PORT=5001
+      - PORT=5001        # override default if you like; must match ports mapping
     ports:
       - "5001:5001"
     working_dir: /app/backend
@@ -36,25 +37,19 @@ services:
 
   frontend:
     build:
-      context: . # Build from the project root
-      dockerfile: infra/docker/frontend.Dockerfile # Point to the correct Dockerfile
+      context: .
+      dockerfile: infra/docker/frontend.Dockerfile
     depends_on:
       - backend
     ports:
       - "3000:3000"
+    working_dir: /app
+    volumes:
+      - ./apps/frontend:/app 
+      - /app/node_modules 
+
     env_file:
     - ./apps/frontend/.env
-
-    # --- THIS IS THE FIX ---
-    # 1. Set the working directory to where your React app lives
-    working_dir: /app/apps/frontend
-    # 2. Mount the ENTIRE project into the container's /app directory
-    volumes:
-      - .:/app
-    # 3. Prevent the local node_modules from overwriting the container's node_modules
-      - /app/apps/frontend/node_modules
-    # --- END FIX ---
-
     command: npm run dev
 
 volumes:

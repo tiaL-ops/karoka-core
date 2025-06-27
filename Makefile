@@ -1,16 +1,21 @@
+# Makefile
+
 # Variables
 ENV_FILE=.env
+# Service name for the backend container from your docker-compose.yml
+BACKEND_SERVICE=backend
 
 # Start normally
 start:
 	docker compose up
 
-# Start clean (rebuild images, reset volumes)
+# Start clean (rebuild images, reset volumes, and run migrations)
 clean-start:
 	docker compose down -v
 	docker compose up --build -d
-	cd backend && alembic upgrade head
-
+	@echo "Waiting for database to be ready..."
+	@sleep 10
+	make migrate
 
 # Build containers without using cache
 build:
@@ -27,22 +32,31 @@ stop:
 # Rebuild everything cleanly
 rebuild:
 	docker compose down -v
-	docker compose build --no-cache
-	docker compose up -d
+	make build
+	make up
 
-# Run tests (make sure venv is activated)
+# Run tests inside the Docker container
 .PHONY: test
 test:
-	cd backend/db && source ../.venv/bin/activate && pytest
+	docker compose exec $(BACKEND_SERVICE) pytest backend/db/tests
 
-# Run Alembic migrations
+# Run Alembic migrations inside the Docker container
 migrate:
-	cd backend alembic upgrade head
+	docker compose run --rm backend \
+  alembic -c alembic.ini upgrade head
 
-# Create a new Alembic migration (usage: make makemigration msg="my message")
+# Create a new Alembic migration inside the Docker container (usage: make makemigration msg="your message")
 makemigration:
-	alembic revision --autogenerate -m "$(msg)"
+	docker compose exec $(BACKEND_SERVICE) alembic -c backend/alembic.ini revision --autogenerate -m "$(msg)"
+
+# Trigger the Firestore to Postgres sync via curl
+sync:
+
+	curl -X POST http://localhost:5001/api/user/sync
 
 # Shell into dev DB container
 psql-dev:
 	docker exec -it karoka_postgres_dev psql -U karoka -d karoka_dev
+
+
+

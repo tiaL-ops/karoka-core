@@ -12,6 +12,13 @@ export default class BootScene extends Phaser.Scene {
   constructor() {
     super('BootScene');
   }
+  init(data) {
+    
+    this.registry.set('userProfile', data.userProfile);
+    console.log("BootScene: Initializing with data:", data);
+
+   
+  }
 
   preload() {
     console.log("BootScene: Preloading assets...");

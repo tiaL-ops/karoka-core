@@ -45,6 +45,7 @@ function GamePage() {
 
     const game = new Phaser.Game(config);
     gameRef.current = game;
+    console.log('gmae started with profile', userProfile);
 
     game.scene.start('BootScene', { userProfile });
 
