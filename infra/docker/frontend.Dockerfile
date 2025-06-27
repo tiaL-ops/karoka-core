@@ -1,24 +1,25 @@
-# infra/docker/frontend.Dockerfile
-# This file is designed to work with the docker-compose.yml where the
-# entire project context is mounted at /app.
+# -------------------------------------------------------------------------------------------------
+# frontend.Dockerfile
+# -------------------------------------------------------------------------------------------------
+FROM node:20
 
-FROM node:20-alpine
+WORKDIR /app
 
-# Set the working directory for the frontend application inside the container.
-# All subsequent commands (COPY, RUN, etc.) will be relative to this path.
-WORKDIR /app/apps/frontend
+# 1) Copy only package.json (do NOT copy package-lock.json or node_modules)
+COPY apps/frontend/package.json ./
 
-# Copy the dependency manifest files.
-# By copying these first and running install, Docker can cache the installed
-# node_modules layer and will only re-run it if package.json or package-lock.json changes.
-COPY ./apps/frontend/package.json ./
-COPY ./apps/frontend/package-lock.json* ./
 
-# Install project dependencies. This will create the node_modules directory
-# inside /app/apps/frontend, which is what we need.
-# This installs both dependencies and devDependencies by default.
+# 2) Ensure devDependencies (Vite, Rollup) are installed
+ENV NODE_ENV=development
+
+# 3) Run npm install inside container → generates a fresh package-lock.json / node_modules for this arch
 RUN npm install
 
-# The command to run the application is specified in docker-compose.yml,
-# so we don't need a CMD here. Exposing the port is good practice.
+# 4) Copy the rest of the frontend source code
+COPY apps/frontend .
+
+# 5) Expose Vite’s default dev port (5173). but my port is 300-
 EXPOSE 3000
+
+# 6) Start Vite in dev‐mode
+CMD ["npm", "run", "dev"]

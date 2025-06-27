@@ -95,3 +95,6 @@ The easiest way to run the entire project is with Docker.
 4.  The Backend API **verifies the token**, creates a corresponding user record in the **PostgreSQL** database, and creates a user profile document in **Firestore**.
 
 This ensures we have a secure, dual-record system: Firebase for auth and quick-access data, and PostgreSQL for robust, relational data.
+
+
+docker-compose up --build

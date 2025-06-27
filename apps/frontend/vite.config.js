@@ -37,10 +37,7 @@ export default defineConfig(({ mode }) => {
           path.resolve(__dirname, '../game-core/**')
         ]
       },
-      // --- REMOVE THE ROLLUPOPTIONS SECTION ---
-      // rollupOptions: {
-      //   external: ['codemirror'] // This was causing the browser error
-      // }
+    
     },
     define: {
       __APP_ENV__: JSON.stringify(env.VITE_ENV_NAME),
