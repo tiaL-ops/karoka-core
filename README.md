@@ -98,3 +98,4 @@ This ensures we have a secure, dual-record system: Firebase for auth and quick-a
 
 
 docker-compose up --build
+#safety check
