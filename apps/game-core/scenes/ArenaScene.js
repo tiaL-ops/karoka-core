@@ -15,6 +15,8 @@ export default class ArenaScene extends Phaser.Scene {
   }
 
   init(data) {
+    this.userProfile = this.registry.get('userProfile');
+    this.dataService = this.registry.get('dataService');
     // The key for the current room (e.g., 'FirstArena')
     this.roomKey = data.roomKey;
   }
