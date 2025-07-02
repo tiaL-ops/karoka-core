@@ -1,8 +1,7 @@
-// karoka-core/apps/game-core/services/DataService.js
-
 /**
  * DataService provides a centralized interface for all game scenes to log
  * events and manage player session data with the backend.
+ * This version is specifically tailored for the existing Flask backend.
  */
 export default class DataService {
   constructor(apiBaseUrl, getAuthToken) {
@@ -13,90 +12,65 @@ export default class DataService {
     this.getAuthToken = getAuthToken;
   }
 
-  /**
-   * Performs an authenticated POST request.
-   */
   async #post(endpoint, body) {
     const token = await this.getAuthToken();
     if (!token) throw new Error("Authentication token not available.");
 
     const response = await fetch(`${this.API_BASE_URL}${endpoint}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      headers: { 
+        // Explicitly set the Content-Type header
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` 
+      },
+      // The body is already stringified before being passed here
       body: JSON.stringify(body),
     });
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ error: 'Unknown API error' }));
-      throw new Error(`API Error: ${errorData.message || response.statusText}`);
+      // Try to get more detailed error message from the backend
+      const errorData = await response.json().catch(() => ({ error: `Request failed with status: ${response.status}` }));
+      console.error('API Error Response:', errorData);
+      throw new Error(`API Error: ${errorData.error || response.statusText}`);
     }
     return response.json();
   }
 
   /**
-   * 1. Starts a new game session for a user.
-   * This should be called once when the game loads.
-   * @param {string} userId - The Firebase UID of the user.
-   * @returns {Promise<object>} The newly created session object from the backend.
+   * Calls the backend to create a new game session.
+   * @returns {Promise<object>} The new session object from the backend.
    */
-  async startNewSession(userId) {
-    console.log("DataService: Starting new session for user:", userId);
-    return this.#post('/game/session/start', { user_id: userId });
+  async startNewSession() {
+    console.log("DataService: Requesting new game session from backend...");
+    // The endpoint path is '/game/session/start'
+    return this.#post('/game/session/start', {}); // No body needed for this request
   }
   
   /**
-   * 2. Logs a generic event to the `log_events` table.
-   * This is a versatile method for tracking various player actions.
-   * @param {object} eventData - The event details.
-   * @param {string} eventData.sessionId - The current game session ID.
-   * @param {string} eventData.eventType - E.g., 'challenge_started', 'documentation_accessed'.
-   * @param {object} [eventData.eventDetails] - A JSON object with context-specific data.
-   */
-  async logEvent(eventData) {
-    console.log(`DataService: Logging event '${eventData.eventType}'`, eventData);
-    return this.#post('/game/log-event', eventData);
-  }
-
-  /**
-   * 3. Updates the `checkpoint_data` for the current session.
-   * Use this to save puzzle states, inventory, etc.
-   * @param {string} sessionId - The current game session ID.
-   * @param {object} checkpointData - The new state to be saved.
-   */
-  async updateCheckpoint(sessionId, checkpointData) {
-      console.log("DataService: Updating checkpoint...", checkpointData);
-      return this.#post('/game/session/checkpoint', {
-          session_id: sessionId,
-          checkpoint_data: checkpointData
-      });
-  }
-
-  /**
-   * 4. Logs a code submission attempt.
-   * This is a specific type of event log.
+   * Logs a code submission attempt.
+   * This function now formats the data keys to snake_case for the Flask backend.
    */
   async logCodeAttempt(attemptData) {
-    console.log("DataService: Logging code attempt...", attemptData);
-    return this.#post('/game/attempt', attemptData);
+    console.log("DataService: Preparing to log code attempt...", attemptData);
+
+    // --- KEY FIX IS HERE ---
+    // Create a new object with Python-style snake_case keys
+    // to match the Flask backend's expectations.
+    const payload = {
+      sessionId: attemptData.sessionId,       // Matches data.get('sessionId')
+      challengeId: attemptData.challengeId,   // Matches data.get('challengeId')
+      submittedCode: attemptData.submittedCode, // Matches data.get('submittedCode')
+      isCorrect: attemptData.isCorrect,       // Matches data.get('isCorrect')
+      errors: attemptData.errors            // Matches data.get('errors')
+    };
+    
+    // The endpoint is now '/api/game/attempt' as defined in your game.py
+    return this.#post('/game/attempt', payload);
   }
 
-  /**
-   * 5. Handles a request for an LLM-based hint.
-   * This could involve multiple backend calls in a real scenario.
-   */
-  async requestHint(hintData) {
-    console.log("DataService: Requesting hint...", hintData);
-    // First, log the hint request event
-    await this.logEvent({
-      sessionId: hintData.sessionId,
-      eventType: 'hint_requested',
-      eventDetails: {
-        challenge_id: hintData.challengeId,
-        hint_type: 'llm_dialogue'
-      }
-    });
-    // Then, get the actual hint from the LLM (placeholder)
-    // return this.#post('/game/llm/hint', hintData);
-    return { hint: "This is a placeholder hint from Karo. Remember to check variable types!" };
-  }
+
+
+
+
 }
+
