@@ -78,14 +78,13 @@ export default class CodeEditorScene extends Phaser.Scene {
     /**
      * This function is the core of the data logging process.
      */
-    async checkAnswer() {
-        // --- 1. Get the user's code ---
+     async checkAnswer() {
         const code = this.editor.getValue();
         const validationRules = this.currentExercise.validation;
         let allCorrect = true;
         const errors = [];
 
-        // --- 2. Validate the code ---
+        // Your validation logic here...
         for (const key in validationRules) {
             const expectedValue = validationRules[key];
             let actualValue = null;
@@ -107,42 +106,30 @@ export default class CodeEditorScene extends Phaser.Scene {
             }
         }
 
-        // --- 3. Prepare the data payload for the database ---
-        // This object structure should match what your backend API expects.
         const attemptData = {
-            sessionId: this.userProfile.sessionId,
+            sessionId: this.userProfile.sessionId, //  Use the stored sessionId
             challengeId: this.currentExercise.id,
             submittedCode: code,
             isCorrect: allCorrect,
             errors: errors,
         };
 
-        // --- 4. Call the DataService to log the attempt ---
         try {
             console.log("Calling dataService.logCodeAttempt...");
-            // This sends the `attemptData` object to your backend.
-            await this.dataService.logCodeAttempt(attemptData);
+            await this.dataService.logCodeAttempt(attemptData); // This now calls the correct backend endpoint
             console.log("Attempt logged successfully!");
+
+            if (allCorrect) {
+                this.feedback.setText('✅ Correct! Challenge Complete!').setStyle({ fill: '#0f0' });
+                this.runButton.removeListener('click');
+                this.time.delayedCall(2000, () => this.scene.stop());
+            } else {
+                this.feedback.setText('❌ Incorrect. Review your code and try again!').setStyle({ fill: '#f00' });
+            }
+
         } catch (error) {
             console.error("Failed to log code attempt:", error);
             this.feedback.setText('⚠️ Could not save progress. Please check your connection.').setStyle({ fill: '#f90' });
-        }
-
-        // --- 5. Give feedback to the user and log completion if correct ---
-        if (allCorrect) {
-            this.feedback.setText('✅ Correct! Challenge Complete!').setStyle({ fill: '#0f0' });
-            
-            // Log a second event to mark the challenge as officially completed
-            this.dataService.logEvent({
-                sessionId: this.userProfile.sessionId,
-                eventType: 'challenge_completed',
-                eventDetails: { challenge_id: this.currentExercise.id }
-            });
-
-            this.runButton.removeListener('click');
-            this.time.delayedCall(2000, () => this.scene.stop());
-        } else {
-            this.feedback.setText('❌ Incorrect. Review your code and try again!').setStyle({ fill: '#f00' });
         }
     }
   
