@@ -30,3 +30,4 @@ instance/
 dist/
 build/
 htmlcov/
+somestuff.md
