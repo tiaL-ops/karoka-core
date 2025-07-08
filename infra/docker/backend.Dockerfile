@@ -10,6 +10,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY backend .
 
+# Make the startup script executable
+RUN chmod +x ./run.sh
+
 # Document the port (actual publish via docker-compose or platform)
 EXPOSE 5001
 

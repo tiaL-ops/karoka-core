@@ -12,7 +12,7 @@ services:
     dockerfilePath: ./backend/Dockerfile
     # We need to give Render a hint for building the Docker image context.
     dockerContext: ./backend
-    startCommand: "alembic upgrade head && gunicorn --workers 4 --bind 0.0.0.0:5001 'api.main:create_app()'"
+    startCommand: "./run.sh"
     envVars:
       # This environment variable is automatically set by Render.
       # Gunicorn will use it in the CMD of your Dockerfile.
@@ -80,3 +80,5 @@ services:
   - type: psql
     name: karoka-db
     plan: free # Choose a paid plan for better performance in production.
+
+  
