@@ -46,3 +46,7 @@ class User(Base):
 
     def __repr__(self):
         return f"<User(id={self.id!r}, name={self.name!r})>"
+    
+    def as_dict(self):
+       """Return object data in easily serializable format for JSON responses."""
+       return {c.name: getattr(self, c.name) for c in self.__table__.columns}

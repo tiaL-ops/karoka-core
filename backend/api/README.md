@@ -69,3 +69,6 @@ city = "Galaxia"
 c = 4
 b = 2
 town = "Tera"
+
+to watch log:
+docker logs -f karoka-core-backend-1
