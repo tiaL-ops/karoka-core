@@ -1,43 +1,54 @@
-// game-core/scenes/BootScene.js
+// karoka-core/apps/game-core/scenes/BootScene.js
 import { rooms } from '../config/roomData.js';
 import CodeEditorScene from './CodeEditorScene.js';
 
-/**
- * BootScene is the first scene to load. Its purpose is to
- * read the master config file (roomData.js) and preload all
- * assets that the game will need, primarily the tilemaps and
- * tilesets for every arena.
- */
 export default class BootScene extends Phaser.Scene {
   constructor() {
     super('BootScene');
   }
 
+  init(data) {
+    console.log("BootScene: Initializing with data:", data);
+    this.registry.set('userProfile', data.userProfile);
+    this.registry.set('dataService', data.dataService);
+  }
+
   preload() {
     console.log("BootScene: Preloading assets...");
-
-    // Iterate through all rooms defined in the config
     for (const [roomKey, room] of Object.entries(rooms)) {
-        console.log(`BootScene: Preloading room "${roomKey}"`);
-      // Load the Tiled JSON for the map
-      this.load.tilemapTiledJSON(roomKey, room.mapJsonUrl);
-      
-      // Load the kinesthetic JSON if it exists
-      if (room.playJsonUrl) {
-        this.load.json(`${roomKey}_play_data`, room.playJsonUrl);
-      }
-
-      // Load each tileset image for the map
-      room.tilesets.forEach(ts => {
-        this.load.image(ts.key, ts.url);
-      });
+        this.load.tilemapTiledJSON(roomKey, room.mapJsonUrl);
+        if (room.playJsonUrl) {
+          this.load.json(`${roomKey}_play_data`, room.playJsonUrl);
+        }
+        room.tilesets.forEach(ts => {
+          this.load.image(ts.key, ts.url);
+        });
     }
   }
 
-  create() {
-    console.log("BootScene: Preload complete. Starting first arena.");
-    
-    // Start the first arena scene, passing its key from the config
-    this.scene.start('ArenaScene', { roomKey: 'FirstArena' });
+  async create() {
+    console.log("BootScene: Starting session and then the first arena.");
+    const dataService = this.registry.get('dataService');
+    const userProfile = this.registry.get('userProfile');
+
+    try {
+      // 1. Call the backend to get a new session
+      const session = await dataService.startNewSession();
+      console.log("New session started:", session);
+
+      // 2. Add the new session ID to the user's profile object
+      userProfile.sessionId = session.id;
+
+      // 3. Save the MODIFIED profile back into the game's registry
+      this.registry.set('userProfile', userProfile);
+
+      // 4. Now, start the next scene
+      this.scene.start('ArenaScene', { roomKey: 'FirstArena' });
+
+    } catch (error) {
+        console.error("Fatal Error: Failed to start game session:", error);
+        // You can display an error message to the user on the screen here
+        this.add.text(400, 300, 'Error: Could not connect to the server.', { color: '#ff0000', fontSize: '20px' }).setOrigin(0.5);
+    }
   }
 }

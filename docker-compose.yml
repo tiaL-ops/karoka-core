@@ -1,4 +1,4 @@
-version: '3.8'
+
 
 services:
   db:
@@ -46,6 +46,7 @@ services:
     working_dir: /app
     volumes:
       - ./apps/frontend:/app 
+      - ./apps/game-core:/game-core
       - /app/node_modules 
 
     env_file:
