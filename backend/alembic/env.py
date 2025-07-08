@@ -63,6 +63,7 @@ def run_migrations_offline() -> None:
         context.run_migrations()
 
 
+
 def run_migrations_online() -> None:
     """Run migrations in 'online' mode.
 
@@ -70,8 +71,14 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
+    # Get the database URL from the environment variable
+    database_url = os.getenv("DATABASE_URL")
+    if not database_url:
+        # Fallback to the .ini file if the env var is not set (for local use)
+        database_url = config.get_main_option("sqlalchemy.url")
+
     connectable = engine_from_config(
-        config.get_section(config.config_ini_section, {}),
+        {"sqlalchemy.url": database_url}, # Use the URL we determined
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
     )
@@ -85,7 +92,4 @@ def run_migrations_online() -> None:
             context.run_migrations()
 
 
-if context.is_offline_mode():
-    run_migrations_offline()
-else:
-    run_migrations_online()
+run_migrations_online()
