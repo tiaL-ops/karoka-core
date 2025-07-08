@@ -1,1 +1,9 @@
 Generic single-database configuration.
+
+for alembic: you can run 
+docker exec -it karoka-core-backend-1 /bin/bash
+alembic revision --autogenerate -m "message"
+alembic upgrade head
+
+
+--> most comoon errors is the db new value to null, you an add default by openig the alembic file and set value

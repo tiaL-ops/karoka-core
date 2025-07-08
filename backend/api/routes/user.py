@@ -11,7 +11,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-logger.info("🐼 🍷hello")
+logger.info("🐼 🍷hello test")
 
 def get_current_firebase_user_id():
     auth_header = request.headers.get('Authorization')
@@ -90,6 +90,25 @@ def sync_from_firestore_to_postgres():
     finally:
         db.close()
 
+@user_bp.route('/', methods=['GET'])
+def list_users_route():
+    logger.info("GETTT ⭐️")
+    # First, verify the user is authenticated, just like in your other routes
+    user_id_from_token, error_response, status_code = get_current_firebase_user_id()
+    if error_response:
+        return jsonify(error_response), status_code
+
+    db = SessionLocal()
+    try:
+        # The 'list_users' function is already imported from your CRUD file
+        users = list_users(db) 
+        # We use the as_dict() helper to convert the list of objects to JSON
+        return jsonify([user.as_dict() for user in users]), 200
+    except Exception as e:
+        logger.error(f"Error listing users: {e}")
+        return jsonify({"error": "Failed to list users"}), 500
+    finally:
+        db.close()
 
 @user_bp.route('/', methods=['POST'], strict_slashes=False)
 def create_user_route():

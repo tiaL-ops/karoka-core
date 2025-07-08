@@ -19,6 +19,7 @@ class User(Base):
     age = Column(Integer, nullable=True)
     sex = Column(SexEnum, nullable=True)
     role = Column(String, nullable=False, default='user')
+    score = Column(Integer, nullable=False, default=0)
 
     vark_visual_score = Column(Integer, nullable=True)
     vark_auditory_score = Column(Integer, nullable=True)
@@ -45,3 +46,7 @@ class User(Base):
 
     def __repr__(self):
         return f"<User(id={self.id!r}, name={self.name!r})>"
+    
+    def as_dict(self):
+       """Return object data in easily serializable format for JSON responses."""
+       return {c.name: getattr(self, c.name) for c in self.__table__.columns}

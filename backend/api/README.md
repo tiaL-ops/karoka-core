@@ -62,3 +62,13 @@ The backend uses a token-based authentication scheme integrated with Firebase.
 #if you need user.py to sync
 curl -X POST http://localhost:5001/api/user/sync 
 curl -X GET http://localhost:5001/api/database/log_events
+
+
+
+city = "Galaxia"
+c = 4
+b = 2
+town = "Tera"
+
+to watch log:
+docker logs -f karoka-core-backend-1

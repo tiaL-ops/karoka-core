@@ -118,3 +118,28 @@ export async function setSessionId(uid, sessionId) {
     sessionId: sessionId,
   });
 }
+
+export const getAllUsers = async () => {
+  console.log("Entered getAllUsers ayoo")
+  if (!auth.currentUser) {
+    throw new Error("User not authenticated. Cannot fetch all users.");
+  }
+  
+  // Get the token from the currently signed-in user
+  const token = await auth.currentUser.getIdToken();
+
+  const response = await fetch(`${API_BASE_URL}/user/`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`, // Use the token to authorize with the backend
+    },
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({ error: 'Failed to decode error response' }));
+    throw new Error(errorData.error || `Failed to fetch users: ${response.statusText}`);
+  }
+
+  return response.json();
+};
