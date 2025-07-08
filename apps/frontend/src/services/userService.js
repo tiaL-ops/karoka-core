@@ -118,3 +118,4 @@ export async function setSessionId(uid, sessionId) {
     sessionId: sessionId,
   });
 }
+
