@@ -7,6 +7,7 @@ from flask_cors import CORS
 import firebase_admin
 from firebase_admin import credentials
 from dotenv import load_dotenv
+import logging
 
 
 # Load .env only in non-production
@@ -15,6 +16,11 @@ if os.getenv("ENVIRONMENT") != "production":
 
 def create_app():
     app = Flask(__name__)
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        handlers=[logging.StreamHandler()]
+    )
 
     # Environment
     env = os.getenv("ENVIRONMENT", "development")

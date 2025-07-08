@@ -7,6 +7,11 @@ from db.crud.game_session import get_game_session, update_game_session, create_g
 from api.middleware.auth_middleware import user_required
 from uuid import UUID
 from datetime import datetime # Make sure datetime is imported
+import logging
+logger = logging.getLogger(__name__)
+
+
+logger.info("🐼 🍷hello game ")
 
 game_bp = Blueprint('game', __name__)
 @game_bp.route('/session/start', methods=['POST'])
@@ -22,6 +27,7 @@ def start_session():
         # --- THIS IS THE FIX ---
         # Instead of passing user_id directly, we pass a dictionary 
         # of the initial session data, which is what the CRUD function expects.
+        print(f"Starting session for user ID: {g.current_user_id}")  # Debugging line to check user ID
         session_payload = {
             "user_id": g.current_user_id, 
             "start_time": datetime.utcnow(), 
@@ -40,7 +46,7 @@ def start_session():
     except Exception as e:
         db.rollback()
         # Also, let's make the error logging a bit more informative
-        print(f"Error in start_session: {e}") 
+        logger.info(f"Error in start_session: {e}") 
         return jsonify({"error": f"Failed to start session: {str(e)}"}), 500
     finally:
         db.close()
@@ -49,6 +55,7 @@ def start_session():
 @game_bp.route('/attempt', methods=['POST'])
 @user_required
 def log_game_attempt():
+    logger.info("🐼 bro is attemtping ")
     data = request.json
     db = SessionLocal()
     try:
@@ -84,12 +91,15 @@ def log_game_attempt():
 
             # 2. Update User Score
             current_user = get_user(db, g.current_user_id)
+            logger.info(f"our Current user 🐼: {current_user}")  # Debugging line to check if user is fetched correctly
             if current_user:
+                logger.info(f"scorebeforeeee: {current_user.score}")
                 user_updates = {
-                    # Assuming your user model has a 'score' attribute
+                    
                     "score": (current_user.score or 0) + 10 
                 }
                 update_user(db, user_id=g.current_user_id, updates=user_updates)
+                logger.info(f"scoreafter: {current_user.score}")
 
         update_game_session(db, session_id=game_session.id, updates=session_updates)
 

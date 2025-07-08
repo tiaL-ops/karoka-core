@@ -28,6 +28,9 @@ services:
       - DATABASE_URL=postgresql://karoka:karoka@db:5432/karoka_dev
       - FLASK_ENV=development
       - PORT=5001        # override default if you like; must match ports mapping
+    command: >
+      sh -c "alembic upgrade head && 
+             gunicorn --workers 4 --bind 0.0.0.0:5001 'api.main:create_app()' --log-level info"
     ports:
       - "5001:5001"
     working_dir: /app/backend
