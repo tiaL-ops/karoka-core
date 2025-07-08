@@ -19,6 +19,7 @@ class User(Base):
     age = Column(Integer, nullable=True)
     sex = Column(SexEnum, nullable=True)
     role = Column(String, nullable=False, default='user')
+    score = Column(Integer, nullable=False, default=0)
 
     vark_visual_score = Column(Integer, nullable=True)
     vark_auditory_score = Column(Integer, nullable=True)

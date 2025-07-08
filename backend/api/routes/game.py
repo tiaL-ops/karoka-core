@@ -2,6 +2,7 @@
 from flask import Blueprint, request, jsonify, g
 from db.database import SessionLocal
 from db.crud.log_event import create_log_event
+from db.crud.user import get_user, update_user 
 from db.crud.game_session import get_game_session, update_game_session, create_game_session
 from api.middleware.auth_middleware import user_required
 from uuid import UUID
@@ -64,7 +65,38 @@ def log_game_attempt():
         if not game_session:
             return jsonify({"error": "Game session not found"}), 404
 
-        # Create a log event for the attempt
+        is_correct = data.get('isCorrect', False)
+
+        # --- NEW LOGIC STARTS HERE ---
+        
+        # 1. Update Game Session
+        session_updates = {
+            "challenge_attempts_count": game_session.challenge_attempts_count + 1,
+        }
+        
+        if is_correct:
+            session_updates["end_time"] = datetime.utcnow()
+            session_updates["status"] = "completed"
+            
+            # Since the user was correct, let's set a score.
+            # You can make this more complex later if you want.
+            session_updates["final_score"] = 10 
+
+            # 2. Update User Score
+            current_user = get_user(db, g.current_user_id)
+            if current_user:
+                user_updates = {
+                    # Assuming your user model has a 'score' attribute
+                    "score": (current_user.score or 0) + 10 
+                }
+                update_user(db, user_id=g.current_user_id, updates=user_updates)
+
+        update_game_session(db, session_id=game_session.id, updates=session_updates)
+
+        # --- NEW LOGIC ENDS HERE ---
+
+
+        # Create a log event for the attempt (this part is the same as before)
         log_event_data = {
             "session_id": game_session.id,
             "user_id": g.current_user_id,
@@ -72,23 +104,20 @@ def log_game_attempt():
             "event_type": "code_submitted",
             "event_details_json": {
                 "submitted_code": data.get('submittedCode'),
-                "is_correct": data.get('isCorrect'),
+                "is_correct": is_correct,
                 "errors": data.get('errors'),
                 "attempt_number": game_session.challenge_attempts_count + 1
             }
         }
         create_log_event(db, event_data=log_event_data)
-
-        # Update the game session
-        updates = {
-            "challenge_attempts_count": game_session.challenge_attempts_count + 1,
-        }
-        update_game_session(db, session_id=game_session.id, updates=updates)
+        
+        db.commit() # Commit all changes (session update, user update, log event) at once.
 
         return jsonify({"message": "Attempt logged successfully"}), 200
 
     except Exception as e:
         db.rollback()
+        print(f"Error logging attempt: {str(e)}")
         return jsonify({"error": f"Failed to log game attempt: {str(e)}"}), 500
     finally:
         db.close()

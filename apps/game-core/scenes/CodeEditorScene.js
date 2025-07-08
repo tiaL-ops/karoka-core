@@ -84,7 +84,7 @@ export default class CodeEditorScene extends Phaser.Scene {
         let allCorrect = true;
         const errors = [];
 
-        // Your validation logic here...
+        
         for (const key in validationRules) {
             const expectedValue = validationRules[key];
             let actualValue = null;
