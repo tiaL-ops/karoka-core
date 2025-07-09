@@ -70,3 +70,8 @@ This directory manages the connection to and interaction with the PostgreSQL dat
 3.  **One Session Per Request**:
     The API routes get a database session from `SessionLocal`, use it for the duration of the request, and then close it in a `finally` block. This is a standard pattern to ensure connections are properly managed.
 
+To update db using alembic, open docker backend:
+docker exec -it karoka-core-backend-1 bash
+then 
+alembic revision --autogenerate -m "messages"
+alembic upgrade head

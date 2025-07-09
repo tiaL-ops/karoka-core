@@ -7,3 +7,5 @@ from .llm_template import LLMTemplate  # <- ADD
 from .assessment import Assessment  # <- ADD if referenced
 from .llm_content_history import LLMContentHistory  # <- ADD if referenced
 from .documentation_topic import DocumentationTopic # <- ADD if referenced
+from .attempt import Attempt
+from .learner_feature import LearnerFeature

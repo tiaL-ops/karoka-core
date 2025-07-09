@@ -35,7 +35,7 @@ class LogEvent(Base):
     session = relationship('GameSession', back_populates='log_events')
     user = relationship('User', back_populates='log_events')
 
-    # challenge relationship (you likely already have this working)
+    # challenge relationship 
     challenge = relationship(
         'Challenge',
         back_populates='log_events',
