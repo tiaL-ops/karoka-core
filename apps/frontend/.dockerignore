@@ -1,0 +1,9 @@
+# .dockerignore
+
+# Ignore the node_modules directory
+node_modules
+
+# Optional: Also ignore other local artifacts
+npm-debug.log
+dist
+.vite

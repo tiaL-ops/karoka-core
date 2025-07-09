@@ -75,3 +75,5 @@ docker exec -it karoka-core-backend-1 bash
 then 
 alembic revision --autogenerate -m "messages"
 alembic upgrade head
+
+to update on render, you may need to ask me cuz need the key to access it
