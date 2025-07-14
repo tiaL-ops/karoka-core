@@ -1,25 +1,22 @@
-# -------------------------------------------------------------------------------------------------
-# frontend.Dockerfile
-# -------------------------------------------------------------------------------------------------
+# infra/docker/frontend.Dockerfile
 FROM node:20
 
 WORKDIR /app
 
-# 1) Copy only package.json (do NOT copy package-lock.json or node_modules)
-COPY apps/frontend/package.json ./
+# Copy package files first to leverage Docker caching.
+# The wildcard copies package-lock.json if it exists, 
+COPY apps/frontend/package.json apps/frontend/package-lock.json* ./
 
-
-# 2) Ensure devDependencies (Vite, Rollup) are installed
-ENV NODE_ENV=development
-
-# 3) Run npm install inside container → generates a fresh package-lock.json / node_modules for this arch
+# Install dependencies inside the container. This creates a /app/node_modules
+# directory with binaries compiled for the container's Linux environment.
 RUN npm install
 
-# 4) Copy the rest of the frontend source code
-COPY apps/frontend .
+# Now, copy the rest of the application source code into the container.
+# Thanks to the .dockerignore file, this step will NOT copy your local node_modules.
+COPY apps/frontend/ ./
 
-# 5) Expose Vite’s default dev port (5173). but my port is 300-
+# Expose the port Vite uses for the dev server
 EXPOSE 3000
 
-# 6) Start Vite in dev‐mode
+# The command to start the Vite development server
 CMD ["npm", "run", "dev"]
