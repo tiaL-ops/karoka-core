@@ -284,7 +284,10 @@ export default class PlayScene extends Phaser.Scene {
   }
 
   logMicroInteraction(eventType, payload = {}) {
-    if (!this.userProfile || !this.dataService) return;
+     if (!this.userProfile || !this.userProfile.id || !this.dataService) {
+      console.warn(`Analytics event '${eventType}' skipped: User profile not ready.`);
+      return;
+    }
 
     const eventDetails = {
         ...payload, // e.g., sourceZone, targetZone
