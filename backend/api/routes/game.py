@@ -55,11 +55,15 @@ def start_session():
 # --- NEW ROUTE ADDED HERE ---
 # This route corresponds to the new logEvent function in DataService.js
 # --------------------------------------------------------------------
+# --------------------------------------------------------------------
+# --- CORRECTED ROUTE ---
+# --------------------------------------------------------------------
 @game_bp.route('/event', methods=['POST'])
 @user_required
 def log_generic_event():
     """
-    Logs a generic event from the frontend (e.g., UI interactions like drags, drops, clicks).
+    Logs a generic event from the frontend.
+    This version is now consistent with log_game_attempt and lets the DB handle the timestamp.
     """
     db = SessionLocal()
     data = request.json
@@ -73,44 +77,32 @@ def log_generic_event():
         except ValueError:
             return jsonify({"error": "Invalid sessionId format"}), 400
 
-        # Optional: Verify the session exists and belongs to the user
         game_session = get_game_session(db, session_id)
         if not game_session or game_session.user_id != g.current_user_id:
             return jsonify({"error": "Game session not found or access denied"}), 404
 
-        # The frontend sends a timestamp in ISO 8601 format (e.g., "2023-10-27T12:00:00.000Z")
-        # We need to parse it into a Python datetime object.
-        timestamp_str = data.get('timestamp')
-        if timestamp_str.endswith('Z'):
-            timestamp_str = timestamp_str[:-1] + '+00:00'
-        timestamp = datetime.fromisoformat(timestamp_str)
-
-
-        # Prepare the data for our existing CRUD function
+        # --- THE FIX ---
+        # We now create the data payload WITHOUT the timestamp from the client,
+        # just like the working '/attempt' route does.
         log_event_data = {
             "session_id": session_id,
             "user_id": g.current_user_id,
             "challenge_id": data.get('challengeId'),
             "event_type": data.get('eventType'),
-            # The event_details_json from the frontend is already a JSON object (dict in Python)
-            "event_details_json": data.get('eventDetailsJson'), 
-            "timestamp": timestamp
+            "event_details_json": data.get('eventDetailsJson'),
         }
 
-        # Use the CRUD function to create the log entry in the database
         create_log_event(db, event_data=log_event_data)
         db.commit()
 
         return jsonify({"message": "Event logged successfully"}), 200
-
     except Exception as e:
         db.rollback()
         logger.error(f"Error in log_generic_event: {e}", exc_info=True)
         return jsonify({"error": f"Failed to log event: {str(e)}"}), 500
     finally:
         db.close()
-# --- END OF NEW ROUTE ---
-
+# --- END OF CORRECTION -
 # The log_game_attempt function remains the same, no changes needed there.
 @game_bp.route('/attempt', methods=['POST'])
 @user_required
