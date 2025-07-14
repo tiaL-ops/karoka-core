@@ -69,6 +69,19 @@ export default class DataService {
   }
 
 
+  /**
+   * (NEWLY ADDED)
+   * Logs a generic game event for micro-interactions.
+   * @param {object} eventData - The data for the event to be logged.
+   * @returns {Promise<object>} The response from the backend.
+   */
+  async logEvent(eventData) {
+    console.log("DataService: Logging generic event...", eventData);
+    // This will send the data from PlayScene's `logMicroInteraction` function.
+    // The endpoint is assumed to be '/game/event'. You must create this route in your backend.
+    return this.#post('/game/event', eventData);
+  }
+
 
 
 

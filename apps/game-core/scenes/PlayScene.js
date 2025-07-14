@@ -20,6 +20,7 @@ export default class PlayScene extends Phaser.Scene {
     // Retrieve user/session and data service for logging
     this.userProfile = this.registry.get('userProfile');
     this.dataService = this.registry.get('dataService');
+  
     if (!this.userProfile || !this.dataService) {
       console.warn('PlayScene: userProfile or dataService not found in registry. Analytics will be disabled.');
       // Create a dummy dataService to prevent errors if it's missing
@@ -28,6 +29,8 @@ export default class PlayScene extends Phaser.Scene {
         createAttempt: () => Promise.resolve(),
         updateUserScore: () => Promise.resolve(),
       };
+    }else{
+        console.log("Ayoo the dataservice is", this.dataService);
     }
 
     // --- ANALYTICS STATE INITIALIZATION ---
