@@ -16,6 +16,7 @@ export default class PlayScene extends Phaser.Scene {
     this.tilesetsData = data.tilesets;
     this.mapKey = 'playMap_' + Date.now();
     this.roomKey = data.roomKey; // This will serve as our puzzle_id
+    this.challengeId = data.challengeId;
 
     // Retrieve user/session and data service for logging
     this.userProfile = this.registry.get('userProfile');
@@ -301,7 +302,7 @@ export default class PlayScene extends Phaser.Scene {
     const logData = {
         sessionId: this.userProfile.sessionId,
         userId: this.userProfile.id,
-        challengeId: this.roomKey,
+        challengeId: this.challengeId,
         eventType: eventType,
         eventDetailsJson: eventDetails,
         timestamp: new Date().toISOString()

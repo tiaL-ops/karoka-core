@@ -88,12 +88,27 @@ export default class ArenaScene extends Phaser.Scene {
         }
     });
 
-    this.input.keyboard.on('keydown-Q', () => {
-        if (this.scene.isActive('PlayScene')) {
-            console.log("Q pressed, stopping PlayScene");
-            this.scene.stop('PlayScene');
-        }
-    });
+    // karoka-core/apps/game-core/scenes/ArenaScene.js
+
+// ... inside a method, likely where you handle starting the PlayScene
+// For example, in the keydown-P event listener
+this.input.keyboard.on('keydown-P', () => {
+    if (!this.scene.isActive('PlayScene')) {
+      console.log("P pressed, launching PlayScene");
+
+      const room = this.registry.get('rooms')[this.roomKey];
+      if (room && room.playJsonUrl) {
+        // Pass the URL, roomKey, AND the correct challengeId
+        this.scene.start('PlayScene', {
+          playJsonUrl: room.playJsonUrl,
+          roomKey: this.roomKey,
+          challengeId: room.challengeId, // <-- ADD THIS LINE
+          tilesets: room.tilesets
+        });
+      }
+    }
+});
+// ...
   }
 
   
