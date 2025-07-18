@@ -115,6 +115,7 @@ export default class CodeEditorScene extends Phaser.Scene {
         };
 
         try {
+            console.log("🙃 our session idddd" , this.userProfile.sessionId )
             console.log("Calling dataService.logCodeAttempt...");
             await this.dataService.logCodeAttempt(attemptData); // This now calls the correct backend endpoint
             console.log("Attempt logged successfully!");

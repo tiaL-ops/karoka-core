@@ -232,7 +232,7 @@ export default class PlayScene extends Phaser.Scene {
     closeButton.on('pointerdown', () => {
         // --- ANALYTICS: Track time spent in help panel ---
         if (this.attemptAnalytics.helpPanelOpenTime) {
-            const duration = (Date.now() - this.attemptAnalytics.helpPanelOpenTime) / 1000; // in seconds
+            const duration = (Date.now() - this.attemptAnalytics.helpPanelOpenTime) / 1000; 
             this.attemptAnalytics.time_in_code_panel += duration;
             this.attemptAnalytics.helpPanelOpenTime = null; // Reset timer
         }
@@ -252,7 +252,7 @@ export default class PlayScene extends Phaser.Scene {
     // --- ANALYTICS: Finalize and send attempt data ---
     const attemptData = {
         attempt_id: `${this.userProfile.sessionId}-${this.roomKey}-${this.attemptNumber}`,
-        session_id: this.userProfile.sessionId,
+        sessionId: this.userProfile.sessionId,
         user_id: this.userProfile.id,
         puzzle_id: this.roomKey,
         start_ts: this.attemptAnalytics.start_ts,
@@ -265,6 +265,7 @@ export default class PlayScene extends Phaser.Scene {
     };
 
     try {
+        console.log("🙃 our session idddd" , this.userProfile.sessionId )
         console.log("Logging attempt:", attemptData);
         await this.dataService.createAttempt(attemptData);
         console.log('PlayScene: Attempt logged successfully.');

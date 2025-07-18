@@ -45,7 +45,16 @@ export default class DataService {
     // The endpoint path is '/game/session/start'
     return this.#post('/game/session/start', {}); // No body needed for this request
   }
-  
+  /**
+     * Creates a new attempt record for a puzzle.
+     * @param {object} attemptData - The attempt data.
+     * @returns {Promise<any>}
+     */
+    async createAttempt(attemptData) {
+        console.log("DataService: Creating new attempt...", attemptData);
+        return this.#post('/game/attempt', attemptData);
+    }
+
   /**
    * Logs a code submission attempt.
    * This function now formats the data keys to snake_case for the Flask backend.
