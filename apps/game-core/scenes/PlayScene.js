@@ -242,6 +242,7 @@ export default class PlayScene extends Phaser.Scene {
   }
 
   async handleCheckAnswer() {
+    let allCorrect = true;
     if (!this.userProfile || !this.dataService) return;
 
     const goal = rooms[this.roomKey].puzzleGoal || {};
@@ -260,21 +261,22 @@ export default class PlayScene extends Phaser.Scene {
         moves: this.attemptAnalytics.moves,
         help_opened: this.attemptAnalytics.help_opened,
         time_in_code_panel: this.attemptAnalytics.time_in_code_panel,
-        was_correct: was_correct,
+        isCorrect: was_correct,
         zone_counts: this.zoneCounts,
+      
     };
 
     try {
-        console.log("🙃 our session idddd" , this.userProfile.sessionId )
+       
         console.log("Logging attempt:", attemptData);
         await this.dataService.createAttempt(attemptData);
         console.log('PlayScene: Attempt logged successfully.');
 
         if (was_correct) {
+            isCorrect: allCorrect,
+            console.log("Updating user score...");
             console.log("Correct answer! Updating score.");
-            // Award points for correct answer
-            await this.dataService.updateUserScore({ userId: this.userProfile.id, scoreIncrement: 5 });
-            console.log('PlayScene: Score updated.');
+     
             this.checkAnswerButton.disableInteractive().setAlpha(0.5); // Prevent further attempts
         } else {
             // If incorrect, reset for the next attempt
