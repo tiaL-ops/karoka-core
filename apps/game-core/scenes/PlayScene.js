@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+
 import { rooms } from '../config/roomData.js';
 
 // A simple function to generate a unique enough ID for client-side events.
