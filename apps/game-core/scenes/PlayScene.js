@@ -1,8 +1,7 @@
 
 import { rooms } from '../config/roomData.js';
 
-// A simple function to generate a unique enough ID for client-side events.
-// For production, a more robust library like `uuid` would be better.
+
 const simpleUUID = () => (`${Date.now()}-${Math.random().toString(36).substring(2, 6)}`);
 
 export default class PlayScene extends Phaser.Scene {
