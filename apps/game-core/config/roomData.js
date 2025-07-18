@@ -55,7 +55,7 @@ print(name + " is " + str(password) + "!")
 
     // --- Code exercise data ---
     exercise: {
-      title: 'Swap Variables Challenge',
+      title: 'Variable Challenge',
       description: "Fill in the blanks so it prints 'Galaxia has 4 town and 2 Tera'",
       template: [
         "# Fill in the blanks to make this code work",

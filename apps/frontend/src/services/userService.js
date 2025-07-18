@@ -86,14 +86,24 @@ export async function createUserProfile(user, displayName, role = "admin") {
   return firestoreData; // Return the Firestore data as before
 }
 
+
+
+// karoka-core/apps/frontend/src/services/userService.js
+
 /**
- * Fetches the user document under /users/{uid}. Returns `data()` or null if not found.
+ * Fetches the user document under /users/{uid}. Returns data + id, or null if not found.
  */
 export async function getUserProfile(uid) {
   if (!uid) return null;
   const userRef = doc(db, "users", uid);
   const snap = await getDoc(userRef);
-  return snap.exists() ? snap.data() : null;
+  
+  if (snap.exists()) {
+    // Combine the document ID (the uid) with the document's data
+    return { id: uid, ...snap.data() };
+  } else {
+    return null;
+  }
 }
 
 /**

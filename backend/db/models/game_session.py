@@ -57,6 +57,8 @@ class GameSession(Base):
     log_events = relationship('LogEvent', back_populates='session', cascade='all, delete-orphan')
     llm_content = relationship('LLMContentHistory', back_populates='session', cascade='all, delete-orphan')
     assessments = relationship('Assessment', back_populates='session', cascade='all, delete-orphan')
+    attempts = relationship('Attempt', back_populates='session', cascade='all, delete-orphan')
+    learner_features = relationship('LearnerFeature', back_populates='session', cascade='all, delete-orphan')
 
     def __repr__(self):
         return f"<GameSession(id={self.id}, user_id={self.user_id}, status={self.status})>"

@@ -43,7 +43,8 @@ class User(Base):
     log_events = relationship('LogEvent', back_populates='user', cascade='all, delete-orphan')
     assessments = relationship('Assessment', back_populates='user', cascade='all, delete-orphan')
     llm_content = relationship('LLMContentHistory', back_populates='user', cascade='all, delete-orphan')
-
+    attempts = relationship('Attempt', back_populates='user', cascade='all, delete-orphan')
+    learner_features = relationship('LearnerFeature', back_populates='user', cascade='all, delete-orphan')
     def __repr__(self):
         return f"<User(id={self.id!r}, name={self.name!r})>"
     

@@ -45,7 +45,16 @@ export default class DataService {
     // The endpoint path is '/game/session/start'
     return this.#post('/game/session/start', {}); // No body needed for this request
   }
-  
+  /**
+     * Creates a new attempt record for a puzzle.
+     * @param {object} attemptData - The attempt data.
+     * @returns {Promise<any>}
+     */
+    async createAttempt(attemptData) {
+        console.log("DataService: Creating new attempt...", attemptData);
+        return this.#post('/game/attempt', attemptData);
+    }
+
   /**
    * Logs a code submission attempt.
    * This function now formats the data keys to snake_case for the Flask backend.
@@ -68,6 +77,19 @@ export default class DataService {
     return this.#post('/game/attempt', payload);
   }
 
+
+  /**
+   * (NEWLY ADDED)
+   * Logs a generic game event for micro-interactions.
+   * @param {object} eventData - The data for the event to be logged.
+   * @returns {Promise<object>} The response from the backend.
+   */
+  async logEvent(eventData) {
+    console.log("DataService: Logging generic event...", eventData);
+    // This will send the data from PlayScene's `logMicroInteraction` function.
+    // The endpoint is assumed to be '/game/event'. You must create this route in your backend.
+    return this.#post('/game/event', eventData);
+  }
 
 
 

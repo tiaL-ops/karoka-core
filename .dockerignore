@@ -1,0 +1,21 @@
+# .dockerignore
+
+# Git and OS files
+.git
+.gitignore
+.DS_Store
+
+# Node.js
+**/node_modules
+**/npm-debug.log
+
+# Dockerfiles
+**/Dockerfile
+
+# Environment variables
+.env
+**/.env
+
+# Build artifacts
+**/dist
+**/build
