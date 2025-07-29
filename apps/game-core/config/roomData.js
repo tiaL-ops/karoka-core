@@ -12,6 +12,36 @@ export const rooms = {
         url: 'https://firebasestorage.googleapis.com/v0/b/karoka-core-4f251.firebasestorage.app/o/PythonGame%2FFirstArena%2FInteriors_free_32x32.png?alt=media',
       },
       {
+        key: 'Gym_interior',
+        name: 'Gym_2_layer_2_32x32',
+        url: 'https://firebasestorage.googleapis.com/v0/b/karoka-core-4f251.firebasestorage.app/o/PythonGame%2FFirstArena%2FGym_2_layer_2_32x32.png?alt=media',
+      },
+      {
+        key: 'Gym_walls',
+        name: 'Gym_2_layer_1_32x32',
+        url: 'https://firebasestorage.googleapis.com/v0/b/karoka-core-4f251.firebasestorage.app/o/PythonGame%2FFirstArena%2FGym_2_layer_1_32x32.png?alt=media'
+      },
+      {
+        key: 'Japan_walls',
+        name: 'Japanese_Home_1_Layer_1_32x32',
+        url: 'https://firebasestorage.googleapis.com/v0/b/karoka-core-4f251.firebasestorage.app/o/PythonGame%2FFirstArena%2FJapanese_Home_1_Layer_1_32x32.png?alt=media',
+      },
+       {
+        key: 'Japan_interior',
+        name: 'Japanese_Home_1_Layer_2_32x32',
+        url: 'https://firebasestorage.googleapis.com/v0/b/karoka-core-4f251.firebasestorage.app/o/PythonGame%2FFirstArena%2FJapanese_Home_1_Layer_2_32x32.png?alt=media',
+      },
+       {
+        key: 'Generic_home',
+        name: 'Generic_Home_1_Layer_1_32x32',
+        url: 'https://firebasestorage.googleapis.com/v0/b/karoka-core-4f251.firebasestorage.app/o/PythonGame%2FFirstArena%2FGeneric_Home_1_Layer_1_32x32.png?alt=media',
+      },
+       {
+        key: 'Generic_home_interior',
+        name: 'Generic_Home_1_Layer_2_32x32',
+        url: 'https://firebasestorage.googleapis.com/v0/b/karoka-core-4f251.firebasestorage.app/o/PythonGame%2FFirstArena%2FGeneric_Home_1_Layer_2_32x32.png?alt=media',
+      },
+      {
         key: 'RoomBuilder',
         name: 'Room_Builder_free_32x32',
         url: 'https://firebasestorage.googleapis.com/v0/b/karoka-core-4f251.firebasestorage.app/o/PythonGame%2FFirstArena%2FRoom_Builder_free_32x32.png?alt=media',
