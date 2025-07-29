@@ -77,14 +77,14 @@ export const rooms = {
        {
         key: 'Girl',
      
-        frameWidth: 32,
-        frameHeight: 32,
+        frameWidth: 48,
+        frameHeight: 48,
         url: 'https://firebasestorage.googleapis.com/v0/b/karoka-core-4f251.firebasestorage.app/o/PythonGame%2FFirstArena%2Fgirl.png?alt=media',
       },
        {
         key: 'Boi',
-        frameWidth: 32,
-        frameHeight: 32,
+        frameWidth: 48,
+        frameHeight: 48,
         url: 'https://firebasestorage.googleapis.com/v0/b/karoka-core-4f251.firebasestorage.app/o/PythonGame%2FFirstArena%2Fboi.png?alt=media',
       },
     ],

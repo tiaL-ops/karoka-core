@@ -15,6 +15,8 @@ export default class ArenaScene extends Phaser.Scene {
     super('ArenaScene');
     this.player = null;
     this.cursors = null;
+    this.selectedAvatarKey = 'Boi'; // Default avatar key
+    this.lastDirection = 'down'; // To set correct idle frame
   }
 
   init(data) {
@@ -59,8 +61,6 @@ export default class ArenaScene extends Phaser.Scene {
     const map = this.make.tilemap({ key: this.roomKey });
 
     // 2. Add the tilesets to the map
-    // The 'name' in roomData must match the tileset name in Tiled.
-    // This now correctly only uses assets from the 'tilesets' array.
     const tilesets = room.tilesets.map(ts => {
       return map.addTilesetImage(ts.name, ts.key);
     });
@@ -90,14 +90,27 @@ export default class ArenaScene extends Phaser.Scene {
       console.warn('ArenaScene: No Spawn point found, using default center.');
     }
 
-    const selectedAvatarKey = this.userProfile?.selectedAvatar || 'Girl';
-    this.player = this.physics.add.sprite(spawnX, spawnY, selectedAvatarKey);
+    // Get the selected avatar and store it as a scene property for consistent access.
+    this.selectedAvatarKey = this.userProfile?.selectedAvatar || 'Boi';
+    
+    this.player = this.physics.add.sprite(spawnX, spawnY, this.selectedAvatarKey);
     this.player.setCollideWorldBounds(true);
-    this.player.body.setSize(this.player.width * 0.8, this.player.height * 0.8);
-    this.player.body.setOffset(this.player.width * 0.1, this.player.height * 0.2);
 
-    // Create player animations. This will now work correctly.
-    this.createPlayerAnimations(selectedAvatarKey);
+    // --- FIX: Set a more sensible physics body ---
+    // This makes the physics body smaller than the visual sprite to prevent
+    // getting stuck on corners and feel more natural.
+    const bodyWidth = this.player.width * 0.5;
+    const bodyHeight = this.player.height * 0.3; // Smaller height is often better for top-down
+    this.player.body.setSize(bodyWidth, bodyHeight);
+    
+    // Offset the body to be centered horizontally and at the 'feet' of the sprite.
+    this.player.body.setOffset(
+        (this.player.width - bodyWidth) / 2,
+        this.player.height - bodyHeight
+    );
+
+    // Create player animations using the consistent key.
+    this.createPlayerAnimations(this.selectedAvatarKey);
 
     // Set world bounds & camera
     this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
@@ -138,66 +151,88 @@ export default class ArenaScene extends Phaser.Scene {
 
   /**
    * Creates the player's walking animations from its spritesheet.
-   * @param {string} avatarKey - The key for the player's spritesheet.
+   * This assumes a specific 4xN spritesheet layout where columns represent
+   * poses and rows represent directions.
+   * @param {string} textureKey - The key for the player's spritesheet.
    */
- createPlayerAnimations(avatarKey) {
-  const directions = ['down', 'left', 'right', 'up'];
-
-  directions.forEach((dir, rowIndex) => {
-    const base = rowIndex * 4;
-    this.anims.create({
-      key: dir,
-      frames: this.anims.generateFrameNumbers(avatarKey, {
-        frames: [base + 1, base + 0, base + 3, base + 0],
-      }),
-      frameRate: 8,
+  createPlayerAnimations(textureKey) {
+    // This function was already correct, but now it's being called reliably.
+    const anims = this.anims;
+    anims.create({
+      key: `${textureKey}_walk_down`,
+      frames: anims.generateFrameNumbers(textureKey, { frames: [0, 4, 8, 12] }),
+      frameRate: 10,
       repeat: -1,
     });
-  });
-}
+    anims.create({
+      key: `${textureKey}_walk_left`,
+      frames: anims.generateFrameNumbers(textureKey, { frames: [1, 5, 9, 13] }),
+      frameRate: 10,
+      repeat: -1,
+    });
+    anims.create({
+      key: `${textureKey}_walk_up`,
+      frames: anims.generateFrameNumbers(textureKey, { frames: [2, 6, 10, 14] }),
+      frameRate: 10,
+      repeat: -1,
+    });
+    anims.create({
+      key: `${textureKey}_walk_right`,
+      frames: anims.generateFrameNumbers(textureKey, { frames: [3, 7, 11, 15] }),
+      frameRate: 10,
+      repeat: -1,
+    });
+  }
 
-
-  update(time, delta) {
+  /**
+   * The main game loop, called every frame.
+   */
+  update() {
     const speed = 200;
-    this.player.body.setVelocity(0);
+    // --- FIX: Use the key stored on the scene, not from localStorage ---
+    // This ensures consistency and correct casing.
+    const key = this.selectedAvatarKey;
+    
+    this.player.setVelocity(0);
 
-    // Horizontal movement
+    // --- Handle Movement and Animation ---
     if (this.cursors.left.isDown) {
-      this.player.body.setVelocityX(-speed);
+      this.player.setVelocityX(-speed);
+      this.player.anims.play(`${key}_walk_left`, true);
+      this.lastDirection = 'left';
     } else if (this.cursors.right.isDown) {
-      this.player.body.setVelocityX(speed);
-    }
-
-    // Vertical movement
-    if (this.cursors.up.isDown) {
-      this.player.body.setVelocityY(-speed);
-    } else if (this.cursors.down.isDown) {
-      this.player.body.setVelocityY(speed);
-    }
-
-    // Normalize speed to prevent faster diagonal movement
-    this.player.body.velocity.normalize().scale(speed);
-
-    // Update animations based on movement
-    if (this.cursors.left.isDown) {
-      this.player.anims.play('left', true);
-    } else if (this.cursors.right.isDown) {
-      this.player.anims.play('right', true);
+      this.player.setVelocityX(speed);
+      this.player.anims.play(`${key}_walk_right`, true);
+      this.lastDirection = 'right';
     } else if (this.cursors.up.isDown) {
-      this.player.anims.play('up', true);
+      this.player.setVelocityY(-speed);
+      this.player.anims.play(`${key}_walk_up`, true);
+      this.lastDirection = 'up';
     } else if (this.cursors.down.isDown) {
-      this.player.anims.play('down', true);
+      this.player.setVelocityY(speed);
+      this.player.anims.play(`${key}_walk_down`, true);
+      this.lastDirection = 'down';
     } else {
-      // No keys down, stop animation and show idle frame
+      // --- FIX: Handle Idle State ---
       this.player.anims.stop();
 
-      // Set idle frame based on last direction. The idle frames are the
-      // standing poses: 0 (down), 4 (left), 8 (right), 12 (up).
-      const lastAnimKey = this.player.anims.currentAnim?.key;
-      if (lastAnimKey === 'left') this.player.setFrame(4);
-      else if (lastAnimKey === 'right') this.player.setFrame(8);
-      else if (lastAnimKey === 'up') this.player.setFrame(12);
-      else if (lastAnimKey === 'down') this.player.setFrame(0);
+      // Set the idle frame based on the last direction of movement.
+      // These frame numbers (0, 1, 2, 3) correspond to the first frame
+      // of each directional animation, which serves as the idle pose.
+      switch (this.lastDirection) {
+        case 'up':
+          this.player.setFrame(2);
+          break;
+        case 'down':
+          this.player.setFrame(0);
+          break;
+        case 'left':
+          this.player.setFrame(1);
+          break;
+        case 'right':
+          this.player.setFrame(3);
+          break;
+      }
     }
   }
 }
