@@ -1,10 +1,11 @@
-// entities/Player.js
+// scenes/Player.js
 
 /**
- * The Player class encapsulates all logic for the player character,
- * including sprite creation, physics, animations, and movement.
+ * The Player class represents the user's avatar in the game.
+ * It encapsulates all logic related to player movement, animations,
+ * and physics.
  */
-export default class Player {
+export default class Player extends Phaser.Physics.Arcade.Sprite {
   /**
    * @param {Phaser.Scene} scene The scene that owns this player.
    * @param {number} x The starting x-coordinate.
@@ -12,90 +13,114 @@ export default class Player {
    * @param {string} textureKey The key for the player's spritesheet.
    */
   constructor(scene, x, y, textureKey) {
-    this.scene = scene;
-    
-    // Create the sprite and enable physics
-    this.sprite = scene.physics.add.sprite(x, y, textureKey);
-    
-    // Set physics properties
-    this.sprite.setCollideWorldBounds(true);
-    this.sprite.body.setSize(this.sprite.width * 0.8, this.sprite.height * 0.8);
-    this.sprite.body.setOffset(this.sprite.width * 0.1, this.sprite.height * 0.2);
+    // Call the parent constructor (Phaser.Physics.Arcade.Sprite)
+    super(scene, x, y, textureKey);
 
-    // Create animations using a prefix based on the texture key
-    this.createPlayerAnimations(textureKey);
+    // --- Add the player to the scene and physics engine ---
+    scene.add.existing(this);
+    scene.physics.add.existing(this);
+
+    // --- Player Properties ---
+    this.setCollideWorldBounds(true);
+    this.textureKey = textureKey; // Store the key for animation lookup
+    this.lastDirection = 'down';  // Used for setting the correct idle frame
+
+    // --- Physics Body Adjustment ---
+    // We create a smaller, more precise physics body for smoother collisions.
+    const bodyWidth = this.width * 0.5;
+    const bodyHeight = this.height * 0.3;
+    this.body.setSize(bodyWidth, bodyHeight);
+    this.body.setOffset(
+      (this.width - bodyWidth) / 2,
+      this.height - bodyHeight
+    );
+
+    // --- Animations ---
+    // Create all the necessary animations for this specific player sprite.
+    this.createPlayerAnimations();
   }
 
   /**
    * Creates the player's walking animations from its spritesheet.
-   * This uses a prefix for each animation key to support multiple avatars.
-   * @param {string} textureKey The key for the player's spritesheet, used as a prefix.
+   * This is called internally by the constructor.
    */
-  createPlayerAnimations(textureKey) {
-    // Frame numbers are based on the 'boi.png' layout for a smooth walk cycle.
-    // Animation keys are now prefixed, e.g., "Boi_down".
-    this.scene.anims.create({
-      key: `${textureKey}_down`,
-      frames: this.scene.anims.generateFrameNames(textureKey, { frames: [1, 0, 3, 0] }),
-      frameRate: 8,
+  createPlayerAnimations() {
+    const anims = this.scene.anims;
+    const key = this.textureKey;
+
+    anims.create({
+      key: `${key}_walk_down`,
+      frames: anims.generateFrameNumbers(key, { frames: [0, 4, 8, 12] }),
+      frameRate: 10,
       repeat: -1,
     });
-    this.scene.anims.create({
-      key: `${textureKey}_left`,
-      frames: this.scene.anims.generateFrameNames(textureKey, { frames: [5, 4, 7, 4] }),
-      frameRate: 8,
+    anims.create({
+      key: `${key}_walk_left`,
+      frames: anims.generateFrameNumbers(key, { frames: [1, 5, 9, 13] }),
+      frameRate: 10,
       repeat: -1,
     });
-    this.scene.anims.create({
-      key: `${textureKey}_right`,
-      frames: this.scene.anims.generateFrameNames(textureKey, { frames: [9, 8, 11, 8] }),
-      frameRate: 8,
+    anims.create({
+      key: `${key}_walk_up`,
+      frames: anims.generateFrameNumbers(key, { frames: [2, 6, 10, 14] }),
+      frameRate: 10,
       repeat: -1,
     });
-    this.scene.anims.create({
-      key: `${textureKey}_up`,
-      frames: this.scene.anims.generateFrameNames(textureKey, { frames: [13, 12, 15, 12] }),
-      frameRate: 8,
+    anims.create({
+      key: `${key}_walk_right`,
+      frames: anims.generateFrameNumbers(key, { frames: [3, 7, 11, 15] }),
+      frameRate: 10,
       repeat: -1,
     });
   }
 
   /**
-   * The update loop for the player, called from the scene's update method.
+   * The update method for the player, called every frame from the scene's update loop.
    * @param {Phaser.Types.Input.Keyboard.CursorKeys} cursors The cursor keys object.
    */
   update(cursors) {
     const speed = 200;
-    const prefix = this.sprite.texture.key; // Get the current avatar's key for the animation prefix
+    const key = this.textureKey;
 
-    // Stop any previous movement from the last frame
-    this.sprite.body.setVelocity(0);
+    // Reset velocity from the previous frame
+    this.setVelocity(0);
 
-    // Horizontal movement
+    // --- Handle Movement and Animation ---
     if (cursors.left.isDown) {
-      this.sprite.body.setVelocityX(-speed);
-      this.sprite.anims.play(`${prefix}_left`, true);
+      this.setVelocityX(-speed);
+      this.anims.play(`${key}_walk_left`, true);
+      this.lastDirection = 'left';
     } else if (cursors.right.isDown) {
-      this.sprite.body.setVelocityX(speed);
-      this.sprite.anims.play(`${prefix}_right`, true);
-    }
-    // Vertical movement
-    else if (cursors.up.isDown) {
-      this.sprite.body.setVelocityY(-speed);
-      this.sprite.anims.play(`${prefix}_up`, true);
+      this.setVelocityX(speed);
+      this.anims.play(`${key}_walk_right`, true);
+      this.lastDirection = 'right';
+    } else if (cursors.up.isDown) {
+      this.setVelocityY(-speed);
+      this.anims.play(`${key}_walk_up`, true);
+      this.lastDirection = 'up';
     } else if (cursors.down.isDown) {
-      this.sprite.body.setVelocityY(speed);
-      this.sprite.anims.play(`${prefix}_down`, true);
+      this.setVelocityY(speed);
+      this.anims.play(`${key}_walk_down`, true);
+      this.lastDirection = 'down';
     } else {
-      // No keys down, stop animation and show idle frame
-      this.sprite.anims.stop();
+      // --- Handle Idle State ---
+      this.anims.stop();
 
-      // Set idle frame based on last direction
-      const lastAnimKey = this.sprite.anims.currentAnim?.key;
-      if (lastAnimKey === `${prefix}_left`) this.sprite.setFrame(4);
-      else if (lastAnimKey === `${prefix}_right`) this.sprite.setFrame(8);
-      else if (lastAnimKey === `${prefix}_up`) this.sprite.setFrame(12);
-      else if (lastAnimKey === `${prefix}_down`) this.sprite.setFrame(0);
+      // Set the idle frame based on the last direction of movement.
+      switch (this.lastDirection) {
+        case 'up':
+          this.setFrame(2);
+          break;
+        case 'down':
+          this.setFrame(0);
+          break;
+        case 'left':
+          this.setFrame(1);
+          break;
+        case 'right':
+          this.setFrame(3);
+          break;
+      }
     }
   }
 }
