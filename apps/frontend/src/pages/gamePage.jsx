@@ -44,7 +44,7 @@ function GamePage() {
     const config = {
       type: Phaser.AUTO,
       parent: 'game-container',
-      width: 800,
+      width: 900,
       height: 600,
       backgroundColor: '#211a21',
       dom: { createContainer: true },
@@ -93,11 +93,11 @@ function GamePage() {
       padding: '20px'
     }}>
       <h1>Welcome to the Game!</h1>
-      <p>Your game is loading below. It’s powered by Phaser 3 and a data‑driven scene architecture.</p>
+      <p>Your game is loading below. Have fun !</p>
       <div
         id="game-container"
         style={{
-          width: '800px',
+          width: '900px',
           height: '600px',
           border: '2px solid #ff3399'
         }}
