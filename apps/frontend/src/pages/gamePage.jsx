@@ -46,6 +46,13 @@ function GamePage() {
       parent: 'game-container',
       width: 900,
       height: 600,
+      physics: {
+    default: 'arcade',
+    arcade: {
+      gravity: { y: 0 },
+      debug: false
+    }
+  },
       backgroundColor: '#211a21',
       dom: { createContainer: true },
     };

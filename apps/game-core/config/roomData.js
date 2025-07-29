@@ -11,6 +11,11 @@ export const rooms = {
         name: 'Interiors_free_32x32',
         url: 'https://firebasestorage.googleapis.com/v0/b/karoka-core-4f251.firebasestorage.app/o/PythonGame%2FFirstArena%2FInteriors_free_32x32.png?alt=media',
       },
+       {
+        key: 'Classroom',
+        name: '5_Classroom_and_library_Black_Shadow_32x32',
+        url: 'https://firebasestorage.googleapis.com/v0/b/karoka-core-4f251.firebasestorage.app/o/PythonGame%2FFirstArena%2F5_Classroom_and_library_32x32.png?alt=media',
+      },
       {
         key: 'Gym_interior',
         name: 'Gym_2_layer_2_32x32',
@@ -61,10 +66,26 @@ export const rooms = {
         name: '9_Fishing_Black_Shadow_32x32',
         url: 'https://firebasestorage.googleapis.com/v0/b/karoka-core-4f251.firebasestorage.app/o/PythonGame%2FFirstArena%2F9_Fishing_Black_Shadow_32x32.png?alt=media',
       },
+      
       {
         key: 'Gym',
         name: '8_Gym_Black_Shadow_32x32',
         url: 'https://firebasestorage.googleapis.com/v0/b/karoka-core-4f251.firebasestorage.app/o/PythonGame%2FFirstArena%2F8_Gym_Black_Shadow_32x32.png?alt=media',
+      },
+    ],
+     players: [
+       {
+        key: 'Girl',
+     
+        frameWidth: 32,
+        frameHeight: 32,
+        url: 'https://firebasestorage.googleapis.com/v0/b/karoka-core-4f251.firebasestorage.app/o/PythonGame%2FFirstArena%2Fgirl.png?alt=media',
+      },
+       {
+        key: 'Boi',
+        frameWidth: 32,
+        frameHeight: 32,
+        url: 'https://firebasestorage.googleapis.com/v0/b/karoka-core-4f251.firebasestorage.app/o/PythonGame%2FFirstArena%2Fboi.png?alt=media',
       },
     ],
 
