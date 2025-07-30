@@ -12,6 +12,7 @@ export default class ArenaScene extends Phaser.Scene {
     this.player = null;
     this.cursors = null;
     this.collisionGroup = null;
+    this.hintGroup = null;
   }
 
   init(data) {
@@ -38,22 +39,23 @@ export default class ArenaScene extends Phaser.Scene {
     const map = this.make.tilemap({ key: this.roomKey });
     const tilesets = room.tilesets.map(ts => map.addTilesetImage(ts.name, ts.key));
 
+    // Layers
     map.createLayer('Floor', tilesets, 0, 0);
     const wallsLayer = map.createLayer('Walls', tilesets, 0, 0);
     wallsLayer.setCollisionByProperty({ collides: true });
     map.createLayer('Furniture', tilesets, 0, 0);
 
+    // Systems
     this.puzzleManager = new PuzzleManager(this, map, room.puzzleGoal);
     this.puzzleManager.spawnObjects();
 
-    // Debug: draw and physics for Collision object layer
+    // Collision objects
     const collisionLayer = map.getObjectLayer('Collision');
     if (collisionLayer && collisionLayer.objects.length) {
       const graphics = this.add.graphics();
       graphics.lineStyle(2, 0xff0000, 1);
       graphics.fillStyle(0xff0000, 0.3);
       this.collisionGroup = this.physics.add.staticGroup();
-
       collisionLayer.objects.forEach(obj => {
         const x0 = obj.x;
         const y0 = obj.y;
@@ -61,14 +63,13 @@ export default class ArenaScene extends Phaser.Scene {
         const h = obj.height;
         graphics.strokeRect(x0, y0, w, h);
         graphics.fillRect(x0, y0, w, h);
-        // physics body centered
-        const rect = this.add.rectangle(x0 + w / 2, y0 + h / 2, w, h);
+        const rect = this.add.rectangle(x0 + w/2, y0 + h/2, w, h);
         this.physics.add.existing(rect, true);
         this.collisionGroup.add(rect);
       });
     }
 
-    // Player setup
+    // Player spawn
     let spawnX = map.widthInPixels / 2;
     let spawnY = map.heightInPixels / 2;
     const spawnLayer = map.getObjectLayer('Spawn');
@@ -78,7 +79,7 @@ export default class ArenaScene extends Phaser.Scene {
     }
     this.player = new Player(this, spawnX, spawnY, this.userProfile?.selectedAvatar || 'Boi');
 
-    // Colliders
+    // Physics & Camera
     this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
     const camera = this.cameras.main;
     camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
@@ -88,8 +89,42 @@ export default class ArenaScene extends Phaser.Scene {
       this.physics.add.collider(this.player, this.collisionGroup);
     }
 
+    // Hint objects: green overlay + message with name
+    const hintsLayer = map.getObjectLayer('Hints');
+    if (hintsLayer && hintsLayer.objects.length) {
+      const hintGraphics = this.add.graphics();
+      hintGraphics.lineStyle(2, 0x00ff00, 1);
+      hintGraphics.fillStyle(0x00ff00, 0.3);
+      this.hintGroup = this.physics.add.staticGroup();
+      hintsLayer.objects.forEach(obj => {
+        const x0 = obj.x;
+        const y0 = obj.y;
+        const w = obj.width;
+        const h = obj.height;
+        hintGraphics.strokeRect(x0, y0, w, h);
+        hintGraphics.fillRect(x0, y0, w, h);
+        const hintRect = this.add.rectangle(x0 + w/2, y0 + h/2, w, h);
+        this.physics.add.existing(hintRect, true);
+        hintRect.hintName = obj.name || 'hint';
+        hintRect.hintShown = false;
+        this.hintGroup.add(hintRect);
+      });
+      // Overlap to show hint text once, using the object's name
+      this.physics.add.overlap(this.player, this.hintGroup, (player, hint) => {
+        if (!hint.hintShown) {
+          this.add.text(hint.x, hint.y - 20, `Oh, here is the ${hint.hintName}`, {
+            font: '16px Arial',
+            fill: '#00ff00',
+          }).setOrigin(0.5);
+          hint.hintShown = true;
+        }
+      });
+    }
+
+    // Input
     this.cursors = this.input.keyboard.createCursorKeys();
 
+    // PlayScene
     if (!this.scene.get('PlayScene')) {
       this.scene.add('PlayScene', PlayScene, false);
     }
@@ -99,6 +134,7 @@ export default class ArenaScene extends Phaser.Scene {
       }
     });
 
+    // CodeEditor
     if (!this.scene.get('CodeEditorScene')) {
       this.scene.add('CodeEditorScene', CodeEditorScene, false);
     }
