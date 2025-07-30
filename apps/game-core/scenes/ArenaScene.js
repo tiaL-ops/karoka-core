@@ -117,6 +117,13 @@ export default class ArenaScene extends Phaser.Scene {
             fill: '#00ff00',
           }).setOrigin(0.5);
           hint.hintShown = true;
+          // If this hint is the 'ball', open the code editor
+          if (hint.hintName.toLowerCase() === 'code') {
+            this.scene.launch('CodeEditorScene');
+          }
+          if (hint.hintName.toLowerCase() === 'ball') {
+           this.scene.start('PlayScene', { playJsonUrl: room.playJsonUrl, roomKey: this.roomKey, challengeId: room.challengeId, tilesets: room.tilesets });
+          }
         }
       });
     }
