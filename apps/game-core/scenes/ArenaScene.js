@@ -30,7 +30,6 @@ export default class ArenaScene extends Phaser.Scene {
     const room = rooms[this.roomKey];
 
     // --- Load Player Spritesheets ---
-    // This remains here as the scene is responsible for loading all assets.
     if (room.players && Array.isArray(room.players)) {
       room.players.forEach(playerAsset => {
         this.load.spritesheet(playerAsset.key, playerAsset.url, {
@@ -46,6 +45,9 @@ export default class ArenaScene extends Phaser.Scene {
         this.load.image(tilesetAsset.key, tilesetAsset.url);
       });
     }
+
+    // --- Load Tiled JSON ---
+    this.load.tilemapTiledJSON(this.roomKey, room.mapUrl);
   }
 
   create() {
@@ -56,9 +58,7 @@ export default class ArenaScene extends Phaser.Scene {
     const map = this.make.tilemap({ key: this.roomKey });
 
     // 2. Add the tilesets to the map
-    const tilesets = room.tilesets.map(ts => {
-      return map.addTilesetImage(ts.name, ts.key);
-    });
+    const tilesets = room.tilesets.map(ts => map.addTilesetImage(ts.name, ts.key));
 
     // 3. Create the tilemap layers
     map.createLayer('Floor', tilesets, 0, 0);
@@ -69,6 +69,25 @@ export default class ArenaScene extends Phaser.Scene {
     // 4. Initialize systems
     this.puzzleManager = new PuzzleManager(this, map, room.puzzleGoal);
     this.puzzleManager.spawnObjects();
+
+    // 5. Debug: draw Collision object layer as red overlay
+    const collisionLayer = map.getObjectLayer('Collision');
+    if (collisionLayer && collisionLayer.objects) {
+      const graphics = this.add.graphics();
+      graphics.lineStyle(2, 0xff0000, 1);
+      graphics.fillStyle(0xff0000, 0.3);
+      collisionLayer.objects.forEach(obj => {
+        // In Tiled, object y is the bottom of the rectangle
+        const x = obj.x;
+        const y = obj.y;
+        const width = obj.width;
+        const height = obj.height;
+        graphics.strokeRect(x, y, width, height);
+        graphics.fillRect(x, y, width, height);
+      });
+    } else {
+      console.warn('ArenaScene: No Collision object layer found.');
+    }
 
     // -----------------------
     // Player setup
@@ -83,8 +102,7 @@ export default class ArenaScene extends Phaser.Scene {
       console.warn('ArenaScene: No Spawn point found, using default center.');
     }
 
-    // --- REFACTOR: Instantiate the Player class ---
-    // The scene now creates an instance of our new Player class.
+    // --- Instantiate the Player class ---
     const selectedAvatarKey = this.userProfile?.selectedAvatar || 'Boi';
     this.player = new Player(this, spawnX, spawnY, selectedAvatarKey);
 
@@ -131,8 +149,7 @@ export default class ArenaScene extends Phaser.Scene {
    * The main game loop, called every frame.
    */
   update() {
-    // --- REFACTOR: Delegate update logic to the player instance ---
-    // The scene's update loop is now very simple.
+    // Delegate update logic to the player instance
     if (this.player) {
       this.player.update(this.cursors);
     }
