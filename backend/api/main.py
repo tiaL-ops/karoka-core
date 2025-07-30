@@ -79,10 +79,12 @@ def create_app():
     from api.routes.user import user_bp
     from api.routes.database import database_bp
     from api.routes.game import game_bp 
+    from api.routes.chat import chat_bp
     app.register_blueprint(ping_bp, url_prefix="/api/ping")
     app.register_blueprint(user_bp, url_prefix="/api/user")
     app.register_blueprint(database_bp, url_prefix="/api/database")
     app.register_blueprint(game_bp, url_prefix="/api/game")
+    app.register_blueprint(chat_bp, url_prefix="/api/chat")
 
     return app
 
