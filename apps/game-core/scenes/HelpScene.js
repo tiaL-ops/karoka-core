@@ -1,6 +1,5 @@
 // scenes/HelpScene.js
 
-import Phaser from 'phaser';
 
 /**
  * HelpScene provides a simple 2D chat interface to an LLM (the "Genie").
