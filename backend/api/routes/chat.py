@@ -9,8 +9,10 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))  # ✅ Use new client
 def test_chat():
     return jsonify({"message": "Chat endpoint is working!"})    
 
-@chat_bp.route('/', methods=['POST', 'OPTIONS'])
+@chat_bp.route('', methods=['POST', 'OPTIONS'])
 def chat():
+    if request.method == "OPTIONS":
+        return '', 200
     if not os.getenv("OPENAI_API_KEY"):
         return jsonify({"detail": "OpenAI API key not configured."}), 500
 
