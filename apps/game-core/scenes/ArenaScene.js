@@ -5,6 +5,7 @@ import PlayScene from './PlayScene.js';
 import PuzzleManager from '../systems/puzzleManager.js';
 import CodeEditorScene from './CodeEditorScene.js';
 import Player from './Player.js';
+import HelpScene from './HelpScene.js';
 
 export default class ArenaScene extends Phaser.Scene {
   constructor() {
@@ -148,6 +149,12 @@ export default class ArenaScene extends Phaser.Scene {
     this.input.keyboard.on('keydown-C', () => {
       if (!this.scene.isActive('CodeEditorScene')) {
         this.scene.launch('CodeEditorScene');
+      }
+    });
+
+     this.input.keyboard.on('keydown-H', () => {
+      if (!this.scene.isActive('HelpScene')) {
+        this.scene.launch('HelpScene');
       }
     });
   }

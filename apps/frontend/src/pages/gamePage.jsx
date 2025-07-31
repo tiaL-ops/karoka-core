@@ -9,6 +9,7 @@ import PlayScene from '@game-core/scenes/PlayScene';
 import CodeLessonScene from '@game-core/scenes/CodeLessonScene';
 import CodeEditorScene from '@game-core/scenes/CodeEditorScene';
 import DocumentationScene from '@game-core/scenes/DocumentationScene'; 
+import HelpScene from '@game-core/scenes/HelpScene';
 
 // --- Service ---
 import DataService from '@game-core/services/DataService';
@@ -69,6 +70,7 @@ function GamePage() {
     game.scene.add('CodeEditorScene', CodeEditorScene);
     game.scene.add('CodeLessonScene', CodeLessonScene);
     game.scene.add('DocumentationScene', DocumentationScene);
+    game.scene.add('HelpScene', HelpScene);
 
     // Now, manually start the BootScene.
     // This call is now safe and correctly passes your init data.
