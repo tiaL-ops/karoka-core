@@ -7,6 +7,8 @@ import Phaser from 'phaser';
  * Users can send up to `maxInteractions` messages, see responses inline,
  * and press 'Q' or click Quit to exit.
  */
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export default class HelpScene extends Phaser.Scene {
   constructor() {
     super('HelpScene');
@@ -49,7 +51,7 @@ async handleSend() {
   this.updateConversation();
 
   try {
-    const res = await fetch('http://localhost:5001/api/chat', {
+    const res = await fetch(`${API_BASE_URL}/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ messages: this.messages })
