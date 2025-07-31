@@ -51,13 +51,7 @@ def start_session():
     finally:
         db.close()
 
-# --------------------------------------------------------------------
-# --- NEW ROUTE ADDED HERE ---
-# This route corresponds to the new logEvent function in DataService.js
-# --------------------------------------------------------------------
-# --------------------------------------------------------------------
-# --- CORRECTED ROUTE ---
-# --------------------------------------------------------------------
+
 @game_bp.route('/event', methods=['POST'])
 @user_required
 def log_generic_event():
@@ -102,7 +96,7 @@ def log_generic_event():
         return jsonify({"error": f"Failed to log event: {str(e)}"}), 500
     finally:
         db.close()
-# --- END OF CORRECTION -
+
 # The log_game_attempt function remains the same, no changes needed there.
 @game_bp.route('/attempt', methods=['POST'])
 @user_required

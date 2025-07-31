@@ -4,13 +4,18 @@ from flask import Blueprint, request, jsonify
 import os
 import openai
 
-# Initialize OpenAI key
-openai.api_key = os.getenv("OPENAI_API_KEY")
+
 
 # Create a Flask Blueprint instead of a FastAPI APIRouter
 chat_bp = Blueprint('chat_bp', __name__)
+# Initialize OpenAI key
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
-@chat_bp.route('', methods=['POST'])
+@chat_bp.route('/testChat', methods=['GET', 'OPTIONS'])
+def test_chat():
+    return jsonify({"message": "Chat endpoint is working!"})    
+
+@chat_bp.route('/', methods=['POST', 'OPTIONS'])
 def chat():
     if not openai.api_key:
         return jsonify({"detail": "OpenAI API key not configured."}), 500
