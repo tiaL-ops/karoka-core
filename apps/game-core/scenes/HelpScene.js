@@ -15,7 +15,7 @@ export default class HelpScene extends Phaser.Scene {
     this.interactions = 0;
     this.maxInteractions = 5;
     this.messages = [
-      { role: 'system', content: 'You are a helpful game genie that assists the player.' }
+      { role: 'system', content: 'You are a helpful game genie that assists the player through this 2d game that teach python. The user is a beginner that learn python.Explain what variable is. Be consice and clear ' }
     ];
   }
 
