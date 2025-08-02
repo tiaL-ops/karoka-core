@@ -14,7 +14,7 @@ export default class DataService {
 
   async #post(endpoint, body) {
     const token = await this.getAuthToken();
-    //console.log("Firebase Auth Token, delte this afterrrr i'm in dataservice:", token);
+    console.log("Firebase Auth Token, delte this afterrrr i'm in dataservice:", token);
     if (!token) throw new Error("Authentication token not available.");
 
     const response = await fetch(`${this.API_BASE_URL}${endpoint}`, {

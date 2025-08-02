@@ -227,8 +227,8 @@ def update_vark_scores():
         # 4. Map to your DB column names
         updates = {
             "vark_visual_score":      scores["visual"],
-            "vark_aural_score":       scores["aural"],
-            "vark_read_write_score":  scores["read_write"],
+            "vark_auditory_score":       scores["aural"],
+            "vark_readwrite_score":  scores["read_write"],
             "vark_kinesthetic_score": scores["kinesthetic"],
         }
 
@@ -241,8 +241,8 @@ def update_vark_scores():
             "name": updated_user.name,
             "role": updated_user.role,
             "vark_visual_score":      updated_user.vark_visual_score,
-            "vark_aural_score":       updated_user.vark_aural_score,
-            "vark_read_write_score":  updated_user.vark_read_write_score,
+            "vark_auditory_score":       updated_user.vark_auditory_score,
+            "vark_readwrite_score":  updated_user.vark_readwrite_score,
             "vark_kinesthetic_score": updated_user.vark_kinesthetic_score,
         }), 200
 
