@@ -14,6 +14,7 @@ export default class DataService {
 
   async #post(endpoint, body) {
     const token = await this.getAuthToken();
+    //console.log("Firebase Auth Token, delte this afterrrr i'm in dataservice:", token);
     if (!token) throw new Error("Authentication token not available.");
 
     const response = await fetch(`${this.API_BASE_URL}${endpoint}`, {
@@ -79,7 +80,7 @@ export default class DataService {
 
 
   /**
-   * (NEWLY ADDED)
+
    * Logs a generic game event for micro-interactions.
    * @param {object} eventData - The data for the event to be logged.
    * @returns {Promise<object>} The response from the backend.

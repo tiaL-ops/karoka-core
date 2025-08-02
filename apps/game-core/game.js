@@ -11,6 +11,7 @@ import PlayScene from './scenes/PlayScene.js';
 import CodeLessonScene from './scenes/CodeLessonScene.js'; 
 import CodeEditorScene from './scenes/CodeEditorScene.js';
 
+
 const config = {
   type: Phaser.AUTO,
   width: 800,

@@ -191,3 +191,65 @@ def get_user_route(user_id):
     finally:
         db.close()
 
+@user_bp.route('/vark', methods=['PUT'])
+def update_vark_scores():
+    # 1. Authenticate
+    uid, error_response, status_code = get_current_firebase_user_id()
+    if error_response:
+        return jsonify(error_response), status_code
+
+    db = SessionLocal()
+    try:
+        # 2. Fetch existing user
+        user = get_user(db, uid)
+        if not user:
+            return jsonify({"detail": "User not found"}), 404
+
+        # 3. Parse & validate payload
+        data = request.get_json()
+        if not data:
+            return jsonify({"detail": "No input data provided"}), 400
+
+        required = ["visual", "aural", "read_write", "kinesthetic"]
+        if not all(field in data for field in required):
+            return jsonify({"detail": "All four VARK scores are required."}), 400
+
+        try:
+            scores = {
+                "visual": int(data["visual"]),
+                "aural": int(data["aural"]),
+                "read_write": int(data["read_write"]),
+                "kinesthetic": int(data["kinesthetic"]),
+            }
+        except (TypeError, ValueError):
+            return jsonify({"detail": "Scores must be integers."}), 400
+
+        # 4. Map to your DB column names
+        updates = {
+            "vark_visual_score":      scores["visual"],
+            "vark_aural_score":       scores["aural"],
+            "vark_read_write_score":  scores["read_write"],
+            "vark_kinesthetic_score": scores["kinesthetic"],
+        }
+
+        # 5. Perform update
+        updated_user = update_user(db, uid, updates)
+
+        # 6. Return the updated record
+        return jsonify({
+            "id": updated_user.id,
+            "name": updated_user.name,
+            "role": updated_user.role,
+            "vark_visual_score":      updated_user.vark_visual_score,
+            "vark_aural_score":       updated_user.vark_aural_score,
+            "vark_read_write_score":  updated_user.vark_read_write_score,
+            "vark_kinesthetic_score": updated_user.vark_kinesthetic_score,
+        }), 200
+
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Error updating VARK scores for {uid}: {e}")
+        return jsonify({"detail": "Failed to update VARK scores"}), 500
+
+    finally:
+        db.close()
