@@ -41,6 +41,8 @@ export default class VARKScene extends Phaser.Scene {
 
     // Add a dark overlay
     this.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.8);
+    const exitText = this.add.text(width / 2, height - 20, 'Press Q to Exit', { font: '14px Arial', fill: '#888'}).setOrigin(0.5);
+        this.input.keyboard.on('keydown-Q', () => this.scene.stop());
   }
 
   createUI(width, height) {
@@ -185,7 +187,8 @@ export default class VARKScene extends Phaser.Scene {
     const kinesthetic = this.domElement.node.querySelector('#kinesthetic').value;
     const messageEl = this.domElement.node.querySelector('#varkMessage');
     const submitBtn = this.domElement.node.querySelector('#submitVarkBtn');
-
+    
+    
     // Validation
     if (!visual || !aural || !read_write || !kinesthetic) {
       messageEl.textContent = "Please fill in all scores.";

@@ -7,6 +7,7 @@ import CodeEditorScene from './CodeEditorScene.js';
 import Player from './Player.js';
 import HelpScene from './HelpScene.js';
 import VARKScene from './VARKScene.js';
+import MenuScene from './MenuScene.js';
 
 export default class ArenaScene extends Phaser.Scene {
   constructor() {
@@ -162,6 +163,14 @@ export default class ArenaScene extends Phaser.Scene {
      this.input.keyboard.on('keydown-V', () => {
       if (!this.scene.isActive('VARKScene')) {
         this.scene.launch('VARKScene');
+      }
+    });
+     this.input.keyboard.on('keydown-M', () => {
+      if (!this.scene.isPaused()) {
+        // Pause the current scene (ArenaScene)
+        this.scene.pause();}
+      if (!this.scene.isActive('MenuScene')) {
+        this.scene.launch('MenuScene');
       }
     });
   }

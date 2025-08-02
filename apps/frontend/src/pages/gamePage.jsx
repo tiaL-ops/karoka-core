@@ -11,6 +11,7 @@ import CodeEditorScene from '@game-core/scenes/CodeEditorScene';
 import DocumentationScene from '@game-core/scenes/DocumentationScene'; 
 import HelpScene from '@game-core/scenes/HelpScene';
 import VARKScene from '@game-core/scenes/VARKScene';
+import MenuScene from '@game-core/scenes/MenuScene';  
 
 // --- Service ---
 import DataService from '@game-core/services/DataService';
@@ -48,6 +49,7 @@ function GamePage() {
       parent: 'game-container',
       width: 900,
       height: 600,
+      pixelArt: true, 
       physics: {
     default: 'arcade',
     arcade: {
@@ -73,6 +75,7 @@ function GamePage() {
     game.scene.add('DocumentationScene', DocumentationScene);
     game.scene.add('HelpScene', HelpScene);
     game.scene.add('VARKScene', VARKScene);
+    game.scene.add('MenuScene', MenuScene);
 
     // Now, manually start the BootScene.
     // This call is now safe and correctly passes your init data.
