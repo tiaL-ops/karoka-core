@@ -13,16 +13,18 @@ export default class CodeEditorScene extends Phaser.Scene {
         this.userProfile = null;
         this.dataService = null;
         this.feedback = null;
-        this.editorDOM = null;
-        this.runButton = null;
+        
+        // --- NEW: State management for password and UI elements ---
+        this.isAuthenticated = false;
+        this.passwordUI = {};
+        this.editorUI = {};
+        // ---------------------------------------------------------
     }
 
     init(data) {
-        // Get the required services and profile from the global registry.
         this.userProfile = this.registry.get('userProfile');
         this.dataService = this.registry.get('dataService');
 
-        // Get the current exercise from the room configuration
         const roomKey = data.roomKey || 'FirstArena';
         const room = rooms[roomKey];
         if (room && room.exercise) {
@@ -34,16 +36,66 @@ export default class CodeEditorScene extends Phaser.Scene {
 
     create() {
         if (!this.currentExercise || !this.dataService || !this.userProfile) {
-            this.add.text(this.sys.game.canvas.width / 2, this.sys.game.canvas.height / 2, 'ERROR: Could not load challenge.\nMissing user profile or data service.', { font: '20px Arial', fill: '#ff0000', align: 'center' }).setOrigin(0.5);
+            this.add.text(this.sys.game.canvas.width / 2, this.sys.game.canvas.height / 2, 'ERROR: Could not load challenge.', { font: '20px Arial', fill: '#ff0000', align: 'center' }).setOrigin(0.5);
             return;
         }
 
-        // --- UI and CodeMirror setup ---
+        const { width, height } = this.sys.game.canvas;
+        this.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.85);
+
+        // --- Create both UIs, but only show the password prompt initially ---
+        this.createPasswordPrompt();
+        this.createCodeEditorUI();
+        // ------------------------------------------------------------------
+        
+        const exitText = this.add.text(width / 2, height - 20, 'Press Q to Exit', { font: '14px Arial', fill: '#888'}).setOrigin(0.5);
+        this.input.keyboard.on('keydown-Q', () => this.scene.stop());
+    }
+
+    createPasswordPrompt() {
+        const { width, height } = this.sys.game.canvas;
+        const centerX = width / 2;
+        const centerY = height / 2;
+
+        const promptText = this.add.text(centerX, centerY - 80, 'Enter Password to Access Challenge', { font: '22px Consolas, Monaco, monospace', fill: '#ffffff' }).setOrigin(0.5);
+
+        // --- FIX: Create a div container and then set its innerHTML ---
+        // This ensures the HTML is parsed and rendered as an input box.
+        const passwordInput = this.add.dom(centerX, centerY, 'div').setOrigin(0.5);
+        const inputHTML = `
+            <input type="password" id="passwordInput" placeholder="Password..." style="width: 250px; padding: 10px; font-size: 16px; text-align: center;">
+        `;
+        passwordInput.setHTML(inputHTML);
+        // -------------------------------------------------------------
+
+        const submitButton = this.add.text(centerX, centerY + 60, '[ SUBMIT ]', { font: '20px Consolas, Monaco, monospace', fill: '#4CAF50', backgroundColor: '#333', padding: { x: 10, y: 5 } }).setOrigin(0.5);
+        submitButton.setInteractive({ useHandCursor: true });
+        submitButton.on('pointerdown', () => this.verifyPassword());
+
+        const feedbackText = this.add.text(centerX, centerY + 110, '', { font: '16px Consolas, Monaco, monospace', fill: '#ff0000' }).setOrigin(0.5);
+        
+        this.passwordUI = { promptText, passwordInput, submitButton, feedbackText };
+    }
+
+    verifyPassword() {
+        const password = this.passwordUI.passwordInput.node.querySelector('#passwordInput').value;
+        if (password === 'karo') {
+            // Correct password, hide prompt and show editor
+            Object.values(this.passwordUI).forEach(el => el.destroy());
+            Object.values(this.editorUI).forEach(el => el.setVisible(true));
+            this.isAuthenticated = true;
+        } else {
+            // Incorrect password
+            this.passwordUI.feedbackText.setText('Incorrect. You need to enter the password.');
+            this.passwordUI.passwordInput.node.querySelector('#passwordInput').value = '';
+        }
+    }
+
+    createCodeEditorUI() {
         const { width, height } = this.sys.game.canvas;
         const { title, template, description } = this.currentExercise;
 
-        this.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.85);
-        this.add.text(width / 2, 30, title, { font: '28px Consolas, Monaco, monospace', fill: '#00ffff' }).setOrigin(0.5);
+        const titleText = this.add.text(width / 2, 30, title, { font: '28px Consolas, Monaco, monospace', fill: '#00ffff' }).setOrigin(0.5);
 
         const editorX = (width - 760) / 2 + 10;
         const editorY = 100;
@@ -51,7 +103,7 @@ export default class CodeEditorScene extends Phaser.Scene {
         const editorHeight = 350;
 
         const wrapper = document.createElement('div');
-        this.editorDOM = this.add.dom(editorX, editorY, wrapper).setOrigin(0);
+        const editorDOM = this.add.dom(editorX, editorY, wrapper).setOrigin(0);
 
         this.time.delayedCall(10, () => {
             this.editor = CodeMirror(wrapper, { value: template.join('\n'), mode: 'python', theme: 'monokai', lineNumbers: true, autofocus: true });
@@ -65,26 +117,25 @@ export default class CodeEditorScene extends Phaser.Scene {
         btn.style.fontSize = '18px';
         btn.style.cursor = 'pointer';
 
-        this.runButton = this.add.dom(width / 2, uiY, btn);
-        this.runButton.addListener('click');
-        this.runButton.on('click', () => this.checkAnswer());
+        const runButton = this.add.dom(width / 2, uiY, btn);
+        runButton.addListener('click');
+        runButton.on('click', () => this.checkAnswer());
         
-        this.feedback = this.add.text(width / 2, uiY + 60, description, { font: '16px Consolas, Monaco, monospace', fill: '#aaa', wordWrap: { width: editorWidth }, align: 'center' }).setOrigin(0.5);
+        const feedback = this.add.text(width / 2, uiY + 60, description, { font: '16px Consolas, Monaco, monospace', fill: '#aaa', wordWrap: { width: editorWidth }, align: 'center' }).setOrigin(0.5);
         
-        const exitText = this.add.text(width / 2, height - 20, 'Press Q to Exit', { font: '14px Arial', fill: '#888'}).setOrigin(0.5);
-        this.input.keyboard.on('keydown-Q', () => this.scene.stop());
+        this.editorUI = { titleText, editorDOM, runButton, feedback };
+        // Hide editor UI by default
+        Object.values(this.editorUI).forEach(el => el.setVisible(false));
     }
 
-    /**
-     * This function is the core of the data logging process.
-     */
-     async checkAnswer() {
+    async checkAnswer() {
+        if (!this.isAuthenticated) return; // Prevent running if not authenticated
+
         const code = this.editor.getValue();
         const validationRules = this.currentExercise.validation;
         let allCorrect = true;
         const errors = [];
 
-        
         for (const key in validationRules) {
             const expectedValue = validationRules[key];
             let actualValue = null;
@@ -107,41 +158,36 @@ export default class CodeEditorScene extends Phaser.Scene {
         }
 
         const attemptData = {
-            sessionId: this.userProfile.sessionId, //  Use the stored sessionId
+            sessionId: this.userProfile.sessionId,
             challengeId: this.currentExercise.id,
             submittedCode: code,
             isCorrect: allCorrect,
-            errors: errors,
+            errors: JSON.stringify(errors), // Ensure errors are a string
         };
 
         try {
-            console.log("🙃 our session idddd" , this.userProfile.sessionId )
-            console.log("Calling dataService.logCodeAttempt...");
-            await this.dataService.logCodeAttempt(attemptData); // This now calls the correct backend endpoint
-            console.log("Attempt logged successfully!");
-
+            await this.dataService.logCodeAttempt(attemptData);
             if (allCorrect) {
-                this.feedback.setText('✅ Correct! Challenge Complete!').setStyle({ fill: '#0f0' });
-                this.runButton.removeListener('click');
+                this.editorUI.feedback.setText('✅ Correct! Challenge Complete!').setStyle({ fill: '#0f0' });
+                this.editorUI.runButton.removeListener('click');
                 this.time.delayedCall(2000, () => this.scene.stop());
             } else {
-                this.feedback.setText('❌ Incorrect. Review your code and try again!').setStyle({ fill: '#f00' });
+                this.editorUI.feedback.setText('❌ Incorrect. Review your code and try again!').setStyle({ fill: '#f00' });
             }
-
         } catch (error) {
             console.error("Failed to log code attempt:", error);
-            this.feedback.setText('⚠️ Could not save progress. Please check your connection.').setStyle({ fill: '#f90' });
+            this.editorUI.feedback.setText('⚠️ Could not save progress. Please check your connection.').setStyle({ fill: '#f90' });
         }
     }
   
     shutdown() {
-        // Clean up DOM elements and listeners to prevent memory leaks
         if (this.editor) {
             this.editor.toTextArea(); 
             this.editor = null;
         }
-        if (this.editorDOM) this.editorDOM.destroy();
-        if (this.runButton) this.runButton.destroy();
+        // Destroy all UI elements to prevent memory leaks
+        Object.values(this.passwordUI).forEach(el => el.destroy());
+        Object.values(this.editorUI).forEach(el => el.destroy());
         this.input.keyboard.off('keydown-Q');
     }
 }
