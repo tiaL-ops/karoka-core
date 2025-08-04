@@ -168,15 +168,7 @@ export default class ArenaScene extends Phaser.Scene {
         this.scene.launch('VARKScene');
       }
     });
-     this.input.keyboard.on('keydown-M', () => {
-      if (!this.scene.isPaused()) {
-        // Pause the current scene (ArenaScene)
-        this.scene.pause();}
-      if (!this.scene.isActive('MenuScene')) {
-        this.scene.launch('MenuScene');
-      }
-    });
-
+    
    
 
 // 1) Add a fixed-to-camera “☰” button in the corner

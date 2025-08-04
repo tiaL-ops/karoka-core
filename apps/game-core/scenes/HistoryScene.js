@@ -6,7 +6,7 @@ export default class HistoryScene extends Phaser.Scene {
     
  this.storyScript = [
   "Welcome to the world of Karo.",
-  "It’s the year 2030. A virus has wiped out every computer in the world \n (Yeah, yeah, we know, classic dystopian setup. I’m working on it.)",
+  "It’s the year 2030. A virus has wiped out every computer in the world \n (Yeah, yeah, I know, classic dystopian setup. I’m working on it.)",
   "Anyway... you are the hero of this story. (Pretty cool, right?)",
   "Your mission: connect to the world’s major computers and clean out the virus by solving coding problems.",
   "There are 7 main systems to fix.",
@@ -91,11 +91,11 @@ export default class HistoryScene extends Phaser.Scene {
     // --- Story Text Area (with new styling) ---
     this.storyText = this.add.text(centerX, centerY, '', {
       fontFamily: '"Press Start 2P"',
-      fontSize: '20px',
+      fontSize: '10px',
       fill: '#ffffff', // Changed to white as requested
       align: 'center',
       wordWrap: { width: boxWidth - 60 },
-      lineSpacing: 15 // Added line spacing
+      lineSpacing: 30 // Added line spacing
     }).setOrigin(0.5);
 
     // --- Blinking Cursor ---
@@ -149,7 +149,7 @@ export default class HistoryScene extends Phaser.Scene {
 
     let charIndex = 0;
     this.typingTimer = this.time.addEvent({
-      delay: 50, // Speed of the typing effect
+      delay: 65, // Speed of the typing effect
       callback: () => {
         this.storyText.text += line[charIndex];
         this.updateCursorPosition();
