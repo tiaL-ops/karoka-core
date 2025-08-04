@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+
 
 export default class MenuScene extends Phaser.Scene {
   constructor() {
@@ -30,62 +30,134 @@ export default class MenuScene extends Phaser.Scene {
   }
 
   createMenuUI() {
-    const { width, height } = this.scale;
-    const centerX = width / 2;
+  const { width, height } = this.scale;
+  const centerX = width / 2;
 
-    // --- Paused Title ---
-    const title = this.add.text(centerX, height * 0.2, 'Paused', {
+  // ── 1) Dark-green striped full-screen background ──
+  const bg = this.add.graphics();
+  bg.fillStyle(0x164A2C, 1).fillRect(0, 0, width, height);
+  bg.lineStyle(1, 0x1F593B, 1);
+  for (let y = 0; y < height; y += 12) {
+    bg.beginPath().moveTo(0, y).lineTo(width, y).strokePath();
+  }
+  this.uiElements.push(bg);
+
+  // ── 2) Pale-green panel with black border ──
+  const panelW = width * 0.6;
+  const panelH = height * 0.7;
+  const panelX = centerX - panelW / 2;
+  const panelY = height * 0.15;
+  const panel = this.add.graphics()
+    .fillStyle(0xA3D9A5, 1)
+    .lineStyle(4, 0x000000, 1)
+    .fillRect(panelX, panelY, panelW, panelH)
+    .strokeRect(panelX, panelY, panelW, panelH);
+  this.uiElements.push(panel);
+
+  // ── 3) Grey header bar ──
+  const headerH = 60;
+  const header = this.add.graphics()
+    .fillStyle(0xC0C0C0, 1)
+    .lineStyle(4, 0x000000, 1)
+    .fillRect(panelX, panelY, panelW, headerH)
+    .strokeRect(panelX, panelY, panelW, headerH);
+  this.uiElements.push(header);
+
+  // ── 4) YOUR TITLE (unchanged var name!) ──
+  const title = this.add.text(
+    centerX,
+    panelY + headerH / 2,
+    'Paused',
+    {
       fontFamily: '"Press Start 2P"',
       fontSize: '48px',
-      fill: '#ffffff',
+      fill: '#000000',
       stroke: '#000000',
-      strokeThickness: 8
-    }).setOrigin(0.5);
+      strokeThickness: 4
+    }
+  ).setOrigin(0.5);
 
-    // --- Menu Buttons ---
-    const menuYPosition = height * 0.45;
-    const buttonSpacing = 70;
-
-    const resumeButton = this.add.text(centerX, menuYPosition, 'Resume', {
+  // ── 5) Create ALL label Texts first ──
+  const labels    = ['Resume', 'VARK Test', 'Ask for Help', 'Coding Assignment'];
+  const startY    = panelY + headerH + 30;
+  const spacing   = 70;
+  const btnHeight = 50;
+  const buttonTexts = labels.map((label, i) => {
+    const y = startY + i * spacing;
+    return this.add.text(centerX, y, label, {
       fontFamily: '"Press Start 2P"',
       fontSize: '24px',
-      fill: '#4CAF50'
+      fill: '#000000'
     }).setOrigin(0.5);
+  });
 
-    const varkButton = this.add.text(centerX, menuYPosition + buttonSpacing, 'VARK Test', {
-      fontFamily: '"Press Start 2P"',
-      fontSize: '24px',
-      fill: '#ffffff'
-    }).setOrigin(0.5);
+  // ── 6) Measure widest Text → uniform boxWidth ──
+  const maxTextWidth = Math.max(...buttonTexts.map(t => t.width));
+  const boxWidth     = maxTextWidth + 40;
+  const boxX         = centerX - boxWidth / 2;
 
-    const helpButton = this.add.text(centerX, menuYPosition + buttonSpacing * 2, 'Ask for Help', {
-      fontFamily: '"Press Start 2P"',
-      fontSize: '24px',
-      fill: '#ffffff'
-    }).setOrigin(0.5);
+  // ── 7) Draw each green box **behind** its Text ──
+  buttonTexts.forEach(txt => {
+    const y = txt.y;
+    const box = this.add.graphics()
+      .fillStyle(0xB7E0B2, 1)
+      .lineStyle(3, 0x000000, 1)
+      .fillRect(boxX, y - btnHeight/2, boxWidth, btnHeight)
+      .strokeRect(boxX, y - btnHeight/2, boxWidth, btnHeight);
 
-    const codeButton = this.add.text(centerX, menuYPosition + buttonSpacing * 3, 'Coding Assignment', {
-      fontFamily: '"Press Start 2P"',
-      fontSize: '24px',
-      fill: '#ffffff'
-    }).setOrigin(0.5);
+    box.setDepth(0);
+    txt.setDepth(1);
+    this.uiElements.push(box);
+  });
 
-    // Add all UI elements to the array for easy show/hide
-    this.uiElements.push(title, resumeButton, varkButton, helpButton, codeButton);
+  // ── 8) Destructure back to YOUR original vars ──
+  const [resumeButton, varkButton, helpButton, codeButton] = buttonTexts;
 
-    // --- Interactivity ---
-    this.makeButtonInteractive(resumeButton, this.resumeGame, this);
-    // FIX: When launching a sub-scene, we now also hide the pause menu
-    this.makeButtonInteractive(varkButton, () => this.launchSubScene('VARKScene'));
-    this.makeButtonInteractive(helpButton, () => this.launchSubScene('HelpScene'));
-    this.makeButtonInteractive(codeButton, () => this.launchSubScene('CodeEditorScene'));
-  }
+  // ── 9) Keep your exact push of title + buttons ──
+  this.uiElements.push(
+    title,
+    resumeButton,
+    varkButton,
+    helpButton,
+    codeButton
+  );
+
+  // ── 10) Interactivity: black ↔ blue only ──
+  const makeBtn = (btn, fn) => {
+    btn.setInteractive({ useHandCursor: true });
+    btn.on('pointerover',  () => btn.setFill('#007BFF'));
+    btn.on('pointerout',   () => btn.setFill('#000000'));
+    btn.on('pointerdown',  fn, this);
+  };
+  makeBtn(resumeButton, () => this.resumeGame());
+  makeBtn(varkButton,   () => this.launchSubScene('VARKScene'));
+  makeBtn(helpButton,   () => this.launchSubScene('HelpScene'));
+  makeBtn(codeButton,   () => this.launchSubScene('CodeEditorScene'));
+
+  // ── 11) Grey footer + “Choose an option.” text ──
+  const footerY = panelY + panelH - 30;
+  const footerBar = this.add.graphics()
+    .fillStyle(0xC0C0C0, 1)
+    .lineStyle(4, 0x000000, 1)
+    .fillRect(boxX, footerY - 25, boxWidth, 50)
+    .strokeRect(boxX, footerY - 25, boxWidth, 50);
+  footerBar.setDepth(0);
+  this.uiElements.push(footerBar);
+
+  const footerText = this.add.text(centerX, footerY, 'Choose an option.', {
+    fontFamily: '"Press Start 2P"',
+    fontSize: '18px',
+    fill: '#000000'
+  }).setOrigin(0.5).setDepth(1);
+  this.uiElements.push(footerText);
+}
+
 
   makeButtonInteractive(button, callback, context) {
     button.setInteractive({ useHandCursor: true });
     const originalColor = button.style.fill;
     button.on('pointerover', () => button.setFill('#007BFF'));
-    button.on('pointerout', () => button.setFill(originalColor));
+    button.on('pointerout', () => button.setFill(black));
     button.on('pointerdown', () => {
       if (context) {
         callback.call(context);
