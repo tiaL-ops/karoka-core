@@ -1,5 +1,3 @@
-
-
 // Retrieve the base URL for the API from environment variables
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -11,7 +9,11 @@ export default class HelpScene extends Phaser.Scene {
     this.messages = [
       {
         role: 'system',
-        content: 'You are a helpful game genie that assists the player through this 2d game that teaches python. The user is a beginner that is learning python. Explain what a variable is. Be concise and clear.'
+        content: 'You are a helpful game genie that assists the player through this 2d game that teaches python. The user is a beginner that is learning python.'
+      },
+      {
+        role: 'assistant',
+        content: 'Hi, how can I help you? Reminder: you have five attempts to discuss.'
       }
     ];
   }
@@ -43,7 +45,7 @@ export default class HelpScene extends Phaser.Scene {
 
     // Add the HTML form for chat input using a DOM element
     this.domElement = this.add.dom(width / 2, height - 30, 'div').setHTML(`
-        <input id="chatInput" placeholder="Ask the genie..." style="width:${width - 240}px; padding: 10px; border-radius: 5px; border: 1px solid #ccc;"/>
+        <input id="chatInput" placeholder="Ask Karo..." style="width:${width - 240}px; padding: 10px; border-radius: 5px; border: 1px solid #ccc;"/>
         <button id="sendBtn" style="padding: 10px 15px; margin-left: 5px; border-radius: 5px; background-color: #4CAF50; color: white; border: none; cursor: pointer;">Send</button>
         <button id="quitBtn" style="padding: 10px 15px; margin-left: 5px; border-radius: 5px; background-color: #f44336; color: white; border: none; cursor: pointer;">Quit</button>
     `);
@@ -106,7 +108,7 @@ export default class HelpScene extends Phaser.Scene {
 
       if (!res.ok) {
         const errorData = await res.json();
-        throw new Error(errorData.detail || 'The genie is resting. Please try again later.');
+        throw new Error(errorData.detail || 'Karo is resting. Please try again later.');
       }
 
       const { reply } = await res.json();
@@ -127,11 +129,14 @@ export default class HelpScene extends Phaser.Scene {
   }
 
   updateConversation() {
-    const lines = this.messages.map(msg => {
-      const prefix = msg.role === 'user' ? 'You:'
-                     : msg.role === 'assistant' ? 'Genie:' : ''; // System message has no prefix
-      return `${prefix} ${msg.content}`;
-    });
+    // Only display user and assistant messages (hide system prompts)
+    const lines = this.messages
+      .filter(msg => msg.role !== 'system')
+      .map(msg => {
+        const prefix = msg.role === 'user' ? 'You:'
+                     : msg.role === 'assistant' ? 'Karo:' : '';
+        return `${prefix} ${msg.content}`;
+      });
     this.conversationText.setText(lines.join('\n\n'));
   }
 

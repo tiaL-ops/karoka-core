@@ -92,10 +92,8 @@ export const rooms = {
     codeSnippet: `
 x = 2
 y = 1
-z = 2 * 2
-password = z + y / x
-name = "Password"
-print(name + " is " + str(password) + "!")
+z = x + y * 2
+
 `,
 
     // The solution to the puzzle. puzzleManager will validate against these counts.

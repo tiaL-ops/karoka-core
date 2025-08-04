@@ -1,12 +1,9 @@
-
 import { rooms } from '../config/roomData.js';
-
-
-const simpleUUID = () => (`${Date.now()}-${Math.random().toString(36).substring(2, 6)}`);
 
 export default class PlayScene extends Phaser.Scene {
   constructor() {
     super('PlayScene');
+    this.successUI = null; // To hold the success screen elements
   }
 
   init(data) {
@@ -14,51 +11,42 @@ export default class PlayScene extends Phaser.Scene {
     this.playJsonUrl = data.playJsonUrl;
     this.tilesetsData = data.tilesets;
     this.mapKey = 'playMap_' + Date.now();
-    this.roomKey = data.roomKey; // This will serve as our puzzle_id
+    this.roomKey = data.roomKey;
     this.challengeId = data.challengeId;
 
-    // Retrieve user/session and data service for logging
     this.userProfile = this.registry.get('userProfile');
     this.dataService = this.registry.get('dataService');
   
     if (!this.userProfile || !this.dataService) {
-      console.warn('PlayScene: userProfile or dataService not found in registry. Analytics will be disabled.');
-      // Create a dummy dataService to prevent errors if it's missing
+      console.warn('PlayScene: userProfile or dataService not found. Analytics will be disabled.');
       this.dataService = {
         logEvent: () => Promise.resolve(),
         createAttempt: () => Promise.resolve(),
         updateUserScore: () => Promise.resolve(),
       };
-    }else{
-        console.log("Ayoo the dataservice is", this.dataService);
     }
 
     // --- ANALYTICS STATE INITIALIZATION ---
     this.attemptNumber = 0;
-    this.attemptAnalytics = {}; // To hold data for the current attempt
+    this.attemptAnalytics = {};
   }
 
   preload() {
     console.log(`PlayScene: Preloading map from ${this.playJsonUrl}`);
     this.load.tilemapTiledJSON(this.mapKey, this.playJsonUrl);
-    // As requested, the long base64 string is removed. 
-    // You should replace 'path/to/your/close_icon.png' with a real asset path.
-    this.load.image('close_icon', 'path/to/your/close_icon.png');
+    this.load.image('close_icon', 'https://placehold.co/32x32/ffffff/000000?text=X');
+    // --- Preload the pixel font for the success screen ---
+    this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
   }
 
   create() {
     console.log('PlayScene: Creating scene.');
-    const room = rooms[this.roomKey] || {};
-
-    // --- INITIALIZE ATTEMPT TRACKING ---
     this.startNewAttempt();
 
-    // Centering calculations
     const cam = this.cameras.main;
     const centerX = cam.width / 2;
     const centerY = cam.height / 2;
 
-    // --- MAP & WORLD SETUP ---
     this.sourceBallCount = 10;
     this.zoneCounts = { x: 0, y: 0, z: 0 };
     const map = this.make.tilemap({ key: this.mapKey });
@@ -69,12 +57,10 @@ export default class PlayScene extends Phaser.Scene {
     const offsetY = centerY - mapHeight / 2;
     map.createLayer('Background', tilesets, offsetX, offsetY);
 
-    // --- GAME OBJECTS SETUP ---
     const objs = map.getObjectLayer('Drag').objects;
     const ballObj = objs.find(o => o.name === 'ball');
     const targetObjs = objs.filter(o => ['x', 'y', 'z'].includes(o.name));
     
-    // Create drop zones
     this.dropZones = this.add.group();
     this.zoneCountTexts = {};
     targetObjs.forEach(o => {
@@ -89,7 +75,6 @@ export default class PlayScene extends Phaser.Scene {
       this.zoneCountTexts[o.name] = txt;
     });
 
-    // Create source ball
     const bx = ballObj.x + offsetX;
     const by = ballObj.y + offsetY;
     this.sourceBall = this.add.circle(bx, by, ballObj.width / 2, 0xff0000).setInteractive();
@@ -99,7 +84,6 @@ export default class PlayScene extends Phaser.Scene {
     this.sourceBallCountText = this.add.text(bx, by - 20, `x${this.sourceBallCount}`, { font: '16px Monospace', fill: '#fff' }).setOrigin(0.5);
     this.placedBalls = this.add.group();
 
-    // --- EVENT HANDLERS WITH ANALYTICS ---
     this.input.on('dragstart', (pointer, gameObject) => {
         gameObject.setStrokeStyle(2, 0xffff00);
         this.children.bringToTop(gameObject);
@@ -123,7 +107,7 @@ export default class PlayScene extends Phaser.Scene {
 
     this.input.on('drop', (pointer, gameObject, dropZone) => {
       dropZone.getData('outline').setVisible(false);
-      this.attemptAnalytics.moves++; // Increment move count on any successful drop
+      this.attemptAnalytics.moves++;
 
       const oldZoneName = gameObject.getData('originZone');
       const newZoneName = dropZone.name;
@@ -161,20 +145,15 @@ export default class PlayScene extends Phaser.Scene {
       this.dropZones.getChildren().forEach(z => z.getData('outline').setVisible(false));
     });
 
-    // --- UI SETUP ---
     const uiX = 650;
-    this.add.text(uiX, 30, '[ Show Code ]', { font: '16px Monospace', fill: '#0f0', backgroundColor: '#333', padding: { x: 5, y: 5 } })
-      .setInteractive().on('pointerdown', () => this.showCodePanel(room.codeSnippet));
+    this.showCodeButton = this.add.text(uiX, 30, '[ Show Code ]', { font: '16px Monospace', fill: '#0f0', backgroundColor: '#333', padding: { x: 5, y: 5 } })
+      .setInteractive().on('pointerdown', () => this.showCodePanel(rooms[this.roomKey]?.codeSnippet));
 
     this.checkAnswerButton = this.add.text(uiX, 60, '[ Check Answer ]', { font: '16px Monospace', fill: '#0f0', backgroundColor: '#333', padding: { x: 5, y: 5 } })
       .setInteractive().on('pointerdown', () => this.handleCheckAnswer());
       
     this.resultText = this.add.text(uiX, 90, '', { font: '16px Monospace', fill: '#ff0' });
 
-    // Key listeners
-    this.input.keyboard.on('keydown-L', () => {
-      if (!this.scene.isActive('CodeLessonScene')) { this.scene.launch('CodeLessonScene'); this.scene.sleep(); }
-    });
     this.input.keyboard.on('keydown-Q', () => {
       this.scene.start('ArenaScene', { roomKey: this.roomKey });
     });
@@ -187,13 +166,13 @@ export default class PlayScene extends Phaser.Scene {
       moves: 0,
       help_opened: false,
       time_in_code_panel: 0,
-      helpPanelOpenTime: null, // internal timer
+      helpPanelOpenTime: null,
     };
     console.log(`Starting attempt #${this.attemptNumber}`);
   }
 
   addPlacedBall(x, y, zoneName) {
-    const r = this.sourceBall.radius || (this.sourceBall.width / 2) || 16;
+    const r = this.sourceBall.radius || 16;
     const b = this.add.circle(x, y, r, 0xff0000).setInteractive();
     b.setData('originZone', zoneName);
     this.input.setDraggable(b);
@@ -202,11 +181,7 @@ export default class PlayScene extends Phaser.Scene {
 
   updateCounts() {
     this.sourceBallCountText.setText(`x${this.sourceBallCount}`);
-    if (this.sourceBallCount === 0) {
-      this.sourceBall.disableInteractive().setAlpha(0.5);
-    } else {
-      this.sourceBall.setInteractive().setAlpha(1);
-    }
+    this.sourceBall.setInteractive(this.sourceBallCount > 0).setAlpha(this.sourceBallCount > 0 ? 1 : 0.5);
     for (const zn in this.zoneCountTexts) {
       this.zoneCountTexts[zn].setText(`${zn}: ${this.zoneCounts[zn]}`);
     }
@@ -214,12 +189,9 @@ export default class PlayScene extends Phaser.Scene {
 
   showCodePanel(code) {
     if (this.codePanel && this.codePanel.active) return;
-
-    // --- ANALYTICS: Track help usage ---
     this.attemptAnalytics.help_opened = true;
     this.attemptAnalytics.helpPanelOpenTime = Date.now();
     this.logMicroInteraction('show-code-click', { snippetId: this.roomKey });
-    // ------------------------------------
 
     this.codePanel = this.add.container(0, 0);
     const bg = this.add.graphics().fillStyle(0x111111, 0.9).fillRect(50, 50, this.scale.width - 100, this.scale.height - 100);
@@ -229,27 +201,27 @@ export default class PlayScene extends Phaser.Scene {
     this.codePanel.add([bg, codeText, closeButton]);
 
     closeButton.on('pointerdown', () => {
-        // --- ANALYTICS: Track time spent in help panel ---
         if (this.attemptAnalytics.helpPanelOpenTime) {
             const duration = (Date.now() - this.attemptAnalytics.helpPanelOpenTime) / 1000; 
             this.attemptAnalytics.time_in_code_panel += duration;
-            this.attemptAnalytics.helpPanelOpenTime = null; // Reset timer
+            this.attemptAnalytics.helpPanelOpenTime = null;
         }
-        // ------------------------------------------------
         this.codePanel.destroy();
     });
   }
 
   async handleCheckAnswer() {
-    let allCorrect = true;
     if (!this.userProfile || !this.dataService) return;
 
     const goal = rooms[this.roomKey].puzzleGoal || {};
     const was_correct = this.zoneCounts.x === goal.X && this.zoneCounts.y === goal.Y && this.zoneCounts.z === goal.Z;
 
-    this.resultText.setText(was_correct ? 'Correct!' : 'Try Again');
+    if (was_correct) {
+        this.showSuccessScreen();
+    } else {
+        this.resultText.setText('Try Again');
+    }
     
-    // --- ANALYTICS: Finalize and send attempt data ---
     const attemptData = {
         attempt_id: `${this.userProfile.sessionId}-${this.roomKey}-${this.attemptNumber}`,
         sessionId: this.userProfile.sessionId,
@@ -262,28 +234,88 @@ export default class PlayScene extends Phaser.Scene {
         time_in_code_panel: this.attemptAnalytics.time_in_code_panel,
         isCorrect: was_correct,
         zone_counts: this.zoneCounts,
-      
     };
 
     try {
-       
-        console.log("Logging attempt:", attemptData);
         await this.dataService.createAttempt(attemptData);
-        console.log('PlayScene: Attempt logged successfully.');
-
         if (was_correct) {
-            isCorrect: allCorrect,
-            console.log("Updating user score...");
-            console.log("Correct answer! Updating score.");
-     
-            this.checkAnswerButton.disableInteractive().setAlpha(0.5); // Prevent further attempts
+            this.checkAnswerButton.disableInteractive().setAlpha(0.5);
+            this.showCodeButton.disableInteractive().setAlpha(0.5);
         } else {
-            // If incorrect, reset for the next attempt
             this.startNewAttempt();
         }
     } catch (e) {
-        console.error('PlayScene: Failed to log attempt or update score', e);
+        console.error('PlayScene: Failed to log attempt', e);
     }
+  }
+
+  showSuccessScreen() {
+    // Hide the main game UI
+    this.resultText.setVisible(false);
+    this.checkAnswerButton.setVisible(false);
+    this.showCodeButton.setVisible(false);
+    this.input.enabled = false; // Disable dragging while success screen is up
+
+    const { width, height } = this.sys.game.canvas;
+    const centerX = width / 2;
+    const centerY = height / 2;
+
+    this.successUI = this.add.container(0, 0);
+
+    // Use WebFont loader to ensure pixel font is ready
+    WebFont.load({
+        google: {
+            families: ['Press Start 2P']
+        },
+        active: () => {
+            const bg = this.add.graphics();
+            bg.fillStyle(0x1a1a1a, 0.95);
+            bg.fillRect(0, 0, width, height);
+
+            const box = this.add.graphics();
+            box.fillStyle(0x1a1a1a, 1);
+            box.lineStyle(4, 0xffd700, 1);
+            box.fillRect(centerX - 280, centerY - 150, 560, 300);
+            box.strokeRect(centerX - 280, centerY - 150, 560, 300);
+
+            const title = this.add.text(centerX, centerY - 100, 'PUZZLE SOLVED!', {
+                fontFamily: '"Press Start 2P"',
+                fontSize: '24px',
+                fill: '#ffd700',
+                align: 'center'
+            }).setOrigin(0.5);
+
+            const message = this.add.text(centerX, centerY - 20, "You've discovered a secret word!", {
+                fontFamily: '"Press Start 2P"',
+                fontSize: '14px',
+                fill: '#ffffff',
+                align: 'center',
+                lineSpacing: 10
+            }).setOrigin(0.5);
+
+            const password = this.add.text(centerX, centerY + 30, 'karo', {
+                fontFamily: '"Press Start 2P"',
+                fontSize: '32px',
+                fill: '#ff00ff',
+                stroke: '#ffffff',
+                strokeThickness: 4
+            }).setOrigin(0.5);
+
+            const continueButton = this.add.text(centerX, centerY + 100, '[ CONTINUE ]', {
+                fontFamily: '"Press Start 2P"',
+                fontSize: '18px',
+                fill: '#ffffff'
+            }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+
+            this.successUI.add([bg, box, title, message, password, continueButton]);
+
+            continueButton.on('pointerdown', () => {
+                this.scene.start('ArenaScene', { roomKey: this.roomKey });
+            });
+            continueButton.on('pointerover', () => continueButton.setFill('#ffd700'));
+            continueButton.on('pointerout', () => continueButton.setFill('#ffffff'));
+        }
+    });
   }
 
   logMicroInteraction(eventType, payload = {}) {
@@ -293,11 +325,11 @@ export default class PlayScene extends Phaser.Scene {
     }
 
     const eventDetails = {
-        ...payload, // e.g., sourceZone, targetZone
-        puzzleState: { // Include full state for reconstruction
+        ...payload,
+        puzzleState: {
             sourceBallCount: this.sourceBallCount,
             zoneCounts: { ...this.zoneCounts },
-            timeSinceSceneLoad: this.time.now / 1000 // seconds
+            timeSinceSceneLoad: this.time.now / 1000
         }
     };
     
@@ -306,13 +338,11 @@ export default class PlayScene extends Phaser.Scene {
         userId: this.userProfile.id,
         challengeId: this.challengeId,
         eventType: eventType,
-        eventDetailsJson: eventDetails,
+        eventDetailsJson: JSON.stringify(eventDetails),
         timestamp: new Date().toISOString()
     };
 
-    // Fire-and-forget the log event
     this.dataService.logEvent(logData)
-        .then(() => {/* console.log(`Micro-interaction logged: ${eventType}`) */})
         .catch(e => console.error(`Failed to log micro-interaction: ${eventType}`, e));
   }
 }
