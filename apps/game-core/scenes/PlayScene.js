@@ -241,27 +241,74 @@ export default class PlayScene extends Phaser.Scene {
         }
     }
 
-    showCodePanel(code) {
+     showCodePanel(code) {
         if (this.codePanel && this.codePanel.active) return;
         this.attemptAnalytics.help_opened = true;
         this.attemptAnalytics.helpPanelOpenTime = Date.now();
         this.logMicroInteraction('show-code-click', { snippetId: this.roomKey });
 
-        this.codePanel = this.add.container(0, 0);
-        const bg = this.add.graphics().fillStyle(0x111111, 0.9).fillRect(50, 50, this.scale.width - 100, this.scale.height - 100);
-        const codeText = this.add.text(70, 70, code, { font: '14px Courier', fill: '#fff', wordWrap: { width: this.scale.width - 140 } });
-        const closeButton = this.add.image(this.scale.width - 70, 70, 'close_icon').setInteractive();
+        const { width, height } = this.scale;
+        const panelWidth = width * 0.8;
+        const panelHeight = height * 0.8;
+        const panelX = (width - panelWidth) / 2;
+        const panelY = (height - panelHeight) / 2;
 
-        this.codePanel.add([bg, codeText, closeButton]);
-        closeButton.on('pointerdown', () => {
-            if (this.attemptAnalytics.helpPanelOpenTime) {
-                const duration = (Date.now() - this.attemptAnalytics.helpPanelOpenTime) / 1000;
-                this.attemptAnalytics.time_in_code_panel += duration;
-                this.attemptAnalytics.helpPanelOpenTime = null;
+        this.codePanel = this.add.container(0, 0);
+
+        // Ensure pixel font is loaded before creating text elements
+        WebFont.load({
+            google: { families: ['Press Start 2P'] },
+            active: () => {
+                // Dimmer background for the whole screen
+                const dimmer = this.add.graphics().fillStyle(0x000000, 0.7).fillRect(0, 0, width, height);
+
+                // Create the styled box
+                const box = this.add.graphics();
+                box.fillStyle(0x1a2a4f, 1); // Dark blue fill
+                box.lineStyle(4, 0x00ffff, 1); // Cyan border
+                box.fillRect(panelX, panelY, panelWidth, panelHeight);
+                box.strokeRect(panelX, panelY, panelWidth, panelHeight);
+                
+                // Panel Title
+                const title = this.add.text(width / 2, panelY + 30, 'PUZZLE HINT', {
+                    fontFamily: '"Press Start 2P"',
+                    fontSize: '20px',
+                    fill: '#00ffff',
+                }).setOrigin(0.5);
+
+                // Code snippet text
+                const codeText = this.add.text(panelX + 20, panelY + 70, code, {
+                    font: '14px Courier',
+                    fill: '#ffffff',
+                    wordWrap: { width: panelWidth - 40 }
+                });
+
+                // A new pixel-art style close button
+                const closeButton = this.add.text(panelX + panelWidth - 25, panelY + 25, '[X]', {
+                    fontFamily: '"Press Start 2P"',
+                    fontSize: '16px',
+                    fill: '#ff00ff'
+                }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+
+                this.codePanel.add([dimmer, box, title, codeText, closeButton]);
+
+                const closePanel = () => {
+                    if (this.attemptAnalytics.helpPanelOpenTime) {
+                        const duration = (Date.now() - this.attemptAnalytics.helpPanelOpenTime) / 1000;
+                        this.attemptAnalytics.time_in_code_panel += duration;
+                        this.attemptAnalytics.helpPanelOpenTime = null;
+                    }
+                    this.codePanel.destroy();
+                    this.codePanel = null;
+                };
+
+                closeButton.on('pointerdown', closePanel);
+                closeButton.on('pointerover', () => closeButton.setFill('#ffffff'));
+                closeButton.on('pointerout', () => closeButton.setFill('#ff00ff'));
             }
-            this.codePanel.destroy();
         });
     }
+
 
     async handleCheckAnswer() {
         if (!this.userProfile || !this.dataService) return;
