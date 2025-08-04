@@ -58,17 +58,17 @@ export default class ArenaScene extends Phaser.Scene {
     // Collision objects
     const collisionLayer = map.getObjectLayer('Collision');
     if (collisionLayer && collisionLayer.objects.length) {
-      const graphics = this.add.graphics();
-      graphics.lineStyle(2, 0xff0000, 1);
-      graphics.fillStyle(0xff0000, 0.3);
+      //const graphics = this.add.graphics();
+      //graphics.lineStyle(2, 0xff0000, 1);
+      //graphics.fillStyle(0xff0000, 0.3);
       this.collisionGroup = this.physics.add.staticGroup();
       collisionLayer.objects.forEach(obj => {
         const x0 = obj.x;
         const y0 = obj.y;
         const w = obj.width;
         const h = obj.height;
-        graphics.strokeRect(x0, y0, w, h);
-        graphics.fillRect(x0, y0, w, h);
+        //graphics.strokeRect(x0, y0, w, h);
+        //graphics.fillRect(x0, y0, w, h);
         const rect = this.add.rectangle(x0 + w/2, y0 + h/2, w, h);
         this.physics.add.existing(rect, true);
         this.collisionGroup.add(rect);
@@ -98,17 +98,17 @@ export default class ArenaScene extends Phaser.Scene {
     // Hint objects: green overlay + message with name
     const hintsLayer = map.getObjectLayer('Hints');
     if (hintsLayer && hintsLayer.objects.length) {
-      const hintGraphics = this.add.graphics();
-      hintGraphics.lineStyle(2, 0x00ff00, 1);
-      hintGraphics.fillStyle(0x00ff00, 0.3);
+      //const hintGraphics = this.add.graphics();
+      //hintGraphics.lineStyle(2, 0x00ff00, 1);
+      //hintGraphics.fillStyle(0x00ff00, 0.3);
       this.hintGroup = this.physics.add.staticGroup();
       hintsLayer.objects.forEach(obj => {
         const x0 = obj.x;
         const y0 = obj.y;
         const w = obj.width;
         const h = obj.height;
-        hintGraphics.strokeRect(x0, y0, w, h);
-        hintGraphics.fillRect(x0, y0, w, h);
+        //hintGraphics.strokeRect(x0, y0, w, h);
+       //hintGraphics.fillRect(x0, y0, w, h);
         const hintRect = this.add.rectangle(x0 + w/2, y0 + h/2, w, h);
         this.physics.add.existing(hintRect, true);
         hintRect.hintName = obj.name || 'hint';
@@ -176,6 +176,50 @@ export default class ArenaScene extends Phaser.Scene {
         this.scene.launch('MenuScene');
       }
     });
+
+   
+
+// 1) Add a fixed-to-camera “☰” button in the corner
+// …at the bottom of your ArenaScene.create(), replace the old menuBtn with:
+
+// 1) Draw a semi-opaque white circle as a button background
+const btnX = this.scale.width - 40;
+const btnY = 40;
+const radius = 24;
+
+const btnBg = this.add.circle(btnX, btnY, radius, 0xffffff, 0.8)
+  .setStrokeStyle(2, 0x000000)   // black outline
+  .setScrollFactor(0)            // fixed to camera
+  .setInteractive({ useHandCursor: true });
+
+// 2) Draw the “☰” icon on top, bold & black
+const menuIcon = this.add.text(btnX, btnY, '☰', {
+    fontFamily: '"Press Start 2P"',
+    fontSize: '28px',
+    fill: '#000000'
+  })
+  .setOrigin(0.5)
+  .setScrollFactor(0)
+  .setDepth(1);
+
+// 3) Hook up the toggle logic on the circle background
+btnBg.on('pointerdown', () => {
+  const menuIsUp = this.scene.isActive('MenuScene');
+
+  if (menuIsUp) {
+    this.scene.stop('MenuScene');
+    this.scene.resume('ArenaScene');
+  } else {
+    this.scene.pause('ArenaScene');
+    this.scene.launch('MenuScene');
+  }
+});
+
+// (Optionally also let the icon itself be clickable)
+menuIcon.setInteractive({ useHandCursor: true })
+  .on('pointerdown', () => btnBg.emit('pointerdown'));
+
+
   }
 
   update() {
