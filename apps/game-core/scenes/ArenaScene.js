@@ -8,6 +8,7 @@ import Player from './Player.js';
 import HelpScene from './HelpScene.js';
 import VARKScene from './VARKScene.js';
 import MenuScene from './MenuScene.js';
+import HistoryScene from './HistoryScene.js';
 
 export default class ArenaScene extends Phaser.Scene {
   constructor() {
@@ -38,6 +39,8 @@ export default class ArenaScene extends Phaser.Scene {
   }
 
   create() {
+    
+    //this.scene.launch('HistoryScene');
     const room = rooms[this.roomKey];
     const map = this.make.tilemap({ key: this.roomKey });
     const tilesets = room.tilesets.map(ts => map.addTilesetImage(ts.name, ts.key));

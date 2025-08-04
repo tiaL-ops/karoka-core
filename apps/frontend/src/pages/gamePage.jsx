@@ -12,6 +12,7 @@ import DocumentationScene from '@game-core/scenes/DocumentationScene';
 import HelpScene from '@game-core/scenes/HelpScene';
 import VARKScene from '@game-core/scenes/VARKScene';
 import MenuScene from '@game-core/scenes/MenuScene';  
+import HistoryScene from '@game-core/scenes/HistoryScene'; // Import the HistoryScene if needed
 
 // --- Service ---
 import DataService from '@game-core/services/DataService';
@@ -76,6 +77,7 @@ function GamePage() {
     game.scene.add('HelpScene', HelpScene);
     game.scene.add('VARKScene', VARKScene);
     game.scene.add('MenuScene', MenuScene);
+    game.scene.add('HistoryScene', HistoryScene);
 
     // Now, manually start the BootScene.
     // This call is now safe and correctly passes your init data.

@@ -43,7 +43,8 @@ export default class BootScene extends Phaser.Scene {
       this.registry.set('userProfile', userProfile);
 
       // 4. Now, start the next scene
-      this.scene.start('ArenaScene', { roomKey: 'FirstArena' });
+      this.scene.start('HistoryScene');
+      //this.scene.start('ArenaScene', { roomKey: 'FirstArena' });
 
     } catch (error) {
         console.error("Fatal Error: Failed to start game session:", error);
