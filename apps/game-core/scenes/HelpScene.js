@@ -19,6 +19,13 @@ export default class HelpScene extends Phaser.Scene {
   }
 
   init() {
+   
+    this.sys.game.scene.scenes.forEach(otherScene => {
+    const key = otherScene.sys.settings.key;
+    if (key && key !== this.sys.settings.key) {
+      this.scene.stop(key);
+    }
+  });
     // Retrieve shared data from the Phaser registry
     this.userProfile = this.registry.get('userProfile');
     this.dataService = this.registry.get('dataService');
@@ -31,14 +38,18 @@ export default class HelpScene extends Phaser.Scene {
   }
 
   create() {
+
     const { width, height } = this.scale;
+    this.input.keyboard.removeCapture(
+    Phaser.Input.Keyboard.KeyCodes.SPACE
+  );
 
     // Add a semi-transparent background overlay
     this.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.7);
 
     // Display the conversation text
     this.conversationText = this.add.text(20, 20, '', {
-      font: '16px Monospace',
+      font: '16px',
       fill: '#ffffff',
       wordWrap: { width: width - 40 }
     });
