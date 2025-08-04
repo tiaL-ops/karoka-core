@@ -292,7 +292,7 @@ this.dropZones.getChildren().forEach(z => z.getData('outline').setVisible(false)
 
 const uiX = 650;
 
-this.showCodeButton = this.add.text(uiX, 30, '[ Show Code ]', { font: '16px Monospace', fill: '#0f0', backgroundColor: '#333', padding: { x: 5, y: 5 } })
+this.showCodeButton = this.add.text(uiX, 30, '[ Show Puzzle ]', { font: '16px Monospace', fill: '#0f0', backgroundColor: '#333', padding: { x: 5, y: 5 } })
 
 .setInteractive().on('pointerdown', () => this.showCodePanel(rooms[this.roomKey]?.codeSnippet));
 

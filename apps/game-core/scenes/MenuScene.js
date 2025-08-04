@@ -78,7 +78,7 @@ export default class MenuScene extends Phaser.Scene {
   ).setOrigin(0.5);
 
   // ── 5) Create ALL label Texts first ──
-  const labels    = ['Resume', 'VARK Test', 'Ask for Help', 'Coding Assignment'];
+  const labels    = ['Resume', 'VARK Test', 'Ask for Help', 'Instructions'];
   const startY    = panelY + headerH + 30;
   const spacing   = 70;
   const btnHeight = 50;
@@ -132,7 +132,7 @@ export default class MenuScene extends Phaser.Scene {
   makeBtn(resumeButton, () => this.resumeGame());
   makeBtn(varkButton,   () => this.launchSubScene('VARKScene'));
   makeBtn(helpButton,   () => this.launchSubScene('HelpScene'));
-  makeBtn(codeButton,   () => this.launchSubScene('CodeEditorScene'));
+  makeBtn(codeButton,   () => this.launchSubScene('HistoryScene'));
 
   // ── 11) Grey footer + “Choose an option.” text ──
   const footerY = panelY + panelH - 30;

@@ -20,12 +20,7 @@ export default class HelpScene extends Phaser.Scene {
 
   init() {
    
-    this.sys.game.scene.scenes.forEach(otherScene => {
-    const key = otherScene.sys.settings.key;
-    if (key && key !== this.sys.settings.key) {
-      this.scene.stop(key);
-    }
-  });
+   
     // Retrieve shared data from the Phaser registry
     this.userProfile = this.registry.get('userProfile');
     this.dataService = this.registry.get('dataService');

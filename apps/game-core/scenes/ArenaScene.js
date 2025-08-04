@@ -176,6 +176,50 @@ export default class ArenaScene extends Phaser.Scene {
         this.scene.launch('MenuScene');
       }
     });
+
+   
+
+// 1) Add a fixed-to-camera “☰” button in the corner
+// …at the bottom of your ArenaScene.create(), replace the old menuBtn with:
+
+// 1) Draw a semi-opaque white circle as a button background
+const btnX = this.scale.width - 40;
+const btnY = 40;
+const radius = 24;
+
+const btnBg = this.add.circle(btnX, btnY, radius, 0xffffff, 0.8)
+  .setStrokeStyle(2, 0x000000)   // black outline
+  .setScrollFactor(0)            // fixed to camera
+  .setInteractive({ useHandCursor: true });
+
+// 2) Draw the “☰” icon on top, bold & black
+const menuIcon = this.add.text(btnX, btnY, '☰', {
+    fontFamily: '"Press Start 2P"',
+    fontSize: '28px',
+    fill: '#000000'
+  })
+  .setOrigin(0.5)
+  .setScrollFactor(0)
+  .setDepth(1);
+
+// 3) Hook up the toggle logic on the circle background
+btnBg.on('pointerdown', () => {
+  const menuIsUp = this.scene.isActive('MenuScene');
+
+  if (menuIsUp) {
+    this.scene.stop('MenuScene');
+    this.scene.resume('ArenaScene');
+  } else {
+    this.scene.pause('ArenaScene');
+    this.scene.launch('MenuScene');
+  }
+});
+
+// (Optionally also let the icon itself be clickable)
+menuIcon.setInteractive({ useHandCursor: true })
+  .on('pointerdown', () => btnBg.emit('pointerdown'));
+
+
   }
 
   update() {
