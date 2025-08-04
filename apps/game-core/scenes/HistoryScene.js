@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+
 
 export default class HistoryScene extends Phaser.Scene {
   constructor() {
