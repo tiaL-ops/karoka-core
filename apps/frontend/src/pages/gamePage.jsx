@@ -108,14 +108,13 @@ function GamePage() {
       alignItems: 'center',
       padding: '20px'
     }}>
-      <h1>Welcome to the Game!</h1>
-      <p>Your game is loading below. Have fun !</p>
+     
       <div
         id="game-container"
         style={{
           width: '900px',
           height: '600px',
-          border: '2px solid #ff3399'
+          border: '2px solid #101210ff'
         }}
       />
     </div>
