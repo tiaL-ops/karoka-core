@@ -102,14 +102,3 @@ docker-compose up --build
 
 
 
-# Fill in the blanks to make this code work
-# It should print: 'Galaxia has 4 town and 2 Tera'
-
-# --- Write your code below--- 
-city="Galaxia"
-c=4
-b=2
-town="Tera"
-
-# ── Do not change this line ──
-print(city + ' has ' + str(c) + ' town and ' + str(b) + ' ' + town)
