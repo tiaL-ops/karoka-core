@@ -131,7 +131,7 @@ export default class MenuScene extends Phaser.Scene {
     makeBtn(resumeButton, () => this.resumeGame());
     makeBtn(varkButton, () => this.launchSubScene('VARKScene'));
     makeBtn(helpButton, () => this.launchSubScene('HelpScene'));
-    makeBtn(codeButton, () => this.launchSubScene('HistoryScene'));
+    makeBtn(codeButton, () => this.launchSubScene('InstructionsScene'));
     
     // ✨ --- Add interactivity for the new Feedback button --- ✨
     makeBtn(feedbackButton, () => {
