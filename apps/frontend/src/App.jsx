@@ -51,7 +51,7 @@ function App() {
           <Route 
             path="/game" 
             element={
-              <PrivateRoute allowedRoles={['tester', 'admin', 'employee']}> {/* Define allowed roles here */}
+              <PrivateRoute allowedRoles={['tester', 'admin', 'employee','user']}> {/* Define allowed roles here */}
                 <GamePage />
               </PrivateRoute>
             } 
@@ -67,7 +67,7 @@ function App() {
           <Route
             path="/database/:tableName"
             element={
-              <PrivateRoute allowedRoles={['user', 'admin']}>
+              <PrivateRoute allowedRoles={[ 'admin']}>
                 <TableDataPage />
               </PrivateRoute>
             }
