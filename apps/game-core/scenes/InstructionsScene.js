@@ -147,7 +147,7 @@ export default class InstructionsScene extends Phaser.Scene {
 
     // --- Help & Exit Prompts ---
     const footerY = panelY + panelHeight - 50;
-    this.add.text(centerX, footerY - 20, "Stuck? Press 'M' to open the menu and ask for help.", {
+    this.add.text(centerX, footerY - 20, "Stuck? Press 'M' , use our AI to ask for help.", {
         fontFamily: '"Press Start 2P"',
         fontSize: '12px',
         fill: '#ffcc00', // Gold color for emphasis
