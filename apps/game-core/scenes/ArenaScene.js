@@ -188,7 +188,7 @@ const btnBg = this.add.circle(btnX, btnY, radius, 0xffffff, 0.8)
 const menuIcon = this.add.text(btnX, btnY, '☰', {
     fontFamily: '"Press Start 2P"',
     fontSize: '28px',
-    fill: '#000000'
+    fill: '#1c89b7ff'
   })
   .setOrigin(0.5)
   .setScrollFactor(0)

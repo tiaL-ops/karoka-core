@@ -125,7 +125,7 @@ function GamePage() {
             What you see here is the very beginning: basic instructions, a puzzle, one playable house, and LLM-powered help. Feel free to explore and break things 😊
           </p>
           <p style={styles.bodyFont}>
-            I'm still improving the art (yes, I know a lottt), working on offline mode, deeper AI, and more game content. Thanks for playing and watching me grow :D !
+            I'm still improving the art (yes, I know I suck at drawing :()), working on offline mode, deeper AI, and more game content. Thanks for playing along and watching me grow :D !
           </p>
           <button
             style={styles.button}
