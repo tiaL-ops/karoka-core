@@ -91,7 +91,7 @@ export default class HistoryScene extends Phaser.Scene {
     // --- Story Text Area (with new styling) ---
     this.storyText = this.add.text(centerX, centerY, '', {
       fontFamily: '"Press Start 2P"',
-      fontSize: '10px',
+      fontSize: '20px',
       fill: '#ffffff', // Changed to white as requested
       align: 'center',
       wordWrap: { width: boxWidth - 60 },
