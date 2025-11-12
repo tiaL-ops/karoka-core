@@ -1,7 +1,9 @@
 [
   {
-    "origin": ["http://localhost:3000","https://www.karoka.co"],
+    "origin": ["http://localhost:3000","https://www.karoka.co","http://127.0.0.1:5500"],
     "method": ["GET"],
+
+    "responseHeader": ["Content-Type"],
     "maxAgeSeconds": 3600
   }
 ]

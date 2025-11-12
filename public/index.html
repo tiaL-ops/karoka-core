@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Karoka | Discover & Learn</title>
+  <!-- Tailwind CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 text-gray-200 font-sans">
+ <!-- Header -->
+<header class="w-full max-w-6xl mx-auto px-6 py-5 bg-gradient-to-r from-gray-800 to-gray-900 shadow-lg rounded-xl mb-12">
+  <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+    
+    <!-- Greeting -->
+    <div class="text-lg font-medium text-gray-300">
+      Hello, <span id="username" class="text-indigo-400 font-semibold">Guest</span>!
+    </div>
+
+    <!-- Nav Menu -->
+    <nav class="px-4 py-2 sm:px-8 sm:py-3">
+      <ul class="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 text-sm sm:text-base font-medium text-gray-300">
+        
+        <li>
+          <a href="#/" class="hover:text-indigo-400 transition">Home</a>
+        </li>
+        
+        <li class="flex items-center gap-1">
+          <a href="#/quiz" class="hover:text-indigo-400 transition">Discover Your Learner Type</a>
+          <span class="text-[10px] text-indigo-300 bg-indigo-700 px-1 py-0.5 rounded-full uppercase tracking-wide font-semibold">Beta</span>
+        </li>
+        
+        <li>
+          <a href="#/results" class="hover:text-indigo-400 transition">Your Karoka Style</a>
+        </li>
+        
+        <li>
+          <a 
+            href="https://forms.gle/hdwpx64Z7xYwmMKU9" 
+            target="_blank" 
+            class="hover:text-indigo-400 transition"
+          >
+            Feedback
+          </a>
+        </li>
+    
+      </ul>
+    </nav>
+    
+    
+
+    <!-- Buttons -->
+    <div class="flex gap-3">
+      <button id="profile-button" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg shadow-md transition" onclick="hideProfileContainer()">
+        Profile
+      </button>
+
+      <button id="auth-button" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg shadow-md transition">
+        Login / Sign Up
+      </button>
+    </div>
+
+  </div>
+</header>
+
+  </header>
+ 
+  
+
+  <div id="profile-container" class="max-w-lg mx-auto bg-gray-800 p-6 rounded-lg shadow-lg transition transform hover:scale-105 hover:shadow-xl">
+    <h2 class="text-2xl font-bold text-gray-200 mb-6 text-center">
+        Edit Profile
+    </h2>
+    <div class="space-y-4">
+        <!-- Input: Name -->
+        <div>
+            <label for="kname" class="block text-sm font-medium text-gray-300 mb-2">Name</label>
+            <input type="text" id="kname" class="w-full px-4 py-2 bg-gray-700 text-gray-200 rounded-lg border border-gray-600 focus:ring focus:ring-indigo-500 focus:outline-none">
+        </div>
+        
+        <!-- Input: Field of Study -->
+        <div>
+            <label for="fieldOfStudy" class="block text-sm font-medium text-gray-300 mb-2">Field of Study</label>
+            <input type="text" id="fieldOfStudy" placeholder="Enter your field of study" class="w-full px-4 py-2 bg-gray-700 text-gray-200 rounded-lg border border-gray-600 focus:ring focus:ring-indigo-500 focus:outline-none">
+        </div>
+        
+        <!-- Input: Programming Level -->
+        <div>
+            <label for="programmingLevel" class="block text-sm font-medium text-gray-300 mb-2">Programming Level</label>
+            <input type="text" id="programmingLevel" placeholder="Beginner/Intermediate/Advanced" class="w-full px-4 py-2 bg-gray-700 text-gray-200 rounded-lg border border-gray-600 focus:ring focus:ring-indigo-500 focus:outline-none">
+        </div>
+        
+        <!-- Input: Bio -->
+        <div>
+            <label for="bio" class="block text-sm font-medium text-gray-300 mb-2">Bio</label>
+            <textarea id="bio" rows="4" placeholder="Write a short bio about yourself" class="w-full px-4 py-2 bg-gray-700 text-gray-200 rounded-lg border border-gray-600 focus:ring focus:ring-indigo-500 focus:outline-none"></textarea>
+        </div>
+    </div>
+     <!-- Buttons -->
+     <div class="flex justify-between mt-6">
+      <button id="save-profile" class="w-5/12 px-4 py-2 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-lg shadow-md transition">
+          Save
+      </button>
+      <button id="cancel-profile" class="w-5/12 px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-semibold rounded-lg shadow-md transition">
+          Cancel
+      </button>
+  </div>
+  </div>
+
+  <!-- App Container for Dynamic Routes -->
+  <div id="app-view" class="w-full max-w-6xl mx-auto px-4"></div>
+  <div id="index-content">
+  <!-- The rest of your static content can go below -->
+  <section class="w-full max-w-4xl mx-auto text-center mb-12">
+    <h1 class="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500 mb-4">
+      Welcome to Karoka!
+    </h1>
+    <p class="text-lg text-gray-400">
+      Discover competitions, learn new skills, and have fun!
+    </p>
+  </section>
+
+
+  
+
+  
+  <!-- Other static sections, e.g., filter buttons, competition container, etc. -->
+  <div id="filter-buttons" class="flex justify-center gap-4 mb-10">
+    <button onclick="filterCompetitions('open')" class="px-6 py-2 bg-green-600 hover:bg-green-500 text-white font-medium rounded-lg shadow-md transition">
+      Show Open
+    </button>
+    <button onclick="filterCompetitions('closed')" class="px-6 py-2 bg-red-600 hover:bg-red-500 text-white font-medium rounded-lg shadow-md transition">
+      Show Closed
+    </button>
+    <button onclick="filterCompetitions('all')" class="px-6 py-2 bg-gray-700 hover:bg-gray-600 text-white font-medium rounded-lg shadow-md transition">
+      Show All
+    </button>
+  </div>
+
+  <div id="competition-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-6 max-w-6xl mx-auto"></div>
+</div>
+  <!-- Scripts -->
+  <script type="module" src="scripts/router.js"></script>
+  <script type="module" src="main.js"></script>
+  
+</body>
+</html>

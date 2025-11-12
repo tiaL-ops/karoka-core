@@ -1,0 +1,17 @@
+Before deploying, to ensure the smoothness with firebase:
+Go to WorldScene.
+line 37 this.load.tilemapTiledJSON("WPMap", "assets/maps/WPMap.json");
+should be :
+this.load.tilemapTiledJSON("WPMap", "/assets/maps/WPMap.json");
+
+In index html:
+<script type="module" src="scripts/authform.js" onerror="console.error('Failed to load authform.js');"></script>
+    <script type="module" src="scripts/firebase.js" onerror="console.error('Failed to load firebase.js');"></script>
+    <script type="module" src="scripts/game.js" onerror="console.error('Failed to load game.js');"></script>
+
+    should be :
+<script type="module" src="/scripts/authform.js" onerror="console.error('Failed to load authform.js');"></script>
+    <script type="module" src="/scripts/firebase.js" onerror="console.error('Failed to load firebase.js');"></script>
+    <script type="module" src="/scripts/game.js" onerror="console.error('Failed to load game.js');"></script>
+
+

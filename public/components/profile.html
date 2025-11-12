@@ -1,0 +1,39 @@
+<div id="profile-container" class="max-w-lg mx-auto bg-gray-800 p-6 rounded-lg shadow-lg transition transform hover:scale-105 hover:shadow-xl">
+    <h2 class="text-2xl font-bold text-gray-200 mb-6 text-center">
+        Edit Profile
+    </h2>
+    <div class="space-y-4">
+        <!-- Input: Name -->
+        <div>
+            <label for="kname" class="block text-sm font-medium text-gray-300 mb-2">Name</label>
+            <input type="text" id="kname" class="w-full px-4 py-2 bg-gray-700 text-gray-200 rounded-lg border border-gray-600 focus:ring focus:ring-indigo-500 focus:outline-none">
+        </div>
+        
+        <!-- Input: Field of Study -->
+        <div>
+            <label for="fieldOfStudy" class="block text-sm font-medium text-gray-300 mb-2">Field of Study</label>
+            <input type="text" id="fieldOfStudy" placeholder="Enter your field of study" class="w-full px-4 py-2 bg-gray-700 text-gray-200 rounded-lg border border-gray-600 focus:ring focus:ring-indigo-500 focus:outline-none">
+        </div>
+        
+        <!-- Input: Programming Level -->
+        <div>
+            <label for="programmingLevel" class="block text-sm font-medium text-gray-300 mb-2">Programming Level</label>
+            <input type="text" id="programmingLevel" placeholder="Beginner/Intermediate/Advanced" class="w-full px-4 py-2 bg-gray-700 text-gray-200 rounded-lg border border-gray-600 focus:ring focus:ring-indigo-500 focus:outline-none">
+        </div>
+        
+        <!-- Input: Bio -->
+        <div>
+            <label for="bio" class="block text-sm font-medium text-gray-300 mb-2">Bio</label>
+            <textarea id="bio" rows="4" placeholder="Write a short bio about yourself" class="w-full px-4 py-2 bg-gray-700 text-gray-200 rounded-lg border border-gray-600 focus:ring focus:ring-indigo-500 focus:outline-none"></textarea>
+        </div>
+    </div>
+     <!-- Buttons -->
+     <div class="flex justify-between mt-6">
+      <button id="save-profile" class="w-5/12 px-4 py-2 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-lg shadow-md transition">
+          Save
+      </button>
+      <button id="cancel-profile" class="w-5/12 px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-semibold rounded-lg shadow-md transition">
+          Cancel
+      </button>
+  </div>
+  </div>

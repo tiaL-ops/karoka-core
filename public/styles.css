@@ -1,0 +1,60 @@
+#profile-container {
+    display: none; /* Hide initially */
+}
+
+#competition-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+.hidden {
+    display: none;
+  }
+  
+/* Competition Styles */
+.competition {
+    width: 300px;
+    padding: 20px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.competition:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Open Competition */
+.competition.open {
+    background-color: #eaffea; /* Light green background */
+    border-color: #28a745; /* Green border */
+}
+
+.competition.closed {
+    background-color: #f9f9f9; /* Light gray background */
+    border-color: #ccc; /* Gray border */
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Status Label */
+.status-label {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 12px;
+    padding: 3px 6px;
+    border-radius: 4px;
+    background-color: #28a745; /* Green for open */
+    color: #fff;
+}
+
+.competition.closed .status-label {
+    background-color: #dc3545; /* Red for closed */
+}

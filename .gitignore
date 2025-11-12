@@ -31,3 +31,12 @@ dist/
 build/
 htmlcov/
 somestuff.md
+.env
+env.js
+serviceAccountKey.json
+venv/
+karoka_type/venv/
+
+# Python Cache
+__pycache__/
+*.pyc

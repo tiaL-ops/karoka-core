@@ -1,0 +1,37 @@
+
+
+Current on infite map from tile
+
+Riddle Level1_Riddle placed at (3368.12, 1375.78)
+WorldScene.js:257 Riddle Level2_Riddle placed at (3236.96, 853.997)
+WorldScene.js:257 Riddle Level3_Riddle placed at (2824.32, 807.085)
+WorldScene.js:257 Riddle Level4_Riddle placed at (3588.32, 802.298)
+WorldScene.js:257 Riddle Level5_Riddle placed at (2786.98, 330.302)
+WorldScene.js:257 Riddle Level6_Riddle placed at (4067.98, 1089.52)
+WorldScene.js:257 Riddle Level7_Riddle placed at (3680.23, 229.775)
+
+Where the choul be om camva :X2,Y2
+Level 1: X: 1358.153590701535, Y: 1919.8455790784412
+Level 2:X: 1205.4719800747225, Y: 1386.205064342048
+Level 3: X: 1024.2681610626842, Y: 1453.41967621419
+Level 4: X: 1551.8314653383093, Y: 1325.860523038604
+Level 5:X: 749.4943960149461, Y: 854.2125363221277
+Level 6:X: 2044.1311747612954, Y: 1603.1789124117818
+Level 7:X: 1647.5018679950113, Y: 743.84940255922
+
+
+
+Original pos: 3368.12, 1375.78
+WorldScene.js:254 Adjusted pos: 105.25375, 42.993125
+WorldScene.js:253 Original pos: 3236.96, 853.997
+WorldScene.js:254 Adjusted pos: 101.155, 26.68740625
+WorldScene.js:253 Original pos: 2824.32, 807.085
+WorldScene.js:254 Adjusted pos: 88.26, 25.22140625
+WorldScene.js:253 Original pos: 3588.32, 802.298
+WorldScene.js:254 Adjusted pos: 112.135, 25.0718125
+WorldScene.js:253 Original pos: 2786.98, 330.302
+WorldScene.js:254 Adjusted pos: 87.093125, 10.3219375
+WorldScene.js:253 Original pos: 4067.98, 1089.52
+WorldScene.js:254 Adjusted pos: 127.124375, 34.0475
+WorldScene.js:253 Original pos: 3680.23, 229.775
+WorldScene.js:254 Adjusted pos: 115.0071875, 7.18046875
