@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome</title>
+    {% load static %}
+    <!-- Load TailwindCSS -->
+    <link rel="stylesheet" href="{% static 'css/core_style.css' %}">
+ 
+</head>
+<body class="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-black text-white flex flex-col items-center py-10 px-6">
+    <!-- Header -->
+    <header class="w-full max-w-4xl bg-gray-800/70 p-6 rounded-lg shadow-md flex justify-between items-center mb-8">
+        <p class="text-lg text-gray-300">Hello, <span class="text-indigo-400">{{ user.username }}</span>!</p>
+        <a href="{% url 'leaderboard' %}" class="px-4 py-2 bg-purple-600 hover:bg-red-500 text-white font-semibold rounded-lg shadow-md transition">
+            View Leaderboard
+        </a>
+
+        <form method="POST" action="{% url 'logout' %}" class="inline-block">
+            {% csrf_token %}
+            <button type="submit" class="px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-semibold rounded-lg shadow-md transition">
+                Logout
+            </button>
+        </form>
+    </header>
+
+    <!-- Welcome Section -->
+    <div class="text-center mb-12">
+        <h1 class="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500 mb-6">
+            Welcome to the Algorithm Riddle Platform!
+        </h1>
+        <p class="text-lg text-gray-400">
+            Explore, compete, and sharpen your problem-solving skills.
+        </p>
+    </div>
+
+    <!-- Active Competition -->
+    <div class="w-full max-w-4xl bg-gray-800/70 p-6 rounded-lg shadow-md mb-8">
+        <h3 class="text-2xl font-semibold text-indigo-400 mb-4">Active Competition:</h3>
+        {% if active_competition %}
+            <p class="text-lg text-gray-300 mb-4">
+                Current Competition: <strong class="text-indigo-400">{{ active_competition.name }}</strong>
+            </p>
+            <a href="{% url 'competition_view' active_competition.id %}" class="px-6 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg shadow-md transition">
+                Go to Competition
+            </a>
+        {% else %}
+            <p class="text-gray-400">No active competition at the moment. 🎉</p>
+        {% endif %}
+    </div>
+
+    <!-- Past Competitions -->
+    <div class="w-full max-w-4xl bg-gray-800/70 p-6 rounded-lg shadow-md mb-8">
+        <h3 class="text-2xl font-semibold text-purple-400 mb-4">Past Competitions:</h3>
+        {% if past_competitions %}
+            <ul class="list-disc list-inside text-gray-300 space-y-2">
+                {% for competition in past_competitions %}
+                    <li>
+                        {{ competition.name }} <span class="text-gray-500">(Completed)</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-gray-400">No past competitions yet. Get ready for future challenges!</p>
+        {% endif %}
+    </div>
+</body>
+</html>

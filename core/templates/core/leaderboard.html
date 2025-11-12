@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard</title>
+    {% load static %}
+    <!-- Load TailwindCSS -->
+    <link rel="stylesheet" href="{% static 'css/core_style.css' %}">
+
+</head>
+<body class="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-black text-white flex flex-col items-center py-10 px-6">
+    <!-- Header -->
+    <header class="mb-8">
+        <h1 class="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500">
+            Leaderboard
+        </h1>
+        <p class="text-gray-300 mt-2">Top performers on the platform!</p>
+    </header>
+
+    <!-- Leaderboard Table -->
+    <div class="w-full max-w-4xl bg-gray-800/70 p-6 rounded-lg shadow-lg">
+        <table class="table-auto w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-gray-700 text-gray-300">
+                    <th class="px-4 py-2 border-b border-gray-600">Rank</th>
+                    <th class="px-4 py-2 border-b border-gray-600">Username</th>
+                    <th class="px-4 py-2 border-b border-gray-600">Total Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user_data in leaderboard_data %}
+                    <tr class="hover:bg-gray-700 transition">
+                        <td class="px-4 py-2 border-b border-gray-600">{{ forloop.counter }}</td> <!-- Rank -->
+                        <td class="px-4 py-2 border-b border-gray-600">{{ user_data.user__username }}</td> <!-- Username -->
+                        <td class="px-4 py-2 border-b border-gray-600">{{ user_data.total_score }}</td> <!-- Total Score -->
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-center text-gray-400 py-4">No data available</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-8">
+        <a href="{% url 'welcome' %}" class="px-6 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg shadow-md transition">
+            🏠 Back to Home
+        </a>
+    </footer>
+</body>
+</html>

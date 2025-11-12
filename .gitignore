@@ -40,3 +40,45 @@ karoka_type/venv/
 # Python Cache
 __pycache__/
 *.pyc
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment directory
+.venv/
+node_modules/
+# Django migrations
+*.sqlite3
+db.sqlite3
+
+# Environment variables file
+.env
+
+# macOS files
+.DS_Store
+
+# Backup files
+*.bak
+*.swp
+*.swo
+*.tmp
+
+# Logs
+*.log
+
+# Cache
+*.cache
+*.mo
+
+# Static and media files (if generated)
+staticfiles/
+media/
+
+# Local IDE configurations
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+node_modules
+.venv

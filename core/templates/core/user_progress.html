@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your Progress</title>
+</head>
+<body>
+    <h1>Your Progress</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Puzzle</th>
+                <th>Solved</th>
+                <th>Attempts</th>
+                <th>Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for progress in progress %}
+            <tr>
+                <td>{{ progress.puzzle.title }}</td>
+                <td>{{ progress.solved }}</td>
+                <td>{{ progress.attempts }}</td>
+                <td>{{ progress.score }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
