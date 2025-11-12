@@ -3,7 +3,7 @@
 
 **Karoka** is a 2D game designed to teach coding while helping users discover how they learn best.
 
-This repository archives the **first full-stack public release** I ever built ( yes you can tell) . I believe it’s worth showcasing because it represents the early stages of Karoka, where I believed in make it real first , perfection will catch up later 😊
+This repository archives the **first full-stack public release** I ever built ( yes you can tell) . I believe it’s worth showcasing because it represents the early stages of Karoka, where I believed in make it real first , perfection will catch up later 😊 Still has place in my heart since iti s how i started to be confrotable with web dev :)
 
 The commit history is unfiltered. You'll see where I was still learning best practices—including times I accidentally pushed `node_modules` or `.env` files (all keys are long disabled nw).
 
